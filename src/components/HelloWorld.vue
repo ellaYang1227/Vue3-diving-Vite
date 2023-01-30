@@ -2,9 +2,9 @@
 defineProps({
   msg: {
     type: String,
-    required: true
-  }
-})
+    required: true,
+  },
+});
 </script>
 
 <template>
@@ -16,6 +16,7 @@ defineProps({
       <a href="https://vuejs.org/" target="_blank" rel="noopener">Vue 3</a>.
     </h3>
   </div>
+  <button type="button" class="btn btn-primary">Primary</button>
 </template>
 
 <style scoped>
