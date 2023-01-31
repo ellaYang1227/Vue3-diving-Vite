@@ -1,37 +1,88 @@
 
-@import "./bootstrap-custom-variables";
+@import "./styles/bootstrap-custom-variables";
+@import './styles/_bootstrap-custom-utilities';
 @import "bootstrap/scss/bootstrap";
+@import './styles/_other';
 
-#app {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-
-  font-weight: normal;
+.font-barlow {
+  font-family: $font-barlow !important;
 }
 
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-}
+/*
+* ==========================================================================
+* 共用
+* ==========================================================================
+*/
 
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
+html {
+  font-size: $font-size-base;
+
+  // @include media-breakpoint-up(md) {
+  //     font-size: $font-size-base * 1.125;
+  // }
+
+  @include media-breakpoint-up(xl) {
+    font-size: $font-size-base * 1.125;
   }
 }
 
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
+body {
+  background: url('../assets/images/bg.png') top center no-repeat;
+  background-size: cover;
+  background-color: $body-bg;
+}
 
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
+// 置頂高度(距離 header 高度)
+.fixed-margin-top-headerHeight {
+  margin-top: $header-height;
+
+  @include media-breakpoint-up(md) {
+    margin-top: $header-height-md-up;
   }
+}
+
+.dropdown-menu {
+  @include media-breakpoint-up(md) {
+    &:not([aria-labelledby=dropMySignUp]) {
+      max-width: 15rem;
+    }
+  }
+}
+
+.dropdown-toggle {
+  &.dropdown-hide-arrow:after {
+    display: none;
+  }
+}
+
+// 邊框顏色同下拉下單選單
+.border-color-dropdown {
+  border-color: $dropdown-border-color !important;
+}
+
+.img-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  height: 100px;
+
+  img {
+    height: 110%;
+    border-radius: inherit;
+  }
+}
+
+// 文字顯示行數
+*[class*="text-truncate-row-"] {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+  overflow: hidden;
+}
+
+// 按鈕自訂圓角
+.btn.btn-custom-rounded {
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 0;
 }

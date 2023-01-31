@@ -1,0 +1,8 @@
+// 文字顯示行數 2 行以上
+.text-truncate-row- {
+    @for $index from 1 through 10 {
+        &#{$index} {
+            -webkit-line-clamp: #{$index + " !important"};
+        }
+    }
+}

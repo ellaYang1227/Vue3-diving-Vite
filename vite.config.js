@@ -7,9 +7,13 @@ import vue from "@vitejs/plugin-vue";
 export default defineConfig({
   plugins: [vue()],
   base: "/Vue3-diving-Vite/",
+  //base: "/",
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
+  },
+  build: {
+    chunkSizeWarningLimit: 5000,
   },
 });
