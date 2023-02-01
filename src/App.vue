@@ -7,13 +7,13 @@ console.log(import.meta.env.VITE_TEXT);
 </script>
 
 <template>
-  <div class="min-vh-100 d-flex flex-column">
-    <HeaderNavbar />
-    <div class="flex-fill fixed-margin-top-headerHeight ">
-      <router-view></router-view>
+    <div class="min-vh-100 d-flex flex-column">
+        <HeaderNavbar />
+        <div class="flex-fill fixed-margin-top-headerHeight">
+            <router-view></router-view>
+        </div>
+        <FooterComponent />
     </div>
-    <FooterComponent />
-  </div>
 </template>
 
 <style></style>

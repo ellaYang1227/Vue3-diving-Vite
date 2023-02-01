@@ -1,7 +1,15 @@
 // 文字顯示行數 2 行以上
+%text-truncate-row {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+    overflow: hidden;
+}
+
 .text-truncate-row- {
     @for $index from 1 through 10 {
         &#{$index} {
+            @extend %text-truncate-row;
             -webkit-line-clamp: #{$index + " !important"};
         }
     }
