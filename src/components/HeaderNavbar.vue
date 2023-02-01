@@ -1,15 +1,17 @@
-<script setup>
+<script>
 import Company from "../data/company.js";
 import { token, user } from "../data/auth.js";
 import { formatDate } from "../data/handle-format.js";
 import { apiGetMySignUp } from "../api/index.js";
 import UserMugShot from "./UserMugShot.vue";
-</script>
 
-<script>
 export default {
     data() {
         return {
+            Company,
+            token,
+            user,
+            formatDate,
             mySignUp: [],
             hasHavbarBg: false,
         };
@@ -29,21 +31,24 @@ export default {
                     // activeStatus: 0 未開始、1 進行中、2 已結束、3 系統中止
                     this.mySignUp = data.filter((item) => item.activeStatus === 0 || item.activeStatus === 1);
                 } catch {
-                    console.log("err");
+                    console.log("err getMySignUp api");
                 }
             })();
         },
+    },
+    components: {
+        UserMugShot,
     },
 };
 </script>
 
 <template>
-    <nav class="fixed-top navbar navbar-expand-md navbar-dark p-0" :class="[hasHavbarBg ? 'bg-darkPrimary bg-opacity-50 shadow' : 'bg-transparent']">
+    <nav class="fixed-top navbar navbar-expand-md navbar-dark p-0" :class="[hasHavbarBg ? 'bg-darkPrimary bg-opacity-90 shadow' : 'bg-transparent']">
         <div class="container">
             <router-link class="navbar-brand" to="/index">
                 <img src="../assets/images/氣瓶海人logo.svg" :alt="Company?.name" class="mb-md-2" />
             </router-link>
-            <button type="button" class="btn btn-primary btn-custom-rounded ms-auto me-3 me-md-0 ms-md-2 order-md-last">我要揪團</button>
+            <router-link class="btn btn-primary btn-custom-rectangle ms-auto me-3 me-md-0 ms-md-2 order-md-last" to="#" role="button">我要揪團</router-link>
             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbarHeader" aria-controls="offcanvasNavbarHeader">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -66,20 +71,20 @@ export default {
                                 </li>
                                 <li><hr class="dropdown-divider" /></li>
                                 <li>
-                                    <a class="dropdown-item active" href="#">編輯個人資料</a>
+                                    <router-link class="dropdown-item" to="#">編輯個人資料</router-link>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" href="#">我的潛水證照</a>
+                                    <router-link class="dropdown-item" to="#">我的潛水證照</router-link>
                                 </li>
                                 <li><hr class="dropdown-divider" /></li>
                                 <li>
-                                    <a class="dropdown-item" href="#">我的揪團</a>
+                                    <router-link class="dropdown-item" to="#">我的揪團</router-link>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" href="#">我的報名</a>
+                                    <router-link class="dropdown-item" to="#">我的報名</router-link>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" href="#">評價管理</a>
+                                    <router-link class="dropdown-item" to="#">評價管理</router-link>
                                 </li>
                                 <li><hr class="dropdown-divider" /></li>
                                 <li>
@@ -88,14 +93,14 @@ export default {
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="#">找揪團</a>
+                            <router-link class="nav-link" to="#">找揪團</router-link>
                         </li>
                         <li class="nav-item dropdown d-none d-md-block" v-if="user">
                             <a class="nav-link" :class="{ 'dropdown-toggle dropdown-hide-arrow': mySignUp.length }" href="#" id="dropMySignUp" role="button" :data-bs-toggle="mySignUp.length ? 'dropdown' : ''" data-bs-display="static" aria-expanded="false"> 我的報名 </a>
                             <div class="dropdown-menu dropdown-menu-md-end" aria-labelledby="dropMySignUp">
                                 <div class="list-group list-group-flush mx-3">
                                     <template v-for="(item, index) in mySignUp" :key="item.id">
-                                        <a href="#" class="list-group-item list-group-item-action bg-transparent px-0 py-3" v-if="3 > index">
+                                        <router-link to="#" class="list-group-item list-group-item-action bg-transparent px-0 py-3" v-if="3 > index">
                                             <div class="row gx-2 align-items-center">
                                                 <div class="col-4">
                                                     <img :src="item.img" :alt="item.name" class="img-cover border rounded-3" />
@@ -107,18 +112,18 @@ export default {
                                                     <small class="font-barlow text-white">{{ formatDate(item.activeStartDate) }} ~ {{ formatDate(item.activeEndData) }}</small>
                                                 </div>
                                             </div>
-                                        </a>
+                                        </router-link>
                                     </template>
                                 </div>
-                                <a href="#" class="py-2 d-block text-center text-decoration-none bg-lightPrimary bg-opacity-20 text-lightPrimary border-top border-color-dropdown">更多我的報名</a>
+                                <router-link class="py-2 d-block text-center text-decoration-none bg-lightPrimary bg-opacity-20 text-lightPrimary border-top border-color-dropdown" to="#">更多我的報名</router-link>
                             </div>
                         </li>
                         <template v-if="!user">
                             <li class="nav-item">
-                                <a class="nav-link" href="#">登入</a>
+                                <router-link class="nav-link" to="login">登入</router-link>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">註冊</a>
+                                <router-link class="nav-link" to="logout">註冊</router-link>
                             </li>
                         </template>
                         <template v-else>
@@ -202,6 +207,10 @@ export default {
             &[aria-labelledby="dropMySignUp"] {
                 @media (min-width: 768px) {
                     width: 320px;
+                }
+
+                .list-group-item.active {
+                    border-color: unset;
                 }
             }
 

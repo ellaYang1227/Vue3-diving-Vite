@@ -65,12 +65,18 @@ body {
     width: 100%;
 }
 
-// 按鈕自訂圓角
-.btn.btn-custom-rounded {
-    border-top-right-radius: 0;
-    border-bottom-left-radius: 0;
+// 按鈕自訂矩形圓角
+.btn.btn-custom-rectangle {
+    border-radius: 0;
+    clip-path: polygon(100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 0, 100% 0);
+    -webkit-clip-path: polygon(100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 0, 100% 0);
+}
+
+.custom-rectangle {
+    -webkit-clip-path: polygon(0% 0%, 100% 0, 100% 80%, 80% 100%, 0% 100%);
+    clip-path: polygon(0% 0%, 100% 0, 100% 80%, 80% 100%, 0% 100%);
 }
 
 .border-style-dashed {
     border-style: dashed !important;
-};
+}

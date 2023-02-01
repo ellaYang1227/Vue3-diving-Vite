@@ -97,13 +97,11 @@ $theme-colors: (
 ) !default;
 // scss-docs-end theme-colors-map
 
-
 // Options
 //
 // Quickly modify global styling by enabling or disabling optional features.
 
 $enable-cssgrid: true !default;
-
 
 // Spacing
 //
@@ -293,3 +291,10 @@ $list-group-hover-bg: $dropdown-link-hover-bg !default;
 
 $list-group-action-hover-color: $dropdown-color !default;
 // scss-docs-end list-group-variables
+
+// Cards
+
+// scss-docs-start card-variables
+$card-border-width: 2px !default;
+$card-border-radius: 0 !default;
+// scss-docs-end card-variables
