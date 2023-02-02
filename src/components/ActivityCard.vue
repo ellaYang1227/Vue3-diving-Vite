@@ -19,7 +19,7 @@ export default {
             <div class="img-frame mb-3">
                 <div class="outer-border"></div>
                 <div class="card custom-rectangle bg-primary">
-                    <img src="示意OK.jpg" class="card-img custom-rectangle img-cover" alt="..." />
+                    <img src="/示意OK.jpg" class="card-img custom-rectangle img-cover" alt="..." />
                     <div class="card-img-overlay">
                         <span class="fs-6 font-barlow badge rounded-pill bg-darkPrimary bg-opacity-75 text-body border border-lightPrimary border-2">5.0</span>
                     </div>
