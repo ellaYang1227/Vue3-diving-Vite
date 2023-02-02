@@ -1,7 +1,7 @@
 <script>
 import company from "../data/company.js";
 import { token, user } from "../data/auth.js";
-import { formatDate } from "../data/handle-format.-index.js";
+import dateFormat from "../data/dateFormat.js";
 import { apiGetMySignUp } from "../api/index.js";
 import UserMugShot from "./UserMugShot.vue";
 
@@ -11,7 +11,7 @@ export default {
             company,
             token,
             user,
-            formatDate,
+            dateFormat,
             mySignUp: [],
             hasHavbarBg: false
         };
@@ -109,7 +109,7 @@ export default {
                                                     <h2 class="h6 mb-0 text-primary text-truncate-row-2">
                                                         {{ item.title }}
                                                     </h2>
-                                                    <small class="font-barlow text-white">{{ formatDate(item.startDate) }} ~ {{ formatDate(item.endDate) }}</small>
+                                                    <small class="font-barlow text-white">{{ dateFormat(item.startDate) }} ~ {{ dateFormat(item.endDate) }}</small>
                                                 </div>
                                             </div>
                                         </router-link>

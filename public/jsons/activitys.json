@@ -12,19 +12,19 @@
         "cylinderTotal": "不限",
         "startDate": "2023-12-31",
         "endDate": "2024-01-02",
+        "isEnable": true,
         "isViolation": false,
-        "status": 0,
         "location": "台東．綠島",
         "maxApplicants": 10,
         "applicants": 9,
         "cost": 1000,
         "groupExpiryDate": "2023-12-02",
-        "groupStatus": 0,
         "group": {
             "name": "LULU",
             "img": "/ella.jpg",
             "score": 5
-        }
+        },
+        "updateDate": "2023-11-30T00:00:00+08:00"
     },
     {
         "id": "1",
@@ -39,19 +39,19 @@
         "cylinderTotal": "不限",
         "startDate": "2023-12-31",
         "endDate": "2024-01-02",
+        "isEnable": true,
         "isViolation": false,
-        "status": 0,
         "location": "台東．綠島",
         "maxApplicants": 20,
         "applicants": 20,
         "cost": 5000,
         "groupExpiryDate": "2023-12-02",
-        "groupStatus": 0,
         "group": {
             "name": "哇哇",
             "img": "/ella.jpg",
             "score": 4.5
-        }
+        },
+        "updateDate": "2023-11-30T00:00:00+08:00"
     },
     {
         "id": "2",
@@ -66,19 +66,19 @@
         "cylinderTotal": "20+",
         "startDate": "2023-08-02",
         "endDate": "2023-08-30",
+        "isEnable": true,
         "isViolation": false,
-        "status": 0,
         "location": "台東．蘭嶼",
         "maxApplicants": 8,
         "applicants": 5,
         "cost": 25000,
-        "groupExpiryDate": "2023-12-02",
-        "groupStatus": 0,
+        "groupExpiryDate": "2023-07-02",
         "group": {
             "name": "Wan",
             "img": "/ella.jpg",
             "score": 3.8
-        }
+        },
+        "updateDate": "2023-07-01T00:00:00+08:00"
     },
     {
         "id": "3",
@@ -93,19 +93,19 @@
         "cylinderTotal": "20+",
         "startDate": "2023-08-01",
         "endDate": "2023-08-03",
+        "isEnable": true,
         "isViolation": false,
-        "status": 0,
         "location": "離島．澎湖",
         "maxApplicants": 8,
         "applicants": 5,
         "cost": 25000,
         "groupExpiryDate": "2023-07-31",
-        "groupStatus": 0,
         "group": {
             "name": "Wan",
             "img": "/ella.jpg",
             "score": 3.8
-        }
+        },
+        "updateDate": "2023-07-01T00:00:00+08:00"
     },
     {
         "id": "4",
@@ -120,18 +120,18 @@
         "cylinderTotal": "20+",
         "startDate": "2022-12-30",
         "endDate": "2023-01-02",
+        "isEnable": true,
         "isViolation": false,
-        "status": 2,
         "location": "台東．綠島",
         "maxApplicants": 8,
         "applicants": 5,
         "cost": 25000,
         "groupExpiryDate": "2022-11-30",
-        "groupStatus": 0,
         "group": {
             "name": "Wan",
             "img": "/ella.jpg",
             "score": 3.8
-        }
+        },
+        "updateDate": "2022-11-15T00:00:00+08:00"
     }
 ]

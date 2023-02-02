@@ -36,17 +36,18 @@ export default {
         };
     },
     mounted() {
-        Object.keys(this.activityNavs).forEach(activityNav => this.getActivitys(activityNav));
+        this.getActivitys();
     },
     computed: {
+        ...mapState(activityStore, ["newActivitys", "hotActivitys"]),
         activityCards() {
             let cards = [];
             switch (this.activeActivityNav) {
                 case "hot":
-                    console.log("hot");
+                    cards = this.newActivitys;
                     break;
                 case "new":
-                    console.log("new");
+                    cards = this.hotActivitys;
                     break;
             }
 

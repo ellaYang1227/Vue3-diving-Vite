@@ -1,4 +1,4 @@
-export function FormatDate(date, contents = ["date"]) {
+export default function (date, contents = ["date"]) {
     date = new Date(date);
     let time = "";
     const y = date.getFullYear();
