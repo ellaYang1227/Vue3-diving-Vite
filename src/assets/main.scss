@@ -40,20 +40,6 @@ body {
     }
 }
 
-.dropdown-menu {
-    @include media-breakpoint-up(md) {
-        &:not([aria-labelledby="dropMySignUp"]) {
-            max-width: 15rem;
-        }
-    }
-}
-
-.dropdown-toggle {
-    &.dropdown-hide-arrow:after {
-        display: none;
-    }
-}
-
 // 邊框顏色同下拉下單選單
 .border-color-dropdown {
     border-color: $dropdown-border-color !important;
@@ -79,4 +65,30 @@ body {
 
 .border-style-dashed {
     border-style: dashed !important;
+}
+
+/*
+* ==========================================================================
+* 共用 (bootstrap 樣式)
+* ==========================================================================
+*/
+
+.dropdown-menu {
+    @include media-breakpoint-up(md) {
+        &:not([aria-labelledby="dropMySignUp"]) {
+            max-width: 15rem;
+        }
+    }
+}
+
+.dropdown-toggle {
+    &.dropdown-hide-arrow:after {
+        display: none;
+    }
+}
+
+.nav-link {
+    &.disabled {
+        font-weight: 500;
+    }
 }

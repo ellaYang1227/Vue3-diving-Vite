@@ -1,12 +1,15 @@
-import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 
-export const useCounterStore = defineStore("counter", () => {
-    const count = ref(0);
-    const doubleCount = computed(() => count.value * 2);
-    function increment() {
-        count.value++;
-    }
+import { bacsRequest } from "../api/base.js";
 
-    return { count, doubleCount, increment };
+export default defineStore("activityStore", {
+    state: () => ({}),
+    actions: {
+        getActivitys(filter) {
+            bacsRequest.get("/activitys.json").then(res => {
+                console.log(filter);
+                console.log(res);
+            });
+        }
+    }
 });

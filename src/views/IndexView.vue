@@ -1,19 +1,72 @@
 <script>
+import { mapState, mapActions } from "pinia";
+
 import ActivityCard from "../components/ActivityCard.vue";
+import divingIcon from "../assets/images/index/banner-icon/diving.svg";
+import peoplesIcon from "../assets/images/index/banner-icon/peoples.svg";
+import areaIcon from "../assets/images/index/banner-icon/area.svg";
+
+import activityStore from "../stores/activityStore.js";
 
 export default {
     data() {
-        return {};
+        return {
+            bannerIcons: [
+                {
+                    title: "揪團潛水",
+                    img: divingIcon,
+                    total: 1005
+                },
+                {
+                    title: "報名人數",
+                    img: peoplesIcon,
+                    total: 14186
+                },
+                {
+                    title: "潛水地區",
+                    img: areaIcon,
+                    total: 84
+                },
+            ],
+            activityNavs: {
+                hot: "熱門",
+                new: "最新",
+            },
+            activeActivityNav: "hot"
+        };
     },
-    mounted() {},
-    methods: {},
+    mounted() {
+        Object.keys(this.activityNavs).forEach(activityNav => this.getActivitys(activityNav));
+    },
+    computed: {
+        activityCards() {
+            let cards = [];
+            switch (this.activeActivityNav) {
+                case "hot":
+                    console.log("hot");
+                    break;
+                case "new":
+                    console.log("new");
+                    break;
+            }
+
+            return cards;
+        }
+    },
+    methods: {
+        ...mapActions(activityStore, ["getActivitys"]),
+        toggleActiveActivityNav(nav) {
+            this.activeActivityNav = nav;
+        }
+    },
     components: {
-        ActivityCard,
-    },
+        ActivityCard
+    }
 };
 </script>
 
 <template>
+    <!-- banner -->
     <div class="bg-img pb-5 py-lg-5">
         <div class="container text-center py-5">
             <h6 class="en-title text-uppercase fs-5 font-barlow mb-0">DIVING</h6>
@@ -26,25 +79,24 @@ export default {
         <div class="bg-lightPrimary bg-opacity-20 mt-3">
             <div class="container py-4">
                 <div class="row gx-0 gy-4 justify-content-center">
-                    <div class="col-7 col-md-4 d-flex justify-content-center align-items-center">
-                        <img src="../assets/images/index/banner-icon/diving.svg" class="banner-icon-size border border-style-dashed border-lightPrimary rounded-circle me-md-2" />
-                        <div class="text-center flex-grow-1 flex-md-grow-0"><span class="d-block text-primary fw-light font-barlow display-4 lh-1">1005</span>揪團潛水</div>
-                    </div>
-                    <div class="col-7 col-md-4 d-flex justify-content-center align-items-center">
-                        <img src="../assets/images/index/banner-icon/peoples.svg" class="banner-icon-size border border-style-dashed border-lightPrimary rounded-circle me-md-2" />
-                        <div class="text-center flex-grow-1 flex-md-grow-0"><span class="d-block text-primary fw-light font-barlow display-4 lh-1">14186</span>報名人數</div>
-                    </div>
-                    <div class="col-7 col-md-4 d-flex justify-content-center align-items-center">
-                        <img src="../assets/images/index/banner-icon/area.svg" class="banner-icon-size border border-style-dashed border-lightPrimary rounded-circle me-md-2" />
-                        <div class="text-center flex-grow-1 flex-md-grow-0"><span class="d-block text-primary fw-light font-barlow display-4 lh-1">84</span>潛水地區</div>
+                    <div class="col-7 col-md-4 d-flex justify-content-center align-items-center" v-for="bannerIcon in bannerIcons" :key="bannerIcon.title">
+                        <img :src="bannerIcon.img" class="banner-icon-size border border-style-dashed border-lightPrimary rounded-circle me-md-2" />
+                        <div class="text-center flex-grow-1 flex-md-grow-0">
+                            <span class="d-block text-primary fw-light font-barlow display-4 lh-1">{{ bannerIcon.total }}</span
+                            >{{ bannerIcon.title }}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <!-- 熱門 / 最新 活動 -->
     <div class="container py-5">
-        <div class="row row-cols-1 row-cols-md-3 g-4">
-            <ActivityCard />
+        <nav class="nav fs-5">
+            <a class="nav-link" :class="{ disabled: activeActivityNav === key, 'ps-0': !index }" aria-current="page" href="#" v-for="(activityNav, key, index) in activityNavs" :key="key" @click.prevent="toggleActiveActivityNav(key)">{{ activityNav }} </a>
+        </nav>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" v-if="activityCards.length">
+            <ActivityCard v-for="activityCard in activityCards" :key="activityCard.title" />
         </div>
     </div>
 </template>

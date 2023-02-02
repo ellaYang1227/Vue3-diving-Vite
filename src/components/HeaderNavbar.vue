@@ -1,19 +1,19 @@
 <script>
-import Company from "../data/company.js";
+import company from "../data/company.js";
 import { token, user } from "../data/auth.js";
-import { formatDate } from "../data/handle-format.js";
+import { formatDate } from "../data/handle-format.-index.js";
 import { apiGetMySignUp } from "../api/index.js";
 import UserMugShot from "./UserMugShot.vue";
 
 export default {
     data() {
         return {
-            Company,
+            company,
             token,
             user,
             formatDate,
             mySignUp: [],
-            hasHavbarBg: false,
+            hasHavbarBg: false
         };
     },
     mounted() {
@@ -28,17 +28,17 @@ export default {
             (async () => {
                 try {
                     const data = await apiGetMySignUp();
-                    // activeStatus: 0 未開始、1 進行中、2 已結束、3 系統中止
-                    this.mySignUp = data.filter((item) => item.activeStatus === 0 || item.activeStatus === 1);
+                    // status: 0 未開始、1 進行中、2 已結束、3 系統中止
+                    this.mySignUp = data.filter(item => item.status === 0 || item.status === 1);
                 } catch {
                     console.log("err getMySignUp api");
                 }
             })();
-        },
+        }
     },
     components: {
-        UserMugShot,
-    },
+        UserMugShot
+    }
 };
 </script>
 
@@ -46,7 +46,7 @@ export default {
     <nav class="fixed-top navbar navbar-expand-md navbar-dark p-0" :class="[hasHavbarBg ? 'bg-darkPrimary bg-opacity-90 shadow' : 'bg-transparent']">
         <div class="container">
             <router-link class="navbar-brand" to="/index">
-                <img src="../assets/images/氣瓶海人logo.svg" :alt="Company?.name" class="mb-md-2" />
+                <img src="../assets/images/氣瓶海人logo.svg" :alt="company?.name" class="mb-md-2" />
             </router-link>
             <router-link class="btn btn-primary btn-custom-rectangle ms-auto me-3 me-md-0 ms-md-2 order-md-last" to="#" role="button">我要揪團</router-link>
             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbarHeader" aria-controls="offcanvasNavbarHeader">
@@ -57,7 +57,7 @@ export default {
                     <ul class="navbar-nav ms-auto align-items-md-center">
                         <li class="nav-item dropdown order-md-last" v-if="user">
                             <a class="nav-link dropdown-toggle dropdown-hide-arrow d-flex align-items-center" href="#" id="dropUser" role="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
-                                <UserMugShot />
+                                <UserMugShot :is-show-name="false" />
                                 <h5 class="fs-5 ms-2 d-md-none mb-0 text-truncate text-primary">
                                     {{ user.name }}
                                 </h5>
@@ -102,20 +102,20 @@ export default {
                                     <template v-for="(item, index) in mySignUp" :key="item.id">
                                         <router-link to="#" class="list-group-item list-group-item-action bg-transparent px-0 py-3" v-if="3 > index">
                                             <div class="row gx-2 align-items-center">
-                                                <div class="col-4">
-                                                    <img :src="item.img" :alt="item.name" class="img-cover border rounded-3" />
+                                                <div class="col-4" v-if="item.imgs.length">
+                                                    <img :src="item.imgs[0]" :alt="item.title" class="img-cover border rounded-3" />
                                                 </div>
                                                 <div class="col">
                                                     <h2 class="h6 mb-0 text-primary text-truncate-row-2">
-                                                        {{ item.name }}
+                                                        {{ item.title }}
                                                     </h2>
-                                                    <small class="font-barlow text-white">{{ formatDate(item.activeStartDate) }} ~ {{ formatDate(item.activeEndData) }}</small>
+                                                    <small class="font-barlow text-white">{{ formatDate(item.startDate) }} ~ {{ formatDate(item.endDate) }}</small>
                                                 </div>
                                             </div>
                                         </router-link>
                                     </template>
                                 </div>
-                                <router-link class="py-2 d-block text-center text-decoration-none bg-lightPrimary bg-opacity-20 text-lightPrimary border-top border-color-dropdown" to="#">更多我的報名</router-link>
+                                <router-link class="py-2 d-block text-center text-decoration-none bg-lightPrimary bg-opacity-20 text-body border-top border-color-dropdown" to="#">更多我的報名</router-link>
                             </div>
                         </li>
                         <template v-if="!user">

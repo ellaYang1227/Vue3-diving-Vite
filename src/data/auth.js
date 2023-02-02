@@ -5,6 +5,6 @@ export const token = (() => {
 export const user = (() => {
     return {
         name: "ella",
-        img: "", ///ella.jpg
+        img: "" ///ella.jpg
     };
 })();
