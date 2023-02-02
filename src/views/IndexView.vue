@@ -26,11 +26,11 @@ export default {
                     title: "潛水地區",
                     img: areaIcon,
                     total: 84
-                },
+                }
             ],
             activityNavs: {
                 hot: "熱門",
-                new: "最新",
+                new: "最新"
             },
             activeActivityNav: "hot"
         };
