@@ -11,13 +11,7 @@ defineProps({
     img: {
         type: String,
         required: false,
-        default({ img }) {
-            if (!img) {
-                img = user?.img ? user.img : userDefaultImg;
-            }
-
-            return img;
-        }
+        default: user?.img
     },
     widthSize: {
         type: Number,
@@ -28,13 +22,18 @@ defineProps({
         type: Boolean,
         required: false,
         default: true
-    },
+    }
 });
 </script>
 
 <template>
     <div class="d-flex align-items-center">
-        <img :style="{ width: `${widthSize}px`, height: `${widthSize}px` }" :src="img" :alt="name" class="rounded-circle border border-lightPrimary bg-lightPrimary bg-opacity-10 rounded-circle flex-shrink-0 me-1" />
+        <img
+            :style="{ width: `${widthSize}px`, height: `${widthSize}px` }"
+            :src="img ? img : userDefaultImg"
+            :alt="name"
+            class="rounded-circle border border-lightPrimary bg-lightPrimary bg-opacity-10 rounded-circle flex-shrink-0 me-1"
+        />
         <span v-if="name && isShowName" class="text-truncate">{{ name }}</span>
     </div>
 </template>
