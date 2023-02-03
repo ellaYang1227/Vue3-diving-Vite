@@ -1,41 +1,102 @@
 [
     {
         "id": "0",
-        "name": "綠島海底一起跨年",
-        "img": "/示意OK.jpg",
-        "activeStartDate": "2023-12-31T01:01:01+08:00",
-        "activeEndData": "2024-01-02T00:00:00+08:00",
-        "activeStatus": 0
+        "title": "綠島海底一起跨年",
+        "imgs": [
+            "示意OK.jpg"
+        ],
+        "activityId": "0",
+        "startDate": "2023-12-31",
+        "endDate": "2024-01-02",
+        "isEnable": true,
+        "isViolation": false,
+        "status": 0,
+        "groupExpiryDate": "2023-12-02",
+        "groupStatus": 0,
+        "group": {
+            "name": "LULU",
+            "img": "/ella.jpg",
+            "score": 5
+        }
     },
     {
         "id": "1",
-        "name": "綠島海底一起跨年",
-        "img": "/示意OK.jpg",
-        "activeStartDate": "2023-12-31T01:01:01+08:00",
-        "activeEndData": "2024-01-02T00:00:00+08:00",
-        "activeStatus": 0
+        "title": "綠島海底一起跨年",
+        "imgs": [
+            "示意OK.jpg"
+        ],
+        "activityId": "1",
+        "startDate": "2023-12-31",
+        "endDate": "2024-01-02",
+        "isEnable": true,
+        "isViolation": false,
+        "status": 0,
+        "groupExpiryDate": "2023-12-02",
+        "groupStatus": 0,
+        "group": {
+            "name": "哇哇",
+            "img": "/ella.jpg",
+            "score": 4.5
+        }
     },
     {
         "id": "2",
-        "name": "世界級潛點！沈睡在海底的巨人，蘭嶼",
-        "img": "/示意OK.jpg",
-        "activeStartDate": "2023-08-02T00:00:00+08:00",
-        "activeEndData": "2023-08-30T00:00:00+08:00",
-        "activeStatus": 0
+        "title": "世界級潛點！沈睡在海底的巨人，蘭嶼",
+        "imgs": [
+            "示意OK.jpg"
+        ],
+        "activityId": "2",
+        "startDate": "2023-08-02",
+        "endDate": "2023-08-30",
+        "isEnable": true,
+        "isViolation": false,
+        "status": 0,
+        "groupExpiryDate": "2023-12-02",
+        "groupStatus": 0,
+        "group": {
+            "name": "Wan",
+            "img": "/ella.jpg",
+            "score": 3.8
+        }
     },
     {
         "id": "3",
-        "name": "一起出發吧！澎湖海底薰衣草森林跳島",
-        "img": "/示意OK.jpg",
-        "activeStartDate": "2023-08-01T00:00:00+08:00",
-        "activeEndData": "2023-08-03T00:00:00+08:00",
-        "activeStatus": 0
+        "title": "一起出發吧！澎湖海底薰衣草森林跳島",
+        "imgs": [
+            "示意OK.jpg"
+        ],
+        "activityId": "3",
+        "startDate": "2023-08-01",
+        "endDate": "2023-08-03",
+        "isEnable": true,
+        "isViolation": false,
+        "status": 0,
+        "groupExpiryDate": "2023-12-02",
+        "groupStatus": 0,
+        "group": {
+            "name": "Wan",
+            "img": "/ella.jpg",
+            "score": 3.8
+        }
     },
     {
         "id": "4",
-        "name": "綠島海底一起跨年2",
-        "img": "src/assets/images/示意OK.jpg",
-        "activeStartDate": "2022-12-30T00:00:00+08:00",
-        "activeStatus": 2
+        "title": "綠島海底一起跨年2",
+        "imgs": [
+            "示意OK.jpg"
+        ],
+        "activityId": "4",
+        "startDate": "2022-12-30",
+        "endDate": "2023-01-02",
+        "isEnable": true,
+        "isViolation": false,
+        "status": 2,
+        "groupExpiryDate": "2022-11-30",
+        "groupStatus": 0,
+        "group": {
+            "name": "Wan",
+            "img": "/ella.jpg",
+            "score": 3.8
+        }
     }
 ]
