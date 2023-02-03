@@ -1,15 +1,32 @@
+<script setup>
+import dateFormat from "../handle-formats/dateFormat.js";
+import decimalFormat from "../handle-formats/decimalFormat.js";
+import propsValidator from "../data/propsValidator.js";
+</script>
+
 <script>
 import UserMugShot from "./UserMugShot.vue";
 
 export default {
+    props: {
+        activity: {
+            type: Object,
+            required: true,
+            validator(value) {
+                const verifyKeys = ["id", "title", "imgs", "location", "startDate", "endDate", "isNitrox", "cylinderTotal", "user"];
+
+                return propsValidator(value, verifyKeys);
+            }
+        }
+    },
+    components: {
+        UserMugShot
+    },
     data() {
         return {};
     },
     mounted() {},
-    methods: {},
-    components: {
-        UserMugShot
-    }
+    methods: {}
 };
 </script>
 
@@ -19,19 +36,28 @@ export default {
             <div class="img-frame mb-3">
                 <div class="outer-border"></div>
                 <div class="card custom-rectangle bg-primary">
-                    <img src="/示意OK.jpg" class="card-img custom-rectangle img-cover" alt="..." />
+                    <img :src="activity.imgs[0]" class="card-img custom-rectangle img-cover" :alt="`[${activity.location}]${activity.title}`" />
                     <div class="card-img-overlay">
-                        <span class="fs-6 font-barlow badge rounded-pill bg-darkPrimary bg-opacity-75 text-body border border-lightPrimary border-2">5.0</span>
+                        <span
+                            class="fs-6 font-barlow badge rounded-pill bg-darkPrimary bg-opacity-75 text-body border border-lightPrimary border-2"
+                            >{{ decimalFormat(activity.user?.score, 1) }}</span
+                        >
                     </div>
                 </div>
             </div>
-            <h2 class="h5 mb-1 text-primary">初四開始，一起來宿霧陪鯨鯊玩水吧！</h2>
+            <h2 class="h5 mb-1 text-primary text-truncate-row-2">{{ activity.title }}</h2>
             <ul class="list-unstyled text-body lh-sm">
-                <li>菲律賓．宿霧</li>
-                <li class="font-barlow">2023/01/25 ~ 2023/01/29</li>
+                <li>{{ activity.location }}</li>
+                <li class="font-barlow">{{ dateFormat(activity.startDate) }} ~ {{ dateFormat(activity.endDate) }}</li>
                 <li class="row align-items-center fw-bold pt-3">
-                    <div class="col text-truncate"><UserMugShot :width-size="25" :name="'LULULULULULULULULULULULULULULULULULULULULULULULULULULULULULU'" :img="''" /></div>
-                    <div class="col-auto font-barlow">AOW</div>
+                    <div class="col text-truncate">
+                        <UserMugShot :width-size="25" :name="activity.user?.name" :img="activity.user?.img" />
+                    </div>
+                    <div class="col-auto font-barlow">
+                        {{ activity.grade }}
+                        <template v-if="activity.isNitrox">高氧</template>
+                        <template v-if="activity.cylinderTotal !== '不限'">{{ activity.cylinderTotal }}</template>
+                    </div>
                 </li>
             </ul>
         </div>
@@ -61,6 +87,10 @@ $img-frame-card-Spacing: 1rem;
 
         .card-img {
             height: 200px;
+
+            @media (min-width: 576px) and (max-width: 767px) {
+                height: 150px;
+            }
 
             @media (min-width: 1200px) {
                 height: 250px;

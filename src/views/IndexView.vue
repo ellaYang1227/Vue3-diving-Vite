@@ -1,11 +1,13 @@
 <script>
 import { mapState, mapActions } from "pinia";
 
-import ActivityCard from "../components/ActivityCard.vue";
 import divingIcon from "../assets/images/index/banner-icon/diving.svg";
 import peoplesIcon from "../assets/images/index/banner-icon/peoples.svg";
 import areaIcon from "../assets/images/index/banner-icon/area.svg";
+import licenseImg from "../assets/images/index/features/license.svg";
+import scoreImg from "../assets/images/index/features/score.svg";
 
+import ActivityCard from "../components/ActivityCard.vue";
 import activityStore from "../stores/activityStore.js";
 
 export default {
@@ -32,7 +34,17 @@ export default {
                 hot: "熱門",
                 new: "最新"
             },
-            activeActivityNav: "hot"
+            activeActivityNav: "hot",
+            features: [
+                {
+                    title: "證照門檻\n找伴揪安心",
+                    img: licenseImg
+                },
+                {
+                    title: "評分機制\n加團不踩雷",
+                    img: scoreImg
+                }
+            ]
         };
     },
     mounted() {
@@ -43,10 +55,10 @@ export default {
         activityCards() {
             let cards = [];
             switch (this.activeActivityNav) {
-                case "hot":
+                case "new":
                     cards = this.newActivitys;
                     break;
-                case "new":
+                case "hot":
                     cards = this.hotActivitys;
                     break;
             }
@@ -80,7 +92,11 @@ export default {
         <div class="bg-lightPrimary bg-opacity-20 mt-3">
             <div class="container py-4">
                 <div class="row gx-0 gy-4 justify-content-center">
-                    <div class="col-7 col-md-4 d-flex justify-content-center align-items-center" v-for="bannerIcon in bannerIcons" :key="bannerIcon.title">
+                    <div
+                        class="col-7 col-md-4 d-flex justify-content-center align-items-center"
+                        v-for="bannerIcon in bannerIcons"
+                        :key="bannerIcon.title"
+                    >
                         <img :src="bannerIcon.img" class="banner-icon-size border border-style-dashed border-lightPrimary rounded-circle me-md-2" />
                         <div class="text-center flex-grow-1 flex-md-grow-0">
                             <span class="d-block text-primary fw-light font-barlow display-4 lh-1">{{ bannerIcon.total }}</span
@@ -91,13 +107,40 @@ export default {
             </div>
         </div>
     </div>
-    <!-- 熱門 / 最新 活動 -->
-    <div class="container py-5">
+    <div class="container">
+        <!-- 熱門 / 最新 活動 -->
         <nav class="nav fs-5">
-            <a class="nav-link" :class="{ disabled: activeActivityNav === key, 'ps-0': !index }" aria-current="page" href="#" v-for="(activityNav, key, index) in activityNavs" :key="key" @click.prevent="toggleActiveActivityNav(key)">{{ activityNav }} </a>
+            <a
+                class="nav-link"
+                :class="{ disabled: activeActivityNav === key, 'ps-0': !index }"
+                aria-current="page"
+                href="#"
+                v-for="(activityNav, key, index) in activityNavs"
+                :key="key"
+                @click.prevent="toggleActiveActivityNav(key)"
+                >{{ activityNav }}
+            </a>
         </nav>
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" v-if="activityCards.length">
-            <ActivityCard v-for="activityCard in activityCards" :key="activityCard.title" />
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4" v-if="activityCards.length">
+            <ActivityCard
+                v-for="(activityCard, index) in activityCards"
+                :key="activityCard.title"
+                :activity="activityCard"
+                :class="{ 'd-block d-sm-none d-lg-block': index >= 2 }"
+            />
+        </div>
+        <!-- 特點 -->
+        <div class="row gy-4 justify-content-center py-4 py-md-5">
+            <div class="col-9 col-md col-lg-5" v-for="feature in features" :key="feature.title">
+                <div class="row g-0">
+                    <div class="col-5">
+                        <img :src="feature.img" :alt="feature.title" class="img-fluid" />
+                    </div>
+                    <h5 class="col fw-bold text-warning fs-1 mb-0 word-break-keep-all lh-sm align-self-center mt-3 mt-xl-5">
+                        {{ feature.title }}
+                    </h5>
+                </div>
+            </div>
         </div>
     </div>
 </template>

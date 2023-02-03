@@ -11,15 +11,15 @@
         "isNitrox": false,
         "cylinderTotal": "不限",
         "startDate": "2023-12-31",
-        "endDate": "2024-01-02",
+        "endDate": "2024-1-2",
         "isEnable": true,
         "isViolation": false,
         "location": "台東．綠島",
         "maxApplicants": 10,
         "applicants": 9,
         "cost": 1000,
-        "groupExpiryDate": "2023-12-02",
-        "group": {
+        "groupExpiryDate": "2023-12-2",
+        "user": {
             "name": "LULU",
             "img": "/ella.jpg",
             "score": 5
@@ -38,15 +38,15 @@
         "isNitrox": false,
         "cylinderTotal": "不限",
         "startDate": "2023-12-31",
-        "endDate": "2024-01-02",
+        "endDate": "2024-1-2",
         "isEnable": true,
         "isViolation": false,
         "location": "台東．綠島",
         "maxApplicants": 20,
         "applicants": 20,
         "cost": 5000,
-        "groupExpiryDate": "2023-12-02",
-        "group": {
+        "groupExpiryDate": "2023-12-2",
+        "user": {
             "name": "哇哇",
             "img": "/ella.jpg",
             "score": 4.5
@@ -64,21 +64,21 @@
         "grade": "AOW",
         "isNitrox": true,
         "cylinderTotal": "20+",
-        "startDate": "2023-08-02",
-        "endDate": "2023-08-30",
+        "startDate": "2023-8-2",
+        "endDate": "2023-8-30",
         "isEnable": true,
         "isViolation": false,
         "location": "台東．蘭嶼",
         "maxApplicants": 8,
         "applicants": 5,
         "cost": 25000,
-        "groupExpiryDate": "2023-07-02",
-        "group": {
+        "groupExpiryDate": "2023-7-2",
+        "user": {
             "name": "Wan",
             "img": "/ella.jpg",
             "score": 3.8
         },
-        "updateDate": "2023-07-01T00:00:00+08:00"
+        "updateDate": "2023-7-1T00:00:00+08:00"
     },
     {
         "id": "3",
@@ -99,13 +99,13 @@
         "maxApplicants": 8,
         "applicants": 5,
         "cost": 25000,
-        "groupExpiryDate": "2023-07-31",
-        "group": {
+        "groupExpiryDate": "2023-7-31",
+        "user": {
             "name": "Wan",
             "img": "/ella.jpg",
             "score": 3.8
         },
-        "updateDate": "2023-07-01T00:00:00+08:00"
+        "updateDate": "2023-7-1T00:00:00+08:00"
     },
     {
         "id": "4",
@@ -119,7 +119,7 @@
         "isNitrox": false,
         "cylinderTotal": "20+",
         "startDate": "2022-12-30",
-        "endDate": "2023-01-02",
+        "endDate": "2023-1-2",
         "isEnable": true,
         "isViolation": false,
         "location": "台東．綠島",
@@ -127,7 +127,7 @@
         "applicants": 5,
         "cost": 25000,
         "groupExpiryDate": "2022-11-30",
-        "group": {
+        "user": {
             "name": "Wan",
             "img": "/ella.jpg",
             "score": 3.8

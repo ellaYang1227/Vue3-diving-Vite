@@ -1,43 +1,37 @@
+<script setup>
+import { user } from "../data/auth.js";
+import dateFormat from "../handle-formats/dateFormat.js";
+
+const VITE_COMPANY_NAME = import.meta.env.VITE_COMPANY_NAME;
+</script>
+
 <script>
-import company from "../data/company.js";
-import { token, user } from "../data/auth.js";
-import dateFormat from "../data/dateFormat.js";
-import { apiGetMySignUp } from "../api/index.js";
+import { mapState, mapActions } from "pinia";
+
 import UserMugShot from "./UserMugShot.vue";
+import memberStore from "../stores/memberStore.js";
 
 export default {
     data() {
         return {
-            company,
-            token,
-            user,
-            dateFormat,
-            mySignUp: [],
             hasHavbarBg: false
         };
     },
-    mounted() {
-        this.getMySignUp();
-        window.addEventListener("scroll", this.scrollEvent);
-    },
-    methods: {
-        scrollEvent() {
-            this.hasHavbarBg = window.scrollY ? true : false;
-        },
-        getMySignUp() {
-            (async () => {
-                try {
-                    const data = await apiGetMySignUp();
-                    // status: 0 未開始、1 進行中、2 已結束、3 系統中止
-                    this.mySignUp = data.filter(item => item.status === 0 || item.status === 1);
-                } catch {
-                    console.log("err getMySignUp api");
-                }
-            })();
-        }
-    },
     components: {
         UserMugShot
+    },
+    mounted() {
+        this.getMySignUp(3);
+        window.addEventListener("scroll", this.scrollEvent);
+    },
+    computed: {
+        ...mapState(memberStore, ["mySignUp"])
+    },
+    methods: {
+        ...mapActions(memberStore, ["getMySignUp"]),
+        scrollEvent() {
+            this.hasHavbarBg = window.scrollY ? true : false;
+        }
     }
 };
 </script>
@@ -46,22 +40,43 @@ export default {
     <nav class="fixed-top navbar navbar-expand-md navbar-dark p-0" :class="[hasHavbarBg ? 'bg-darkPrimary bg-opacity-90 shadow' : 'bg-transparent']">
         <div class="container">
             <router-link class="navbar-brand" to="/index">
-                <img src="../assets/images/氣瓶海人logo.svg" :alt="company?.name" class="mb-md-2" />
+                <img src="../assets/images/氣瓶海人logo.svg" :alt="VITE_COMPANY_NAME" class="mb-md-2" />
             </router-link>
-            <router-link class="btn btn-primary btn-custom-rectangle ms-auto me-3 me-md-0 ms-md-2 order-md-last" to="#" role="button">我要揪團</router-link>
-            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbarHeader" aria-controls="offcanvasNavbarHeader">
+            <router-link class="btn btn-primary btn-custom-rectangle ms-auto me-3 me-md-0 ms-md-2 order-md-last" to="#" role="button"
+                >我要揪團</router-link
+            >
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasNavbarHeader"
+                aria-controls="offcanvasNavbarHeader"
+            >
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="offcanvas offcanvas-start border-0" tabindex="-1" id="offcanvasNavbarHeader" aria-labelledby="offcanvasNavbarHeaderLabel">
                 <div class="offcanvas-body px-0 pt-0">
                     <ul class="navbar-nav ms-auto align-items-md-center">
                         <li class="nav-item dropdown order-md-last" v-if="user">
-                            <a class="nav-link dropdown-toggle dropdown-hide-arrow d-flex align-items-center" href="#" id="dropUser" role="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+                            <a
+                                class="nav-link dropdown-toggle dropdown-hide-arrow d-flex align-items-center"
+                                href="#"
+                                id="dropUser"
+                                role="button"
+                                data-bs-toggle="dropdown"
+                                data-bs-display="static"
+                                aria-expanded="false"
+                            >
                                 <UserMugShot :is-show-name="false" />
                                 <h5 class="fs-5 ms-2 d-md-none mb-0 text-truncate text-primary">
                                     {{ user.name }}
                                 </h5>
-                                <button type="button" class="btn-close btn-close-white d-md-none ms-auto flex-shrink-0" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                                <button
+                                    type="button"
+                                    class="btn-close btn-close-white d-md-none ms-auto flex-shrink-0"
+                                    data-bs-dismiss="offcanvas"
+                                    aria-label="Close"
+                                ></button>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-md-end" aria-labelledby="dropUser">
                                 <li>
@@ -96,7 +111,18 @@ export default {
                             <router-link class="nav-link" to="#">找揪團</router-link>
                         </li>
                         <li class="nav-item dropdown d-none d-md-block" v-if="user">
-                            <a class="nav-link" :class="{ 'dropdown-toggle dropdown-hide-arrow': mySignUp.length }" href="#" id="dropMySignUp" role="button" :data-bs-toggle="mySignUp.length ? 'dropdown' : ''" data-bs-display="static" aria-expanded="false"> 我的報名 </a>
+                            <a
+                                class="nav-link"
+                                :class="{ 'dropdown-toggle dropdown-hide-arrow': mySignUp.length }"
+                                href="#"
+                                id="dropMySignUp"
+                                role="button"
+                                :data-bs-toggle="mySignUp.length ? 'dropdown' : ''"
+                                data-bs-display="static"
+                                aria-expanded="false"
+                            >
+                                我的報名
+                            </a>
                             <div class="dropdown-menu dropdown-menu-md-end" aria-labelledby="dropMySignUp">
                                 <div class="list-group list-group-flush mx-3">
                                     <template v-for="(item, index) in mySignUp" :key="item.id">
@@ -109,13 +135,19 @@ export default {
                                                     <h2 class="h6 mb-0 text-primary text-truncate-row-2">
                                                         {{ item.title }}
                                                     </h2>
-                                                    <small class="font-barlow text-white">{{ dateFormat(item.startDate) }} ~ {{ dateFormat(item.endDate) }}</small>
+                                                    <small class="font-barlow text-white"
+                                                        >{{ dateFormat(item.startDate) }} ~ {{ dateFormat(item.endDate) }}</small
+                                                    >
                                                 </div>
                                             </div>
                                         </router-link>
                                     </template>
                                 </div>
-                                <router-link class="py-2 d-block text-center text-decoration-none bg-lightPrimary bg-opacity-20 text-body border-top border-color-dropdown" to="#">更多我的報名</router-link>
+                                <router-link
+                                    class="py-2 d-block text-center text-decoration-none bg-lightPrimary bg-opacity-20 text-body border-top border-color-dropdown"
+                                    to="#"
+                                    >更多我的報名</router-link
+                                >
                             </div>
                         </li>
                         <template v-if="!user">

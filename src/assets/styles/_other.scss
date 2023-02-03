@@ -14,3 +14,13 @@
         }
     }
 }
+
+// 強制段行
+$wordBreaks: "break-all", "normal", "keep-all";
+.word-break- {
+    @each $wordBreak in $wordBreaks {
+        &#{$wordBreak} {
+            word-break: #{$wordBreak + " !important"};
+        }
+    }
+}
