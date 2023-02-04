@@ -1,0 +1,56 @@
+[
+    {
+        "id": "01",
+        "name": "台東．綠島",
+        "img": "locations/台東綠島.jpg",
+        "isIndexAD": true
+    },
+    {
+        "id": "02",
+        "name": "印尼．四王群島",
+        "img": "locations/印尼四王群島.jpg",
+        "isIndexAD": true
+    },
+    {
+        "id": "03",
+        "name": "菲律賓．宿霧",
+        "img": "locations/菲律賓宿霧.jpg",
+        "isIndexAD": true
+    },
+    {
+        "id": "04",
+        "name": "澎湖．南方四島",
+        "img": "locations/澎湖南方四島.jpg",
+        "isIndexAD": true
+    },
+    {
+        "id": "05",
+        "name": "台東．蘭嶼",
+        "img": "locations/台東蘭嶼.jpg",
+        "isIndexAD": true
+    },
+    {
+        "id": "06",
+        "name": "屏東．小琉球",
+        "img": "locations/屏東小琉球.jpg",
+        "isIndexAD": true
+    },
+    {
+        "id": "07",
+        "name": "屏東．墾丁",
+        "img": "locations/屏東墾丁.jpg",
+        "isIndexAD": true
+    },
+    {
+        "id": "08",
+        "name": "菲律賓．帛琉",
+        "img": "locations/菲律賓帛琉.jpg",
+        "isIndexAD": true
+    },
+    {
+        "id": "09",
+        "name": "新北．東北角",
+        "img": "locations/新北東北角.jpg",
+        "isIndexAD": true
+    }
+]

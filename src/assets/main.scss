@@ -48,6 +48,7 @@ body {
 // 圖片依容器大小 自適應圖片尺寸
 .img-cover {
     object-fit: cover;
+    object-position: 50% 50%;
     width: 100%;
 }
 

@@ -1,6 +1,7 @@
 <script setup>
 import { user } from "../data/auth.js";
 import dateFormat from "../handle-formats/dateFormat.js";
+import { logo } from "../data/imagePath.js";
 
 const VITE_COMPANY_NAME = import.meta.env.VITE_COMPANY_NAME;
 </script>
@@ -9,7 +10,7 @@ const VITE_COMPANY_NAME = import.meta.env.VITE_COMPANY_NAME;
 import { mapState, mapActions } from "pinia";
 
 import UserMugShot from "./UserMugShot.vue";
-import memberStore from "../stores/memberStore.js";
+import memberStore from "../stores/MemberStore.js";
 
 export default {
     data() {
@@ -40,7 +41,7 @@ export default {
     <nav class="fixed-top navbar navbar-expand-md navbar-dark p-0" :class="[hasHavbarBg ? 'bg-darkPrimary bg-opacity-90 shadow' : 'bg-transparent']">
         <div class="container">
             <router-link class="navbar-brand" to="/index">
-                <img src="../assets/images/氣瓶海人logo.svg" :alt="VITE_COMPANY_NAME" class="mb-md-2" />
+                <img :src="logo" :alt="VITE_COMPANY_NAME" class="mb-md-2" />
             </router-link>
             <router-link class="btn btn-primary btn-custom-rectangle ms-auto me-3 me-md-0 ms-md-2 order-md-last" to="#" role="button"
                 >我要揪團</router-link
@@ -67,7 +68,7 @@ export default {
                                 data-bs-display="static"
                                 aria-expanded="false"
                             >
-                                <UserMugShot :is-show-name="false" />
+                                <UserMugShot :is-show-name="false" :name="user.name" :img="user.img" />
                                 <h5 class="fs-5 ms-2 d-md-none mb-0 text-truncate text-primary">
                                     {{ user.name }}
                                 </h5>

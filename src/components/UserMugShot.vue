@@ -1,17 +1,14 @@
 <script setup>
-import { user } from "../data/auth.js";
-import userDefaultImg from "../assets/images/user-default.svg";
+import { userDefaultImg } from "../data/imagePath.js";
 
 defineProps({
     name: {
         type: String,
-        required: false,
-        default: user?.name
+        required: false
     },
     img: {
         type: String,
-        required: false,
-        default: user?.img
+        required: false
     },
     widthSize: {
         type: Number,

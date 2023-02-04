@@ -53,11 +53,11 @@ export default {
                     <div class="col text-truncate">
                         <UserMugShot :width-size="25" :name="activity.user?.name" :img="activity.user?.img" />
                     </div>
-                    <div class="col-auto font-barlow">
-                        {{ activity.grade }}
-                        <template v-if="activity.isNitrox">高氧</template>
-                        <template v-if="activity.cylinderTotal !== '不限'">{{ activity.cylinderTotal }}</template>
-                    </div>
+                    <ul class="col-auto font-barlow list-inline">
+                        <li class="list-inline-item">{{ activity.grade }}</li>
+                        <li class="list-inline-item" v-if="activity.isNitrox">高氧</li>
+                        <li class="list-inline-item" v-if="activity.cylinderTotal">{{ activity.cylinderTotal }}</li>
+                    </ul>
                 </li>
             </ul>
         </div>

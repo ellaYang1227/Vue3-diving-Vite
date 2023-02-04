@@ -1,12 +1,7 @@
 <script>
 import { mapState, mapActions } from "pinia";
 
-import divingIcon from "../assets/images/index/banner-icon/diving.svg";
-import peoplesIcon from "../assets/images/index/banner-icon/peoples.svg";
-import areaIcon from "../assets/images/index/banner-icon/area.svg";
-import licenseImg from "../assets/images/index/features/license.svg";
-import scoreImg from "../assets/images/index/features/score.svg";
-
+import { divingIcon, peoplesIcon, areaIcon, licenseImg, scoreImg } from "../data/imagePath.js";
 import ActivityCard from "../components/ActivityCard.vue";
 import activityStore from "../stores/activityStore.js";
 
@@ -49,9 +44,10 @@ export default {
     },
     mounted() {
         this.getActivitys();
+        this.getLocations();
     },
     computed: {
-        ...mapState(activityStore, ["newActivitys", "hotActivitys"]),
+        ...mapState(activityStore, ["newActivitys", "hotActivitys", "adLocations"]),
         activityCards() {
             let cards = [];
             switch (this.activeActivityNav) {
@@ -67,7 +63,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions(activityStore, ["getActivitys"]),
+        ...mapActions(activityStore, ["getActivitys", "getLocations"]),
         toggleActiveActivityNav(nav) {
             this.activeActivityNav = nav;
         }
@@ -143,10 +139,34 @@ export default {
             </div>
         </div>
     </div>
+    <!-- 地點 -->
+    <div class="bg-lightPrimary bg-opacity-20 my-3 py-3">
+        <div class="container-fluid waterfalls-flow-imgs">
+            <div
+                class="waterfalls-flow-item position-relative"
+                v-for="(adLocation, index) in adLocations"
+                :key="adLocation.id"
+                :class="{ 'd-none d-md-block d-xl-none': index === 8 }"
+            >
+                <router-link to="#">
+                    <div class="waterfalls-flow-item-img-box">
+                        <img :src="adLocation.img" :alt="adLocation.name" class="img-cover" />
+                    </div>
+                    <h2
+                        class="position-absolute bottom-0 start-0 m-2 m-md-3 py-1 px-2 border border-lightPrimary bg-lightPrimary bg-opacity-20 text-body fs-5 text-truncate-row-2"
+                    >
+                        {{ adLocation.name }} {{ index }}
+                    </h2>
+                </router-link>
+            </div>
+        </div>
+    </div>
 </template>
 
 <style lang="scss">
 @import "../assets/styles/bootstrap-custom-variables";
+$waterfalls-flow-item-gap: $spacer;
+
 .bg-img {
     background: url("../assets/images/index/banner-people.png") center center no-repeat;
     background-size: contain;
@@ -191,6 +211,44 @@ export default {
     .banner-icon-size {
         width: 85px;
         height: 85px;
+    }
+}
+
+// 瀑布流圖片
+.waterfalls-flow-imgs {
+    column-gap: $waterfalls-flow-item-gap;
+    column-count: 2;
+
+    @media (min-width: 576px) and (max-width: 767px) {
+        column-count: 2;
+    }
+
+    @media (min-width: 768px) and (max-width: 1199px) {
+        column-count: 3;
+    }
+
+    @media (min-width: 1200px) {
+        column-count: 4;
+    }
+
+    .waterfalls-flow-item {
+        margin-bottom: $waterfalls-flow-item-gap;
+
+        .waterfalls-flow-item-img-box {
+            width: 100%;
+            overflow: hidden;
+
+            img {
+                filter: opacity(0.75);
+                transition: all 0.5s ease-in-out;
+
+                &:hover {
+                    //opacity: 1;
+                    filter: opacity(1);
+                    transform: scale(1.2);
+                }
+            }
+        }
     }
 }
 </style>

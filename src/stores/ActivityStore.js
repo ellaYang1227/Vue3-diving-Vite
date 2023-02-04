@@ -6,7 +6,8 @@ import statusFormat from "../handle-formats/statusFormat.js";
 export default defineStore("activityStore", {
     state: () => ({
         statusFormat,
-        activitys: []
+        activitys: [],
+        locations: []
     }),
     getters: {
         // 揪團進行中
@@ -18,6 +19,11 @@ export default defineStore("activityStore", {
         hotActivitys: ({ activitys }) => {
             const filter = activitys.filter(activity => activity.activityStatus !== "已結束");
             return filter.sort(() => (Math.random() > 0.5 ? -1 : 1)).slice(0, 3);
+        },
+        // 亂數處理
+        adLocations: ({ locations }) => {
+            const filter = locations.filter(location => location.isIndexAD);
+            return filter.sort(() => (Math.random() > 0.5 ? -1 : 1)).slice(0, 8);
         }
     },
     actions: {
@@ -33,6 +39,11 @@ export default defineStore("activityStore", {
                             ...this.statusFormat(item)
                         };
                     });
+            });
+        },
+        getLocations() {
+            bacsRequest.get("/locations.json").then(res => {
+                this.locations = res;
             });
         }
     }
