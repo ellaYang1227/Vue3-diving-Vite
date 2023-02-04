@@ -52,5 +52,23 @@
         "name": "新北．東北角",
         "img": "locations/新北東北角.jpg",
         "isIndexAD": true
+    },
+    {
+        "id": "10",
+        "name": "屏東．墾丁",
+        "img": "locations/屏東墾丁.jpg",
+        "isIndexAD": true
+    },
+    {
+        "id": "11",
+        "name": "台東．蘭嶼",
+        "img": "locations/台東蘭嶼.jpg",
+        "isIndexAD": true
+    },
+    {
+        "id": "12",
+        "name": "台東．綠島",
+        "img": "locations/台東綠島.jpg",
+        "isIndexAD": true
     }
 ]

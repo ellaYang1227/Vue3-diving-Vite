@@ -23,7 +23,7 @@ export default defineStore("activityStore", {
         // 亂數處理
         adLocations: ({ locations }) => {
             const filter = locations.filter(location => location.isIndexAD);
-            return filter.sort(() => (Math.random() > 0.5 ? -1 : 1)).slice(0, 8);
+            return filter.sort(() => (Math.random() > 0.5 ? -1 : 1)).slice(0, 12);
         }
     },
     actions: {

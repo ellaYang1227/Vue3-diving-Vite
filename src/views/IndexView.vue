@@ -140,7 +140,7 @@ export default {
         </div>
     </div>
     <!-- 地點 -->
-    <div class="bg-lightPrimary bg-opacity-20 my-3 py-3">
+    <div class="bg-lightPrimary bg-opacity-20 my-3 py-3 d-none">
         <div class="container-fluid waterfalls-flow-imgs">
             <div
                 class="waterfalls-flow-item position-relative"
@@ -159,6 +159,26 @@ export default {
                     </h2>
                 </router-link>
             </div>
+        </div>
+    </div>
+    <div class="bg-lightPrimary bg-opacity-20 my-3 py-3">
+        <div class="container-fluid waterfalls-flow-imgs">
+            <router-link
+                to="#"
+                class="position-relative"
+                v-for="(adLocation, index) in adLocations"
+                :key="adLocation.id"
+                :class="`waterfalls-flow-item-${index + 1}`"
+            >
+                <div class="waterfalls-flow-item-img-box">
+                    <img :src="adLocation.img" :alt="adLocation.name" class="img-cover" />
+                </div>
+                <h2
+                    class="position-absolute bottom-0 start-0 m-2 m-md-3 py-1 px-2 border border-lightPrimary bg-lightPrimary bg-opacity-20 text-body fs-5 text-truncate-row-2"
+                >
+                    {{ adLocation.name }}
+                </h2>
+            </router-link>
         </div>
     </div>
 </template>
@@ -215,38 +235,213 @@ $waterfalls-flow-item-gap: $spacer;
 }
 
 // 瀑布流圖片
-.waterfalls-flow-imgs {
-    column-gap: $waterfalls-flow-item-gap;
-    column-count: 2;
+// .waterfalls-flow-imgs {
+//     column-gap: $waterfalls-flow-item-gap;
+//     column-count: 2;
 
-    @media (min-width: 576px) and (max-width: 767px) {
-        column-count: 2;
-    }
+//     @media (min-width: 576px) and (max-width: 767px) {
+//         column-count: 2;
+//     }
+
+//     @media (min-width: 768px) and (max-width: 1199px) {
+//         column-count: 3;
+//     }
+
+//     @media (min-width: 1200px) {
+//         column-count: 4;
+//     }
+
+//     .waterfalls-flow-item {
+//         margin-bottom: $waterfalls-flow-item-gap;
+
+//         .waterfalls-flow-item-img-box {
+//             width: 100%;
+//             overflow: hidden;
+
+//             img {
+//                 filter: opacity(0.75);
+//                 transition: all 0.5s ease-in-out;
+
+//                 &:hover {
+//                     //opacity: 1;
+//                     filter: opacity(1);
+//                     transform: scale(1.2);
+//                 }
+//             }
+//         }
+//     }
+// }
+
+.waterfalls-flow-imgs {
+    display: grid;
+    grid-row-gap: $waterfalls-flow-item-gap;
+    grid-column-gap: $waterfalls-flow-item-gap;
+    grid-template-columns: repeat(2, auto);
+    grid-template-rows: repeat(2, 225px 85px 150px);
 
     @media (min-width: 768px) and (max-width: 1199px) {
-        column-count: 3;
+        grid-template-columns: repeat(3, auto);
     }
 
-    @media (min-width: 1200px) {
-        column-count: 4;
+    @media (min-width: 1200px) and (max-width: 1399px) {
+        grid-template-columns: repeat(4, auto);
+    }
+
+    @media (min-width: 1400px) {
+        grid-template-columns: repeat(6, auto);
     }
 
     .waterfalls-flow-item {
-        margin-bottom: $waterfalls-flow-item-gap;
+        &-1 {
+            @media (max-width: 767px) {
+                grid-row-start: span 2;
+            }
+            @media (min-width: 768px) and (max-width: 1199px) {
+                grid-column-start: span 2;
+            }
+        }
 
-        .waterfalls-flow-item-img-box {
-            width: 100%;
-            overflow: hidden;
+        &-2 {
+            @media (min-width: 768px) and (max-width: 1199px) {
+                grid-row-start: span 2;
+            }
 
-            img {
-                filter: opacity(0.75);
-                transition: all 0.5s ease-in-out;
+            @media (min-width: 1200px) {
+                grid-row-start: span 3;
+            }
+        }
 
-                &:hover {
-                    //opacity: 1;
-                    filter: opacity(1);
-                    transform: scale(1.2);
-                }
+        &-3 {
+            grid-row-start: span 2;
+
+            @media (min-width: 768px) and (max-width: 1199px) {
+                grid-row-start: span 3;
+            }
+
+            @media (min-width: 1200px) {
+                grid-row-start: span 2;
+            }
+        }
+
+        &-4 {
+            grid-row-start: span 2;
+            // @media (min-width: 768px) and (max-width: 1199px) {
+            //     grid-row-start: span 2;
+            // }
+
+            @media (min-width: 1200px) and (max-width: 1399px) {
+                grid-row-start: 3;
+                grid-column-start: 3;
+                grid-column-end: 5;
+            }
+
+            @media (min-width: 1400px) {
+                grid-column-start: 4;
+                grid-column-end: 6;
+            }
+        }
+
+        &-5 {
+            grid-row-start: span 2;
+
+            @media (min-width: 1400px) {
+                grid-row-start: span 3;
+            }
+        }
+
+        &-6 {
+            grid-row-start: span 2;
+
+            // @media (min-width: 768px) and (max-width: 1199px) {
+            //     grid-row-start: span 2;
+            // }
+
+            @media (min-width: 1200px) {
+                grid-row-start: span 3;
+            }
+        }
+
+        &-7 {
+            grid-row-start: span 3;
+
+            @media (min-width: 768px) and (max-width: 1199px) {
+                grid-row-start: span 2;
+            }
+
+            @media (min-width: 1200px) and (max-width: 1399px) {
+                grid-row-start: span 3;
+            }
+
+            @media (min-width: 1400px) {
+                grid-row-start: span 2;
+            }
+        }
+
+        &-8 {
+            // @media (min-width: 768px) and (max-width: 1199px) {
+            //     grid-row-start: span 2;
+            // }
+            // @media (min-width: 1400px) {
+            //     grid-row-start: span 2;
+            // }
+
+            @media (min-width: 768px) and (max-width: 1399px) {
+                grid-row-start: span 2;
+            }
+        }
+
+        &-9 {
+            //grid-row-start: span 2;
+            @media (min-width: 768px) and (max-width: 1199px) {
+                grid-row-start: span 3;
+            }
+            @media (min-width: 1400px) {
+                grid-row-start: span 2;
+            }
+        }
+
+        &-10 {
+            grid-row-start: span 5;
+
+            @media (min-width: 768px) and (max-width: 1399px) {
+                grid-row-start: span 2;
+            }
+
+            @media (min-width: 1400px) {
+                grid-row-start: span 1;
+            }
+        }
+
+        &-11 {
+            @media (max-width: 767px) and (max-width: 1199px) {
+                grid-row-start: span 3;
+            }
+
+            @media (min-width: 1200px) and (max-width: 1399px) {
+                grid-row-start: span 2;
+            }
+        }
+
+        &-12 {
+            @media (max-width: 767px) {
+                grid-row-start: span 2;
+            }
+        }
+    }
+
+    .waterfalls-flow-item-img-box {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+
+        img {
+            height: 100%;
+            filter: brightness(0.75) blur(0.9px);
+            transition: all 0.5s ease-in-out;
+
+            &:hover {
+                filter: brightness(1);
+                transform: scale(1.2);
             }
         }
     }
