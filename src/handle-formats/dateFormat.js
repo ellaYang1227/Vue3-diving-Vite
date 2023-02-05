@@ -7,23 +7,23 @@
 export default function (value, contents = ["date"]) {
     value = new Date(value);
     let time = "";
-    const y = value.getFullYear();
-    let m = value.getMonth() + 1;
-    m = handleLessTen(m);
-    let d = value.getDate();
-    d = handleLessTen(d);
+    const year = value.getFullYear();
+    let month = value.getMonth() + 1;
+    month = handleLessTen(month);
+    let date = value.getDate();
+    date = handleLessTen(date);
 
     if (contents.includes("time")) {
-        let h = value.getHours();
-        h = handleLessTen(h);
-        let m = value.getMinutes();
-        m = handleLessTen(m);
-        let s = value.getSeconds();
-        s = handleLessTen(s);
-        time = `${h}:${m}:${s}`;
+        let hour = value.getHours();
+        hour = handleLessTen(hour);
+        let minute = value.getMinutes();
+        minute = handleLessTen(minute);
+        let second = value.getSeconds();
+        second = handleLessTen(second);
+        time = `${hour}:${minute}:${second}`;
     }
 
-    return `${y}/${m}/${d} ${time}`;
+    return `${year}/${month}/${date} ${time}`;
 }
 
 // 小於 10 的數字 前面補 0
