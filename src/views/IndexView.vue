@@ -140,27 +140,6 @@ export default {
         </div>
     </div>
     <!-- 地點 -->
-    <div class="bg-lightPrimary bg-opacity-20 my-3 py-3 d-none">
-        <div class="container-fluid waterfalls-flow-imgs">
-            <div
-                class="waterfalls-flow-item position-relative"
-                v-for="(adLocation, index) in adLocations"
-                :key="adLocation.id"
-                :class="{ 'd-none d-md-block d-xl-none': index === 8 }"
-            >
-                <router-link to="#">
-                    <div class="waterfalls-flow-item-img-box">
-                        <img :src="adLocation.img" :alt="adLocation.name" class="img-cover" />
-                    </div>
-                    <h2
-                        class="position-absolute bottom-0 start-0 m-2 m-md-3 py-1 px-2 border border-lightPrimary bg-lightPrimary bg-opacity-20 text-body fs-5 text-truncate-row-2"
-                    >
-                        {{ adLocation.name }} {{ index }}
-                    </h2>
-                </router-link>
-            </div>
-        </div>
-    </div>
     <div class="bg-lightPrimary bg-opacity-20 my-3 py-3">
         <div class="container-fluid waterfalls-flow-imgs">
             <router-link
@@ -174,7 +153,7 @@ export default {
                     <img :src="adLocation.img" :alt="adLocation.name" class="img-cover" />
                 </div>
                 <h2
-                    class="position-absolute bottom-0 start-0 m-2 m-md-3 py-1 px-2 border border-lightPrimary bg-lightPrimary bg-opacity-20 text-body fs-5 text-truncate-row-2"
+                    class="position-absolute bottom-0 start-0 m-3 py-1 px-2 border border-lightPrimary bg-lightPrimary bg-opacity-20 text-body fs-5 text-truncate-row-2"
                 >
                     {{ adLocation.name }}
                 </h2>
@@ -235,52 +214,22 @@ $waterfalls-flow-item-gap: $spacer;
 }
 
 // 瀑布流圖片
-// .waterfalls-flow-imgs {
-//     column-gap: $waterfalls-flow-item-gap;
-//     column-count: 2;
-
-//     @media (min-width: 576px) and (max-width: 767px) {
-//         column-count: 2;
-//     }
-
-//     @media (min-width: 768px) and (max-width: 1199px) {
-//         column-count: 3;
-//     }
-
-//     @media (min-width: 1200px) {
-//         column-count: 4;
-//     }
-
-//     .waterfalls-flow-item {
-//         margin-bottom: $waterfalls-flow-item-gap;
-
-//         .waterfalls-flow-item-img-box {
-//             width: 100%;
-//             overflow: hidden;
-
-//             img {
-//                 filter: opacity(0.75);
-//                 transition: all 0.5s ease-in-out;
-
-//                 &:hover {
-//                     //opacity: 1;
-//                     filter: opacity(1);
-//                     transform: scale(1.2);
-//                 }
-//             }
-//         }
-//     }
-// }
-
 .waterfalls-flow-imgs {
     display: grid;
     grid-row-gap: $waterfalls-flow-item-gap;
     grid-column-gap: $waterfalls-flow-item-gap;
     grid-template-columns: repeat(2, auto);
-    grid-template-rows: repeat(2, 225px 85px 150px);
+    grid-auto-rows: 185px;
+
+    grid-template-rows: repeat(2, 225px 85px 150px 125px);
 
     @media (min-width: 768px) and (max-width: 1199px) {
+        grid-template-rows: repeat(2, 225px 85px 150px);
         grid-template-columns: repeat(3, auto);
+    }
+
+    @media (min-width: 1200px) {
+        grid-template-rows: repeat(1, 225px 85px 150px);
     }
 
     @media (min-width: 1200px) and (max-width: 1399px) {
@@ -296,6 +245,7 @@ $waterfalls-flow-item-gap: $spacer;
             @media (max-width: 767px) {
                 grid-row-start: span 2;
             }
+
             @media (min-width: 768px) and (max-width: 1199px) {
                 grid-column-start: span 2;
             }
@@ -324,37 +274,32 @@ $waterfalls-flow-item-gap: $spacer;
         }
 
         &-4 {
-            grid-row-start: span 2;
-            // @media (min-width: 768px) and (max-width: 1199px) {
-            //     grid-row-start: span 2;
-            // }
+            @media (min-width: 768px) and (max-width: 1199px) {
+                grid-row-start: span 2;
+            }
 
             @media (min-width: 1200px) and (max-width: 1399px) {
                 grid-row-start: 3;
-                grid-column-start: 3;
-                grid-column-end: 5;
+                grid-column: 3 / 5;
             }
 
             @media (min-width: 1400px) {
-                grid-column-start: 4;
-                grid-column-end: 6;
+                grid-column: 4 / 6;
             }
         }
 
         &-5 {
-            grid-row-start: span 2;
+            @media (max-width: 767px) {
+                grid-column-start: span 2;
+            }
 
-            @media (min-width: 1400px) {
-                grid-row-start: span 3;
+            @media (min-width: 768px) {
+                grid-row-start: span 2;
             }
         }
 
         &-6 {
             grid-row-start: span 2;
-
-            // @media (min-width: 768px) and (max-width: 1199px) {
-            //     grid-row-start: span 2;
-            // }
 
             @media (min-width: 1200px) {
                 grid-row-start: span 3;
@@ -362,14 +307,14 @@ $waterfalls-flow-item-gap: $spacer;
         }
 
         &-7 {
-            grid-row-start: span 3;
-
-            @media (min-width: 768px) and (max-width: 1199px) {
-                grid-row-start: span 2;
-            }
-
-            @media (min-width: 1200px) and (max-width: 1399px) {
+            @media (min-width: 768px) {
                 grid-row-start: span 3;
+            }
+        }
+
+        &-8 {
+            @media (max-width: 1199px) {
+                grid-row-start: span 2;
             }
 
             @media (min-width: 1400px) {
@@ -377,21 +322,9 @@ $waterfalls-flow-item-gap: $spacer;
             }
         }
 
-        &-8 {
-            // @media (min-width: 768px) and (max-width: 1199px) {
-            //     grid-row-start: span 2;
-            // }
-            // @media (min-width: 1400px) {
-            //     grid-row-start: span 2;
-            // }
-
-            @media (min-width: 768px) and (max-width: 1399px) {
-                grid-row-start: span 2;
-            }
-        }
-
         &-9 {
-            //grid-row-start: span 2;
+            grid-row-start: span 2;
+
             @media (min-width: 768px) and (max-width: 1199px) {
                 grid-row-start: span 3;
             }
@@ -401,30 +334,23 @@ $waterfalls-flow-item-gap: $spacer;
         }
 
         &-10 {
-            grid-row-start: span 5;
-
-            @media (min-width: 768px) and (max-width: 1399px) {
+            @media (max-width: 1399px) {
                 grid-row-start: span 2;
-            }
-
-            @media (min-width: 1400px) {
-                grid-row-start: span 1;
             }
         }
 
         &-11 {
-            @media (max-width: 767px) and (max-width: 1199px) {
-                grid-row-start: span 3;
-            }
-
-            @media (min-width: 1200px) and (max-width: 1399px) {
+            @media (max-width: 1399px) {
                 grid-row-start: span 2;
             }
         }
 
         &-12 {
-            @media (max-width: 767px) {
-                grid-row-start: span 2;
+            @media (min-width: 767px) and (max-width: 1199px) {
+                grid-column: span 2;
+            }
+            @media (min-width: 1400px) {
+                grid-column: span 2;
             }
         }
     }
