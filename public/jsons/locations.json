@@ -55,20 +55,44 @@
     },
     {
         "id": "10",
-        "name": "屏東．墾丁",
-        "img": "locations/屏東墾丁.jpg",
+        "name": "斐濟",
+        "img": "locations/斐濟.png",
         "isIndexAD": true
     },
     {
         "id": "11",
-        "name": "台東．蘭嶼",
-        "img": "locations/台東蘭嶼.jpg",
+        "name": "沖繩・石垣島",
+        "img": "locations/沖繩石垣島.jpg",
         "isIndexAD": true
     },
     {
         "id": "12",
-        "name": "台東．綠島",
-        "img": "locations/台東綠島.jpg",
+        "name": "馬爾地夫",
+        "img": "locations/馬爾地夫.jpg",
         "isIndexAD": true
+    },
+    {
+        "id": "13",
+        "name": "塞班島",
+        "img": "locations/塞班島.jpg",
+        "isIndexAD": false
+    },
+    {
+        "id": "14",
+        "name": "埃及・紅海",
+        "img": "locations/埃及紅海.jpg",
+        "isIndexAD": false
+    },
+    {
+        "id": "15",
+        "name": "馬來西亞・詩巴丹島",
+        "img": "locations/馬來西亞詩巴丹島.jpg",
+        "isIndexAD": false
+    },
+    {
+        "id": "15",
+        "name": "印尼・科摩多島",
+        "img": "locations/印尼科摩多島.jpg",
+        "isIndexAD": false
     }
 ]
