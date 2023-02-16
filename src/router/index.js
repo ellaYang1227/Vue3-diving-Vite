@@ -1,24 +1,51 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHashHistory } from "vue-router";
 
 const routes = [
     {
-        path: "/index",
-        name: "首頁",
-        component: () => import("../views/IndexView.vue"),
+        path: "/",
+        component: () => import("../views/FrontLayout.vue"),
+        children: [
+            {
+                path: "",
+                component: () => import("../views/front/IndexView.vue")
+            },
+            {
+                path: "index",
+                component: () => import("../views/front/IndexView.vue")
+            },
+            {
+                // 重新導向
+                path: ":pathMatch(.*)*",
+                redirect: "/index"
+            }
+        ]
+    },
+    {
+        path: "/admin",
+        component: () => import("../views/AdminLayout.vue"),
+        children: [
+            {
+                path: "index",
+                component: () => import("../views/admin/AdminIndexView.vue")
+            },
+            {
+                // 重新導向
+                path: ":pathMatch(.*)*",
+                redirect: "/admin/index"
+            }
+        ]
     },
     {
         // 重新導向
         path: "/:pathMatch(.*)*",
-        redirect: {
-            name: "首頁",
-        },
-    },
+        redirect: "/index"
+    }
 ];
 
 const router = createRouter({
-    history: createWebHistory(import.meta.env.BASE_URL),
+    history: createWebHashHistory(),
     routes,
-    linkActiveClass: "active",
+    linkActiveClass: "active"
 });
 
 export default router;

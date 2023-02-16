@@ -1,0 +1,190 @@
+
+
+
+// Variables
+//
+// Variables should follow the `$component-state-property-size` formula for
+// consistent naming. Ex: $nav-link-disabled-color and $modal-content-box-shadow-xs.
+
+// Color system
+
+// scss-docs-start gray-color-variables
+
+// scss-docs-end gray-color-variables
+
+// fusv-disable
+// scss-docs-start gray-colors-map
+
+// scss-docs-end gray-colors-map
+// fusv-enable
+
+// scss-docs-start color-variables
+
+// scss-docs-end color-variables
+
+// scss-docs-start colors-map
+
+// scss-docs-end colors-map
+
+// scss-docs-start theme-color-variables
+
+// scss-docs-end theme-color-variables
+
+// scss-docs-start theme-colors-map
+
+// scss-docs-end theme-colors-map
+
+// Options
+//
+// Quickly modify global styling by enabling or disabling optional features.
+
+
+// Spacing
+//
+// Control the default styling of most Bootstrap elements by modifying these
+// variables. Mostly focused on spacing.
+// You can add more entries to the $spacers map, should you need more variation.
+
+// scss-docs-start spacer-variables-maps
+
+// scss-docs-end spacer-variables-maps
+
+
+
+/*
+* ==========================================================================
+* bs5 start
+* ==========================================================================
+*/
+
+// Body
+//
+// Settings for the `<body>` element.
+
+
+// Links
+//
+// Style anchor elements.
+
+
+
+// Components
+//
+// Define common padding and border radius sizes and more.
+
+// scss-docs-start border-variables
+
+// scss-docs-end border-variables
+
+// scss-docs-start border-radius-variables
+
+// scss-docs-end border-radius-variables
+
+// scss-docs-start box-shadow-variables
+
+// scss-docs-end box-shadow-variables
+
+// 深藍背景 start
+// 深藍背景 end
+// 水透明背景 start
+// $component-active-bg: $bg-primary-20 !default;
+// 水透明背景 end
+
+// Typography
+//
+// Font, line-height, and color for body text, headings, and more.
+
+// scss-docs-start font-variables
+// stylelint-disable value-keyword-case
+
+
+
+
+
+// scss-docs-end font-variables
+
+// scss-docs-start font-sizes
+
+// scss-docs-end font-sizes
+
+// Navs
+
+// scss-docs-start nav-variables
+
+
+// $nav-tabs-border-color: $gray-300 !default;
+// $nav-tabs-border-width: $border-width !default;
+// $nav-tabs-border-radius: $border-radius !default;
+// $nav-tabs-link-hover-border-color: $gray-200 $gray-200 $nav-tabs-border-color !default;
+// $nav-tabs-link-active-color: $light-primary !default;
+// $nav-tabs-link-active-bg: $body-bg !default;
+// $nav-tabs-link-active-border-color: $gray-300 $gray-300 $nav-tabs-link-active-bg !default;
+
+// $nav-pills-border-radius: $border-radius !default;
+// $nav-pills-link-active-color: $component-active-color !default;
+// $nav-pills-link-active-bg: $component-active-bg !default;
+// scss-docs-end nav-variables
+
+// Navbar
+
+// scss-docs-start navbar-variables
+
+
+
+
+
+// scss-docs-end navbar-variables
+
+// scss-docs-start navbar-dark-variables
+
+
+
+// scss-docs-end navbar-dark-variables
+
+// Dropdowns
+//
+// Dropdown menu container and contents.
+
+// scss-docs-start dropdown-variables
+
+
+
+
+
+
+// 水透明背景 start
+// $dropdown-bg: $bg-primary-10 !default;
+// $dropdown-link-color: rgba($light-primary, 0.85) !default;
+// 水透明背景 end
+
+// scss-docs-end dropdown-variables
+
+// Buttons + Forms
+//
+// Shared variables that are reassigned to `$input-` and `$btn-` specific variables.
+
+// scss-docs-start input-btn-variables
+// scss-docs-end input-btn-variables
+
+// Offcanvas
+
+// scss-docs-start offcanvas-variables
+
+// scss-docs-end offcanvas-variables
+
+// List group
+
+// scss-docs-start list-group-variables
+
+
+
+
+
+
+
+// scss-docs-end list-group-variables
+
+// Cards
+
+// scss-docs-start card-variables
+// scss-docs-end card-variables

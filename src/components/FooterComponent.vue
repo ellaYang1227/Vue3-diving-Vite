@@ -1,5 +1,5 @@
 <script setup>
-const VITE_COMPANY_NAME = import.meta.env.VITE_COMPANY_NAME;
+const { VITE_COMPANY_NAME } = import.meta.env;
 </script>
 
 <template>

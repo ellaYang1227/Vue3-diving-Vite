@@ -1,13 +1,15 @@
 <script>
+import AOS from "aos";
+import CountUp from "vue-countup-v3";
 import { mapState, mapActions } from "pinia";
-
-import { divingIcon, peoplesIcon, areaIcon, licenseImg, scoreImg } from "../data/imagePath.js";
-import ActivityCard from "../components/ActivityCard.vue";
-import activityStore from "../stores/activityStore.js";
+import { divingIcon, peoplesIcon, areaIcon, licenseImg, scoreImg, commentImg } from "../../data/imagePaths.js";
+import ActivityCard from "../../components/ActivityCard.vue";
+import ActivityStore from "../../stores/ActivityStore.js";
 
 export default {
     data() {
         return {
+            commentImg,
             bannerIcons: [
                 {
                     title: "揪團潛水",
@@ -43,11 +45,16 @@ export default {
         };
     },
     mounted() {
+        AOS.init({
+            duration: 1200,
+            easing: "ease-in-out-back"
+        });
         this.getActivitys();
         this.getLocations();
+        this.getComments();
     },
     computed: {
-        ...mapState(activityStore, ["newActivitys", "hotActivitys", "adLocations"]),
+        ...mapState(ActivityStore, ["newActivitys", "hotActivitys", "adLocations"]),
         activityCards() {
             let cards = [];
             switch (this.activeActivityNav) {
@@ -63,13 +70,14 @@ export default {
         }
     },
     methods: {
-        ...mapActions(activityStore, ["getActivitys", "getLocations"]),
+        ...mapActions(ActivityStore, ["getActivitys", "getLocations"]),
         toggleActiveActivityNav(nav) {
             this.activeActivityNav = nav;
         }
     },
     components: {
-        ActivityCard
+        ActivityCard,
+        CountUp
     }
 };
 </script>
@@ -77,25 +85,28 @@ export default {
 <template>
     <!-- banner -->
     <div class="bg-img pb-5 py-lg-5">
-        <div class="container text-center py-5">
+        <div class="container text-center py-5" data-aos="zoom-out-down">
             <h6 class="en-title text-uppercase fs-5 font-barlow mb-0">DIVING</h6>
-            <h1 class="main-title display-3 mb-0">潛安伴旅這裡揪</h1>
+            <h1 class="main-title display-3 mb-0 fw-bold">潛安伴旅這裡揪</h1>
             <h2 class="sub-title opacity-75 fs-4">在氣瓶海人遇見好潛伴</h2>
             <div class="d-grid col-7 col-md-4 col-lg-3 mx-auto mt-4">
                 <router-link to="addGroup" class="btn btn-outline-lightPrimary btn-lg rounded-pill opacity-75" role="button">我要揪團</router-link>
             </div>
         </div>
-        <div class="bg-lightPrimary bg-opacity-20 mt-3">
+        <div class="bg-lightPrimary bg-opacity-20 mt-3" data-aos="fade-up" data-aos-delay="600">
             <div class="container py-4">
                 <div class="row gx-0 gy-4 justify-content-center">
                     <div
+                        data-aos="flip-left"
+                        data-aos-delay="1000"
                         class="col-7 col-md-4 d-flex justify-content-center align-items-center"
                         v-for="bannerIcon in bannerIcons"
                         :key="bannerIcon.title"
                     >
                         <img :src="bannerIcon.img" class="banner-icon-size border border-style-dashed border-lightPrimary rounded-circle me-md-2" />
                         <div class="text-center flex-grow-1 flex-md-grow-0">
-                            <span class="d-block text-primary fw-light font-barlow display-4 lh-1">{{ bannerIcon.total }}</span
+                            <span class="d-block text-primary fw-light font-barlow display-4 lh-1">
+                                <count-up :endVal="bannerIcon.total" :duration="5"></count-up></span
                             >{{ bannerIcon.title }}
                         </div>
                     </div>
@@ -103,11 +114,11 @@ export default {
             </div>
         </div>
     </div>
-    <div class="container">
+    <div class="container" data-aos="fade-up">
         <!-- 熱門 / 最新 活動 -->
-        <nav class="nav fs-5">
+        <nav class="nav fs-4">
             <a
-                class="nav-link"
+                class="nav-link fw-bold"
                 :class="{ disabled: activeActivityNav === key, 'ps-0': !index }"
                 aria-current="page"
                 href="#"
@@ -118,16 +129,18 @@ export default {
             </a>
         </nav>
         <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4" v-if="activityCards.length">
-            <ActivityCard
-                v-for="(activityCard, index) in activityCards"
-                :key="activityCard.title"
-                :activity="activityCard"
-                :class="{ 'd-block d-sm-none d-lg-block': index >= 2 }"
-            />
+            <div data-aos="fade-up" v-for="(activityCard, index) in activityCards" :key="activityCard.id">
+                <ActivityCard :activity="activityCard" :class="{ 'd-block d-sm-none d-lg-block': index >= 2 }" />
+            </div>
         </div>
         <!-- 特點 -->
         <div class="row gy-4 justify-content-center py-4 py-md-5">
-            <div class="col-9 col-md col-lg-5" v-for="feature in features" :key="feature.title">
+            <div
+                class="col-9 col-md col-lg-5"
+                v-for="(feature, index) in features"
+                :key="feature.title"
+                :data-aos="index % 2 ? 'fade-down-left' : 'fade-down-right'"
+            >
                 <div class="row g-0">
                     <div class="col-5">
                         <img :src="feature.img" :alt="feature.title" class="img-fluid" />
@@ -140,7 +153,7 @@ export default {
         </div>
     </div>
     <!-- 地點 -->
-    <div class="bg-lightPrimary bg-opacity-20 my-3 py-3">
+    <div class="bg-lightPrimary bg-opacity-20 my-3 py-3" data-aos="fade-up">
         <div class="container-fluid waterfalls-flow-imgs">
             <router-link
                 to="#"
@@ -148,6 +161,8 @@ export default {
                 v-for="(adLocation, index) in adLocations"
                 :key="adLocation.id"
                 :class="`waterfalls-flow-item-${index + 1}`"
+                data-aos="zoom-out-down"
+                :data-aos-delay="50 * index"
             >
                 <div class="waterfalls-flow-item-img-box">
                     <img :src="adLocation.img" :alt="adLocation.name" class="img-cover" />
@@ -160,14 +175,32 @@ export default {
             </router-link>
         </div>
     </div>
+    <!-- 評論 -->
+    <div class="container py-4 py-md-5" data-aos="fade-up">
+        <h5 class="fs-3 text-center text-primary">
+            <strong>聽聽其他人怎麼說</strong><small class="d-block text-body fs-5">大家參加完潛團的想法是甚麼呢</small>
+        </h5>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="col-auto">
+                <img :src="commentImg" alt="評論" class="shadow-lg" />
+            </div>
+            <div class="col">
+                <swiper-container init="false" ref="commentSwiper">
+                    <swiper-slide>Slide 1</swiper-slide>
+                    <swiper-slide>Slide 2</swiper-slide>
+                    <swiper-slide>Slide 3</swiper-slide>
+                </swiper-container>
+            </div>
+        </div>
+    </div>
 </template>
 
 <style lang="scss">
-@import "../assets/styles/bootstrap-custom-variables";
+@import "../../assets/styles/bootstrap-custom-variables";
 $waterfalls-flow-item-gap: $spacer;
 
 .bg-img {
-    background: url("../assets/images/index/banner-people.png") center center no-repeat;
+    background: url("../../assets/images/index/banner-people.png") center center no-repeat;
     background-size: contain;
 
     .en-title {

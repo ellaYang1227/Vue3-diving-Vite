@@ -5,5 +5,6 @@ import peoplesIcon from "../assets/images/index/banner-icon/peoples.svg";
 import areaIcon from "../assets/images/index/banner-icon/area.svg";
 import licenseImg from "../assets/images/index/features/license.svg";
 import scoreImg from "../assets/images/index/features/score.svg";
+import commentImg from "../assets/images/index/comment.svg";
 
-export { logo, userDefaultImg, divingIcon, peoplesIcon, areaIcon, licenseImg, scoreImg };
+export { logo, userDefaultImg, divingIcon, peoplesIcon, areaIcon, licenseImg, scoreImg, commentImg };

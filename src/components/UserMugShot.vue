@@ -1,26 +1,30 @@
 <script setup>
-import { userDefaultImg } from "../data/imagePath.js";
+import { userDefaultImg } from "../data/imagePaths.js";
+</script>
 
-defineProps({
-    name: {
-        type: String,
-        required: false
-    },
-    img: {
-        type: String,
-        required: false
-    },
-    widthSize: {
-        type: Number,
-        required: false,
-        default: 45
-    },
-    isShowName: {
-        type: Boolean,
-        required: false,
-        default: true
+<script>
+export default {
+    props: {
+        name: {
+            type: String,
+            required: false
+        },
+        img: {
+            type: String,
+            required: false
+        },
+        widthSize: {
+            type: Number,
+            required: false,
+            default: 45
+        },
+        isShowName: {
+            type: Boolean,
+            required: false,
+            default: true
+        }
     }
-});
+};
 </script>
 
 <template>

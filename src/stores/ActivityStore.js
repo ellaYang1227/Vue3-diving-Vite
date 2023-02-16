@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 import { bacsRequest } from "../data/axiosBase.js";
 import statusFormat from "../handle-formats/statusFormat.js";
 
-export default defineStore("activityStore", {
+export default defineStore("ActivityStore", {
     state: () => ({
         statusFormat,
         activitys: [],

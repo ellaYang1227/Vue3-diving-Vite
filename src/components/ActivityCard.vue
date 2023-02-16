@@ -1,13 +1,16 @@
 <script setup>
 import dateFormat from "../handle-formats/dateFormat.js";
 import decimalFormat from "../handle-formats/decimalFormat.js";
-import propsValidator from "../data/propsValidator.js";
 </script>
 
 <script>
+import propsValidator from "../data/propsValidator.js";
 import UserMugShot from "./UserMugShot.vue";
 
 export default {
+    data() {
+        return {};
+    },
     props: {
         activity: {
             type: Object,
@@ -21,9 +24,6 @@ export default {
     },
     components: {
         UserMugShot
-    },
-    data() {
-        return {};
     },
     mounted() {},
     methods: {}
@@ -45,7 +45,7 @@ export default {
                     </div>
                 </div>
             </div>
-            <h2 class="h5 mb-1 text-primary text-truncate-row-2">{{ activity.title }}</h2>
+            <h2 class="h5 mb-1 text-primary text-truncate-row-2 fw-bold">{{ activity.title }}</h2>
             <ul class="list-unstyled text-body lh-sm">
                 <li>{{ activity.location }}</li>
                 <li class="font-barlow">{{ dateFormat(activity.startDate) }} ~ {{ dateFormat(activity.endDate) }}</li>

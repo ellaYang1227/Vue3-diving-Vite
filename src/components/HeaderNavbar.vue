@@ -1,16 +1,16 @@
 <script setup>
 import { user } from "../data/auth.js";
 import dateFormat from "../handle-formats/dateFormat.js";
-import { logo } from "../data/imagePath.js";
+import { logo } from "../data/imagePaths.js";
 
-const VITE_COMPANY_NAME = import.meta.env.VITE_COMPANY_NAME;
+const { VITE_COMPANY_NAME } = import.meta.env;
 </script>
 
 <script>
 import { mapState, mapActions } from "pinia";
 
 import UserMugShot from "./UserMugShot.vue";
-import memberStore from "../stores/MemberStore.js";
+import MemberStore from "../stores/MemberStore.js";
 
 export default {
     data() {
@@ -26,10 +26,10 @@ export default {
         window.addEventListener("scroll", this.scrollEvent);
     },
     computed: {
-        ...mapState(memberStore, ["mySignUp"])
+        ...mapState(MemberStore, ["mySignUp"])
     },
     methods: {
-        ...mapActions(memberStore, ["getMySignUp"]),
+        ...mapActions(MemberStore, ["getMySignUp"]),
         scrollEvent() {
             this.hasHavbarBg = window.scrollY ? true : false;
         }
