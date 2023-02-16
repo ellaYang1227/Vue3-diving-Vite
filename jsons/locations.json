@@ -52,5 +52,47 @@
         "name": "新北．東北角",
         "img": "locations/新北東北角.jpg",
         "isIndexAD": true
+    },
+    {
+        "id": "10",
+        "name": "斐濟",
+        "img": "locations/斐濟.png",
+        "isIndexAD": true
+    },
+    {
+        "id": "11",
+        "name": "沖繩・石垣島",
+        "img": "locations/沖繩石垣島.jpg",
+        "isIndexAD": true
+    },
+    {
+        "id": "12",
+        "name": "馬爾地夫",
+        "img": "locations/馬爾地夫.jpg",
+        "isIndexAD": true
+    },
+    {
+        "id": "13",
+        "name": "塞班島",
+        "img": "locations/塞班島.jpg",
+        "isIndexAD": false
+    },
+    {
+        "id": "14",
+        "name": "埃及・紅海",
+        "img": "locations/埃及紅海.jpg",
+        "isIndexAD": false
+    },
+    {
+        "id": "15",
+        "name": "馬來西亞・詩巴丹島",
+        "img": "locations/馬來西亞詩巴丹島.jpg",
+        "isIndexAD": false
+    },
+    {
+        "id": "15",
+        "name": "印尼・科摩多島",
+        "img": "locations/印尼科摩多島.jpg",
+        "isIndexAD": false
     }
 ]
