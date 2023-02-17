@@ -9,14 +9,9 @@ export default defineStore("CommentStore", {
     getters: {},
     actions: {
         getComments() {
-            bacsRequest.get("/activitys.json").then(res => {
-                console.error("錯誤內容");
-                this.activitys = res
-                    .reverse()
-                    .filter(item => item.isEnable && !item.isViolation)
-                    .map(item => {
-                        return item;
-                    });
+            return bacsRequest.get("/comments.json").then(res => {
+                return res;
+                //this.comments =  res;
             });
         }
     }

@@ -51,7 +51,7 @@ export default {
                 <li class="font-barlow">{{ dateFormat(activity.startDate) }} ~ {{ dateFormat(activity.endDate) }}</li>
                 <li class="row align-items-center fw-bold pt-3">
                     <div class="col text-truncate">
-                        <UserMugShot :width-size="25" :name="activity.user?.name" :img="activity.user?.img" />
+                        <UserMugShot :width-size="30" :name="activity.user?.name" :img="activity.user?.img" />
                     </div>
                     <ul class="col-auto font-barlow list-inline">
                         <li class="list-inline-item">{{ activity.grade }}</li>

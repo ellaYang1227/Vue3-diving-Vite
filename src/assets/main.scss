@@ -1,6 +1,7 @@
 @import "./styles/bootstrap-custom-variables";
 @import "./styles/_bootstrap-custom-utilities";
 @import "bootstrap/scss/bootstrap";
+@import "./styles/swiper-custom-variables";
 @import "./styles/_other";
 
 .font-barlow {
@@ -16,11 +17,7 @@
 html {
     font-size: $font-size-base;
 
-    // @include media-breakpoint-up(md) {
-    //     font-size: $font-size-base * 1.125;
-    // }
-
-    @include media-breakpoint-up(xl) {
+    @include media-breakpoint-up(lg) {
         font-size: $font-size-base * 1.125;
     }
 }
@@ -70,7 +67,7 @@ body {
 
 /*
 * ==========================================================================
-* 共用 (bootstrap 樣式)
+* bootstrap 樣式
 * ==========================================================================
 */
 
@@ -92,4 +89,25 @@ body {
     &.disabled {
         font-weight: 500;
     }
+}
+
+/*
+* ==========================================================================
+* swiper 輪播
+* ==========================================================================
+*/
+
+
+/*
+* ==========================================================================
+* vue-star-rating 評分
+* ==========================================================================
+*/
+
+.vue-star-rating-star {
+    line-height: 1px;
+}
+
+.vue-star-rating-rating-text {
+    margin-top: 1px;
 }

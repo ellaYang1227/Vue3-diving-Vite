@@ -24,3 +24,13 @@ $wordBreaks: "break-all", "normal", "keep-all";
         }
     }
 }
+
+// 自動換行
+$whiteSpaces: "pre-wrap";
+.white-space- {
+    @each $whiteSpace in $whiteSpaces {
+        &#{$whiteSpace} {
+            white-space: #{$whiteSpace + " !important"};
+        }
+    }
+}

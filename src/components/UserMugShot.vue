@@ -1,5 +1,7 @@
 <script setup>
 import { userDefaultImg } from "../data/imagePaths.js";
+import { increment, readOnly, starSize, showRating, textClass } from "../data/starRatingParams.js";
+import StarRating from "vue-star-rating";
 </script>
 
 <script>
@@ -22,7 +24,14 @@ export default {
             type: Boolean,
             required: false,
             default: true
+        },
+        score: {
+            type: Number,
+            required: false
         }
+    },
+    components: {
+        StarRating
     }
 };
 </script>
@@ -33,9 +42,20 @@ export default {
             :style="{ width: `${widthSize}px`, height: `${widthSize}px` }"
             :src="img ? img : userDefaultImg"
             :alt="name"
-            class="rounded-circle border border-lightPrimary bg-lightPrimary bg-opacity-10 rounded-circle flex-shrink-0 me-1"
+            class="rounded-circle border border-lightPrimary bg-lightPrimary bg-opacity-10 rounded-circle flex-shrink-0"
         />
-        <span v-if="name && isShowName" class="text-truncate">{{ name }}</span>
+        <div :class="{ 'ms-2': isShowName }" class="text-truncate">
+            <strong v-if="name && isShowName" class="text-truncate">{{ name }}</strong>
+            <star-rating
+                :text-class="textClass"
+                :increment="increment"
+                :rating="score"
+                :read-only="readOnly"
+                :star-size="starSize"
+                :show-rating="showRating"
+                v-if="score"
+            ></star-rating>
+        </div>
     </div>
 </template>
 

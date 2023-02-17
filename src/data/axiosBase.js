@@ -1,10 +1,12 @@
 import axios from "axios";
 
 const baseJsonURL = `${import.meta.env.BASE_URL}jsons`;
+// 創建 axios 實例
 const bacsRequest = axios.create({
     baseURL: baseJsonURL
 });
 
+// 請求攔截
 bacsRequest.interceptors.request.use(
     request => {
         // API 送出前可以做最後的處理

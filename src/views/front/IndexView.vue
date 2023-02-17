@@ -4,7 +4,10 @@ import CountUp from "vue-countup-v3";
 import { mapState, mapActions } from "pinia";
 import { divingIcon, peoplesIcon, areaIcon, licenseImg, scoreImg, commentImg } from "../../data/imagePaths.js";
 import ActivityCard from "../../components/ActivityCard.vue";
+import UserMugShot from "../../components/UserMugShot.vue";
 import ActivityStore from "../../stores/ActivityStore.js";
+import CommentStore from "../../stores/CommentStore.js";
+import swiperParams from "../../data/swiperParams.js";
 
 export default {
     data() {
@@ -41,7 +44,8 @@ export default {
                     title: "評分機制\n加團不踩雷",
                     img: scoreImg
                 }
-            ]
+            ],
+            comments: []
         };
     },
     mounted() {
@@ -51,7 +55,12 @@ export default {
         });
         this.getActivitys();
         this.getLocations();
-        this.getComments();
+
+        Promise.all([this.getComments()]).then(resArr => {
+            console.log(resArr);
+            this.comments = resArr[0];
+            this.setCommentSwiper();
+        });
     },
     computed: {
         ...mapState(ActivityStore, ["newActivitys", "hotActivitys", "adLocations"]),
@@ -71,12 +80,28 @@ export default {
     },
     methods: {
         ...mapActions(ActivityStore, ["getActivitys", "getLocations"]),
+        ...mapActions(CommentStore, ["getComments"]),
         toggleActiveActivityNav(nav) {
             this.activeActivityNav = nav;
+        },
+        setCommentSwiper() {
+            const swiperEl = document.querySelector(".comment-swiper");
+            const addSwiperParams = {
+                ...swiperParams,
+                grid: {
+                    rows: 2 // 網格
+                }
+            };
+
+            // 將參數(swiperParams)分配給 Swiper 元素(swiperEl)
+            Object.assign(swiperEl, addSwiperParams);
+            // 初始化
+            swiperEl.initialize();
         }
     },
     components: {
         ActivityCard,
+        UserMugShot,
         CountUp
     }
 };
@@ -145,7 +170,7 @@ export default {
                     <div class="col-5">
                         <img :src="feature.img" :alt="feature.title" class="img-fluid" />
                     </div>
-                    <h5 class="col fw-bold text-warning fs-1 mb-0 word-break-keep-all lh-sm align-self-center mt-3 mt-xl-5">
+                    <h5 class="col fw-bold text-warning fs-1 mb-0 white-space-pre-wrap lh-sm align-self-center mt-3 mt-xl-5">
                         {{ feature.title }}
                     </h5>
                 </div>
@@ -153,7 +178,7 @@ export default {
         </div>
     </div>
     <!-- 地點 -->
-    <div class="bg-lightPrimary bg-opacity-20 my-3 py-3" data-aos="fade-up">
+    <div class="bg-lightPrimary bg-opacity-20 my-4 my-md-5 py-3" data-aos="fade-up">
         <div class="container-fluid waterfalls-flow-imgs">
             <router-link
                 to="#"
@@ -177,18 +202,24 @@ export default {
     </div>
     <!-- 評論 -->
     <div class="container py-4 py-md-5" data-aos="fade-up">
-        <h5 class="fs-3 text-center text-primary">
+        <h5 class="fs-3 text-center text-primary mb-5">
             <strong>聽聽其他人怎麼說</strong><small class="d-block text-body fs-5">大家參加完潛團的想法是甚麼呢</small>
         </h5>
-        <div class="row row-cols-1 row-cols-md-3 g-4">
-            <div class="col-auto">
-                <img :src="commentImg" alt="評論" class="shadow-lg" />
+        <div class="row justify-content-center row-cols-1 row-cols-md-2 gy-4 gy-md-0">
+            <div class="col-10 col-sm-8 col-md text-center align-self-center">
+                <img :src="commentImg" alt="評論" class="shadow-lg img-fluid" />
             </div>
             <div class="col">
-                <swiper-container init="false" ref="commentSwiper">
-                    <swiper-slide>Slide 1</swiper-slide>
-                    <swiper-slide>Slide 2</swiper-slide>
-                    <swiper-slide>Slide 3</swiper-slide>
+                <swiper-container init="false" class="comment-swiper">
+                    <swiper-slide v-for="comment in comments" :key="comment.id" class="align-items-start">
+                        <div class="row align-items-end">
+                            <div class="col-5">
+                                <UserMugShot :name="comment.user.name" :img="comment.user.img" :widthSize="55" :score="comment.score" />
+                            </div>
+                            <strong class="fs-5 col-7 text-primary text-truncate text-end">{{ comment.activity.title }}</strong>
+                            <p class="fs-5 mb-0 col-12 mt-2 text-truncate-row-4">{{ comment.content }}</p>
+                        </div>
+                    </swiper-slide>
                 </swiper-container>
             </div>
         </div>
@@ -403,6 +434,19 @@ $waterfalls-flow-item-gap: $spacer;
                 transform: scale(1.2);
             }
         }
+    }
+}
+
+// 評論
+swiper-container.comment-swiper {
+    height: 400px;
+
+    @media (min-width: 768px) {
+        height: 480px;
+    }
+
+    swiper-slide {
+        height: calc((100% - 30px) / 2) !important;
     }
 }
 </style>
