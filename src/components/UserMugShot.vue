@@ -1,6 +1,6 @@
 <script setup>
 import { userDefaultImg } from "../data/imagePaths.js";
-import { increment, readOnly, starSize, showRating, textClass } from "../data/starRatingParams.js";
+import { increment, readOnly, starSize, showRating, textClass, activeColor, inactiveColor } from "../data/starRatingParams.js";
 import StarRating from "vue-star-rating";
 </script>
 
@@ -18,7 +18,7 @@ export default {
         widthSize: {
             type: Number,
             required: false,
-            default: 45
+            default: 55
         },
         isShowName: {
             type: Boolean,
@@ -28,6 +28,11 @@ export default {
         score: {
             type: Number,
             required: false
+        },
+        isShowRating: {
+            type: Boolean,
+            required: false,
+            default: showRating
         }
     },
     components: {
@@ -52,7 +57,9 @@ export default {
                 :rating="score"
                 :read-only="readOnly"
                 :star-size="starSize"
-                :show-rating="showRating"
+                :show-rating="isShowRating"
+                :active-color="activeColor"
+                :inactive-color="inactiveColor"
                 v-if="score"
             ></star-rating>
         </div>

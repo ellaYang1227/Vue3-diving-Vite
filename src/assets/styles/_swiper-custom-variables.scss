@@ -6,6 +6,7 @@
     --swiper-pagination-bullet-width: 12px;
     --swiper-pagination-bullet-height: 12px;
     --swiper-pagination-bullet-inactive-opacity: 0.3;
+    --swiper-pagination-bottom: 0;
 }
 
 /*
@@ -49,3 +50,9 @@ swiper-slide img {
     height: 100%;
     object-fit: cover;
 }
+
+swiper-container.offset-pagination {
+    padding-bottom: map-get($spacers, 4);
+}
+
+

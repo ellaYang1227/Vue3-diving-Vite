@@ -3,7 +3,8 @@ import AOS from "aos";
 import CountUp from "vue-countup-v3";
 import { mapState, mapActions } from "pinia";
 import { divingIcon, peoplesIcon, areaIcon, licenseImg, scoreImg, commentImg } from "../../data/imagePaths.js";
-import ActivityCard from "../../components/ActivityCard.vue";
+import CornerActivityCard from "../../components/CornerActivityCard.vue";
+import BottomFrameActivityCard from "../../components/BottomFrameActivityCard.vue";
 import UserMugShot from "../../components/UserMugShot.vue";
 import ActivityStore from "../../stores/ActivityStore.js";
 import CommentStore from "../../stores/CommentStore.js";
@@ -59,7 +60,8 @@ export default {
         Promise.all([this.getComments()]).then(resArr => {
             console.log(resArr);
             this.comments = resArr[0];
-            this.setCommentSwiper();
+            this.setSwiper("commentSwiper");
+            this.setSwiper("goodRatingSwiper");
         });
     },
     computed: {
@@ -84,23 +86,35 @@ export default {
         toggleActiveActivityNav(nav) {
             this.activeActivityNav = nav;
         },
-        setCommentSwiper() {
-            const swiperEl = document.querySelector(".comment-swiper");
-            const addSwiperParams = {
-                ...swiperParams,
-                grid: {
-                    rows: 2 // 網格
-                }
-            };
+        setSwiper(refName) {
+            const swiperEl = this.$refs[refName];
+            let addSwiperParams = null;
+            if (refName === "commentSwiper") {
+                addSwiperParams = {
+                    grid: {
+                        rows: 2 // 網格
+                    }
+                };
+            } else if (refName === "goodRatingSwiper") {
+                addSwiperParams = {
+                    slidesPerView: 1,
+                    breakpoints: {
+                        768: {
+                            slidesPerView: 2
+                        }
+                    }
+                };
+            }
 
             // 將參數(swiperParams)分配給 Swiper 元素(swiperEl)
-            Object.assign(swiperEl, addSwiperParams);
+            Object.assign(swiperEl, { ...swiperParams, ...addSwiperParams });
             // 初始化
             swiperEl.initialize();
         }
     },
     components: {
-        ActivityCard,
+        CornerActivityCard,
+        BottomFrameActivityCard,
         UserMugShot,
         CountUp
     }
@@ -153,9 +167,9 @@ export default {
                 >{{ activityNav }}
             </a>
         </nav>
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4" v-if="activityCards.length">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
             <div data-aos="fade-up" v-for="(activityCard, index) in activityCards" :key="activityCard.id">
-                <ActivityCard :activity="activityCard" :class="{ 'd-block d-sm-none d-lg-block': index >= 2 }" />
+                <CornerActivityCard :activity="activityCard" :class="{ 'd-block d-sm-none d-lg-block': index >= 2 }" />
             </div>
         </div>
         <!-- 特點 -->
@@ -182,7 +196,7 @@ export default {
         <div class="container-fluid waterfalls-flow-imgs">
             <router-link
                 to="#"
-                class="position-relative"
+                class="position-relative shadow-lg"
                 v-for="(adLocation, index) in adLocations"
                 :key="adLocation.id"
                 :class="`waterfalls-flow-item-${index + 1}`"
@@ -192,36 +206,51 @@ export default {
                 <div class="waterfalls-flow-item-img-box">
                     <img :src="adLocation.img" :alt="adLocation.name" class="img-cover" />
                 </div>
-                <h2
-                    class="position-absolute bottom-0 start-0 m-3 py-1 px-2 border border-lightPrimary bg-lightPrimary bg-opacity-20 text-body fs-5 text-truncate-row-2"
-                >
-                    {{ adLocation.name }}
-                </h2>
+                <div class="position-absolute bottom-0 start-0 m-3 p-2 border border-lightPrimary bg-lightPrimary bg-opacity-20">
+                    <h2 class="text-truncate-row-2 mb-0 text-body fs-5">
+                        {{ adLocation.name }}
+                    </h2>
+                </div>
             </router-link>
         </div>
     </div>
-    <!-- 評論 -->
-    <div class="container py-4 py-md-5" data-aos="fade-up">
-        <h5 class="fs-3 text-center text-primary mb-5">
-            <strong>聽聽其他人怎麼說</strong><small class="d-block text-body fs-5">大家參加完潛團的想法是甚麼呢</small>
-        </h5>
-        <div class="row justify-content-center row-cols-1 row-cols-md-2 gy-4 gy-md-0">
-            <div class="col-10 col-sm-8 col-md text-center align-self-center">
-                <img :src="commentImg" alt="評論" class="shadow-lg img-fluid" />
-            </div>
-            <div class="col">
-                <swiper-container init="false" class="comment-swiper">
-                    <swiper-slide v-for="comment in comments" :key="comment.id" class="align-items-start">
-                        <div class="row align-items-end">
-                            <div class="col-5">
-                                <UserMugShot :name="comment.user.name" :img="comment.user.img" :widthSize="55" :score="comment.score" />
+    <div class="container">
+        <!-- 評論 -->
+        <div class="py-4 py-md-5" data-aos="zoom-out">
+            <h5 class="fs-3 text-center text-primary mb-5">
+                <strong>聽聽其他人怎麼說</strong><small class="d-block text-body fs-5">大家參加完潛團的想法是甚麼呢</small>
+            </h5>
+            <div class="row justify-content-center row-cols-1 row-cols-md-2 gy-4 gy-md-0">
+                <div class="col-10 col-md text-center align-self-center" data-aos="zoom-out">
+                    <img :src="commentImg" alt="評論" class="comment-img-height" />
+                </div>
+                <div class="col" data-aos="zoom-out">
+                    <swiper-container init="false" ref="commentSwiper" class="comment-height offset-pagination">
+                        <swiper-slide v-for="comment in comments" :key="comment.id" class="align-items-start">
+                            <div class="row align-items-end">
+                                <div class="col-sm-5">
+                                    <UserMugShot :name="comment.user.name" :img="comment.user.img" :score="comment.score" :isShowRating="false" />
+                                </div>
+                                <strong class="fs-5 col-sm-7 text-primary text-truncate text-sm-end mt-2 mt-sm-0">{{
+                                    comment.activity.title
+                                }}</strong>
+                                <p class="mb-0 col-12 mt-sm-2 text-truncate-row-4">{{ comment.content }}</p>
                             </div>
-                            <strong class="fs-5 col-7 text-primary text-truncate text-end">{{ comment.activity.title }}</strong>
-                            <p class="fs-5 mb-0 col-12 mt-2 text-truncate-row-4">{{ comment.content }}</p>
-                        </div>
-                    </swiper-slide>
-                </swiper-container>
+                        </swiper-slide>
+                    </swiper-container>
+                </div>
             </div>
+        </div>
+        <!-- 好評主揪開團 -->
+        <div class="py-4 py-md-5" data-aos="fade-up">
+            <h5 class="fs-3 text-center text-primary mb-3">
+                <strong>好評主揪開團</strong><small class="d-block text-body fs-5">跟著好主揪 享受安心潛旅</small>
+            </h5>
+            <swiper-container init="false" ref="goodRatingSwiper" class="good-rating-height offset-pagination">
+                <swiper-slide v-for="activityCard in activityCards" :key="activityCard.id">
+                    <BottomFrameActivityCard data-aos="flip-left" :activity="activityCard" :class="{ 'd-block d-sm-none d-lg-block': index >= 2 }" />
+                </swiper-slide>
+            </swiper-container>
         </div>
     </div>
 </template>
@@ -229,6 +258,7 @@ export default {
 <style lang="scss">
 @import "../../assets/styles/bootstrap-custom-variables";
 $waterfalls-flow-item-gap: $spacer;
+$comment-height: 420px;
 
 .bg-img {
     background: url("../../assets/images/index/banner-people.png") center center no-repeat;
@@ -410,7 +440,7 @@ $waterfalls-flow-item-gap: $spacer;
         }
 
         &-12 {
-            @media (min-width: 767px) and (max-width: 1199px) {
+            @media (min-width: 768px) and (max-width: 1199px) {
                 grid-column: span 2;
             }
             @media (min-width: 1400px) {
@@ -438,15 +468,32 @@ $waterfalls-flow-item-gap: $spacer;
 }
 
 // 評論
-swiper-container.comment-swiper {
-    height: 400px;
+.comment-img-height {
+    @media (max-width: 991px) {
+        width: 100%;
+    }
 
-    @media (min-width: 768px) {
-        height: 480px;
+    @media (min-width: 992px) {
+        height: $comment-height * 1.1;
+    }
+}
+
+swiper-container.comment-height {
+    height: 440px;
+
+    @media (min-width: 576px) {
+        height: $comment-height;
     }
 
     swiper-slide {
         height: calc((100% - 30px) / 2) !important;
+    }
+}
+
+// 好評主揪開團
+.good-rating-height {
+    swiper-slide {
+        height: 90%;
     }
 }
 </style>

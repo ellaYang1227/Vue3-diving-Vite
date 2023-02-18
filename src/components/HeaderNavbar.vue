@@ -68,7 +68,7 @@ export default {
                                 data-bs-display="static"
                                 aria-expanded="false"
                             >
-                                <UserMugShot :is-show-name="false" :name="user.name" :img="user.img" />
+                                <UserMugShot :width-size="45" :is-show-name="false" :name="user.name" :img="user.img" />
                                 <h5 class="fs-5 ms-2 d-md-none mb-0 text-truncate text-primary">
                                     {{ user.name }}
                                 </h5>

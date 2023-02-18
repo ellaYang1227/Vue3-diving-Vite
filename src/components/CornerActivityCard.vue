@@ -32,7 +32,7 @@ export default {
 
 <template>
     <router-link to="#" class="col text-decoration-none">
-        <div class="img-frame-card">
+        <div class="corner-card">
             <div class="img-frame mb-3">
                 <div class="outer-border"></div>
                 <div class="card custom-rectangle bg-primary">
@@ -68,7 +68,7 @@ export default {
 @import "../assets/styles/bootstrap-custom-variables";
 $img-frame-card-Spacing: 1rem;
 
-.img-frame-card {
+.corner-card {
     margin-left: $img-frame-card-Spacing;
     margin-top: $img-frame-card-Spacing;
 
