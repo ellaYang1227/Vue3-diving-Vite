@@ -132,7 +132,7 @@ export default {
                 <router-link to="addGroup" class="btn btn-outline-lightPrimary btn-lg rounded-pill opacity-75" role="button">我要揪團</router-link>
             </div>
         </div>
-        <div class="bg-lightPrimary bg-opacity-20 mt-3" data-aos="fade-up" data-aos-delay="600">
+        <div class="bg-primary bg-opacity-20 mt-3" data-aos="fade-up" data-aos-delay="600">
             <div class="container py-4">
                 <div class="row gx-0 gy-4 justify-content-center">
                     <div
@@ -192,7 +192,7 @@ export default {
         </div>
     </div>
     <!-- 地點 -->
-    <div class="bg-lightPrimary bg-opacity-20 my-4 my-md-5 py-3" data-aos="fade-up">
+    <div class="bg-primary bg-opacity-10 my-4 my-md-5 py-3" data-aos="fade-up">
         <div class="container-fluid waterfalls-flow-imgs">
             <router-link
                 to="#"
@@ -206,7 +206,7 @@ export default {
                 <div class="waterfalls-flow-item-img-box">
                     <img :src="adLocation.img" :alt="adLocation.name" class="img-cover" />
                 </div>
-                <div class="position-absolute bottom-0 start-0 m-3 p-2 border border-lightPrimary bg-lightPrimary bg-opacity-20">
+                <div class="position-absolute bottom-0 start-0 m-3 p-2 border border-lightPrimary bg-primary bg-opacity-20">
                     <h2 class="text-truncate-row-2 mb-0 text-body fs-5">
                         {{ adLocation.name }}
                     </h2>

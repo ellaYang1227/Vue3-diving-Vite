@@ -1,5 +1,4 @@
 <script setup>
-import { user } from "../data/auth.js";
 import dateFormat from "../handle-formats/dateFormat.js";
 import { logo } from "../data/imagePaths.js";
 
@@ -7,14 +6,17 @@ const { VITE_COMPANY_NAME } = import.meta.env;
 </script>
 
 <script>
+import * as bootstrap from "bootstrap";
 import { mapState, mapActions } from "pinia";
 
 import UserMugShot from "./UserMugShot.vue";
+import AuthStore from "../stores/AuthStore.js";
 import MemberStore from "../stores/MemberStore.js";
 
 export default {
     data() {
         return {
+            offcanvasNavbar: null,
             hasHavbarBg: false
         };
     },
@@ -24,43 +26,53 @@ export default {
     mounted() {
         this.getMySignUp(3);
         window.addEventListener("scroll", this.scrollEvent);
+        this.offcanvasNavbar = new bootstrap.Offcanvas(this.$refs.offcanvasNavbar, { keyboard: false });
     },
     computed: {
-        ...mapState(MemberStore, ["mySignUp"])
+        ...mapState(MemberStore, ["mySignUp"]),
+        ...mapState(AuthStore, ["user"])
     },
     methods: {
         ...mapActions(MemberStore, ["getMySignUp"]),
+        ...mapActions(AuthStore, ["logout"]),
         scrollEvent() {
             this.hasHavbarBg = window.scrollY ? true : false;
+        },
+        toggleOffcanvasNavbar() {
+            if (768 > document.body.clientWidth) {
+                this.offcanvasNavbar.toggle();
+            }
         }
     }
 };
 </script>
 
 <template>
-    <nav class="fixed-top navbar navbar-expand-md navbar-dark p-0" :class="[hasHavbarBg ? 'bg-darkPrimary bg-opacity-90 shadow' : 'bg-transparent']">
+    <nav
+        class="fixed-top navbar navbar-expand-md navbar-dark p-0"
+        :class="[hasHavbarBg ? 'bg-darkPrimary bg-opacity-90 shadow-lg' : 'bg-transparent']"
+    >
         <div class="container">
             <router-link class="navbar-brand" to="/index">
-                <img :src="logo" :alt="VITE_COMPANY_NAME" class="mb-md-2" />
+                <img :src="logo" :alt="VITE_COMPANY_NAME" class="mb-md-2 logo-img" />
             </router-link>
             <router-link class="btn btn-primary btn-custom-rectangle ms-auto me-3 me-md-0 ms-md-2 order-md-last" to="#" role="button"
                 >我要揪團</router-link
             >
-            <button
-                class="navbar-toggler"
-                type="button"
-                data-bs-toggle="offcanvas"
-                data-bs-target="#offcanvasNavbarHeader"
-                aria-controls="offcanvasNavbarHeader"
-            >
+            <button class="navbar-toggler" type="button" aria-controls="offcanvasNavbar" @click="toggleOffcanvasNavbar">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="offcanvas offcanvas-start border-0" tabindex="-1" id="offcanvasNavbarHeader" aria-labelledby="offcanvasNavbarHeaderLabel">
+            <div
+                class="offcanvas-navbar offcanvas offcanvas-start border-0"
+                tabindex="-1"
+                ref="offcanvasNavbar"
+                aria-labelledby="offcanvasNavbarLabel"
+            >
                 <div class="offcanvas-body px-0 pt-0">
                     <ul class="navbar-nav ms-auto align-items-md-center">
-                        <li class="nav-item dropdown order-md-last" v-if="user">
+                        <li class="nav-item dropdown order-md-last">
                             <a
-                                class="nav-link dropdown-toggle dropdown-hide-arrow d-flex align-items-center"
+                                class="nav-link dropdown-toggle dropdown-hide-arrow d-flex align-items-center border-bottom border-color-dropdown"
                                 href="#"
                                 id="dropUser"
                                 role="button"
@@ -68,9 +80,10 @@ export default {
                                 data-bs-display="static"
                                 aria-expanded="false"
                             >
-                                <UserMugShot :width-size="45" :is-show-name="false" :name="user.name" :img="user.img" />
-                                <h5 class="fs-5 ms-2 d-md-none mb-0 text-truncate text-primary">
-                                    {{ user.name }}
+                                <UserMugShot :width-size="45" :is-show-name="false" :name="user.name" :img="user.img" v-if="user" class="me-2" />
+                                <h5 class="fs-5 d-md-none mb-0 text-truncate text-primary">
+                                    <img :src="logo" :alt="VITE_COMPANY_NAME" class="logo-img" v-if="!user" />
+                                    <template v-else>{{ user.name }}</template>
                                 </h5>
                                 <button
                                     type="button"
@@ -79,37 +92,36 @@ export default {
                                     aria-label="Close"
                                 ></button>
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-md-end" aria-labelledby="dropUser">
+                            <ul class="dropdown-menu dropdown-menu-md-end" aria-labelledby="dropUser" v-if="user">
                                 <li>
                                     <h5 class="dropdown-header fs-6 text-truncate text-primary d-none d-md-block">
                                         {{ user.name }}
                                     </h5>
                                 </li>
-                                <li><hr class="dropdown-divider" /></li>
                                 <li>
-                                    <router-link class="dropdown-item" to="#">編輯個人資料</router-link>
+                                    <router-link class="dropdown-item" to="#" @click="toggleOffcanvasNavbar">編輯個人資料</router-link>
                                 </li>
                                 <li>
-                                    <router-link class="dropdown-item" to="#">我的潛水證照</router-link>
-                                </li>
-                                <li><hr class="dropdown-divider" /></li>
-                                <li>
-                                    <router-link class="dropdown-item" to="#">我的揪團</router-link>
-                                </li>
-                                <li>
-                                    <router-link class="dropdown-item" to="#">我的報名</router-link>
-                                </li>
-                                <li>
-                                    <router-link class="dropdown-item" to="#">評價管理</router-link>
+                                    <router-link class="dropdown-item" to="#" @click="toggleOffcanvasNavbar">我的潛水證照</router-link>
                                 </li>
                                 <li><hr class="dropdown-divider" /></li>
                                 <li>
-                                    <a class="dropdown-item d-none d-md-block" href="#">登出</a>
+                                    <router-link class="dropdown-item" to="#" @click="toggleOffcanvasNavbar">我的揪團</router-link>
+                                </li>
+                                <li>
+                                    <router-link class="dropdown-item" to="#" @click="toggleOffcanvasNavbar">我的報名</router-link>
+                                </li>
+                                <li>
+                                    <router-link class="dropdown-item" to="#" @click="toggleOffcanvasNavbar">評價管理</router-link>
+                                </li>
+                                <li><hr class="dropdown-divider" /></li>
+                                <li>
+                                    <a class="dropdown-item d-none d-md-block" href="#" @click.prevent="logout">登出</a>
                                 </li>
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <router-link class="nav-link" to="#">找揪團</router-link>
+                            <router-link class="nav-link" to="#" @click="toggleOffcanvasNavbar">找揪團</router-link>
                         </li>
                         <li class="nav-item dropdown d-none d-md-block" v-if="user">
                             <a
@@ -153,15 +165,23 @@ export default {
                         </li>
                         <template v-if="!user">
                             <li class="nav-item">
-                                <router-link class="nav-link" to="login">登入</router-link>
+                                <router-link class="nav-link" to="/login" @click="toggleOffcanvasNavbar">登入</router-link>
                             </li>
                             <li class="nav-item">
-                                <router-link class="nav-link" to="logout">註冊</router-link>
+                                <router-link class="nav-link" to="/signup" @click="toggleOffcanvasNavbar">註冊</router-link>
                             </li>
                         </template>
                         <template v-else>
                             <li class="nav-item d-md-none border-top border-color-dropdown">
-                                <a class="nav-link" href="#">登出</a>
+                                <a
+                                    class="nav-link"
+                                    href="#"
+                                    @click.prevent="
+                                        toggleOffcanvasNavbar();
+                                        logout();
+                                    "
+                                    >登出</a
+                                >
                             </li>
                         </template>
                     </ul>
@@ -176,21 +196,16 @@ export default {
 
 .navbar {
     height: $header-height;
-    @media (min-width: 768px) {
-        height: $header-height-md-up;
-    }
 
-    .navbar-brand {
-        img {
-            height: 45px;
+    .logo-img {
+        height: 45px;
 
-            @media (min-width: 768px) {
-                height: 50px;
-            }
+        @media (min-width: 768px) {
+            height: 50px;
         }
     }
 
-    .navbar-toggler[data-bs-target="#offcanvasNavbarHeader"] {
+    .navbar-toggler[aria-controls="offcanvasNavbar"] {
         @media (max-width: 767px) {
             display: flex;
             align-items: center;
@@ -201,7 +216,13 @@ export default {
         }
     }
 
-    #offcanvasNavbarHeader {
+    .dropdown-toggle {
+        @media (min-width: 768px) {
+            border-bottom: 0 !important;
+        }
+    }
+
+    .offcanvas-navbar {
         @media (max-width: 767px) {
             width: 100vw;
         }
@@ -215,6 +236,7 @@ export default {
                         &#dropUser {
                             padding-bottom: 1rem;
                             padding-top: 1rem;
+                            height: $header-height;
                         }
                     }
 

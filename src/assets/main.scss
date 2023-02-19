@@ -1,6 +1,7 @@
 @import "./styles/bootstrap-custom-variables";
 @import "./styles/_bootstrap-custom-utilities";
 @import "bootstrap/scss/bootstrap";
+@import "./styles/_bootstrap-custom-loop";
 @import "./styles/swiper-custom-variables";
 @import "./styles/_other";
 
@@ -31,10 +32,6 @@ body {
 // 置頂高度(距離 header 高度)
 .fixed-margin-top-headerHeight {
     margin-top: $header-height;
-
-    @include media-breakpoint-up(md) {
-        margin-top: $header-height-md-up;
-    }
 }
 
 // 邊框顏色同下拉下單選單
@@ -65,8 +62,24 @@ body {
     border-style: dashed !important;
 }
 
-.border-card-border-width{
+.border-card-border-width {
     border-width: $card-border-width !important;
+}
+
+// 修改 input 預設樣式 :
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+    -webkit-text-fill-color: $input-color; // 改變字體顏色
+    -webkit-box-shadow: 0 0 0px 1000px $input-bg inset; // 改變背景色
+    box-shadow: 0 0 0px 1000px $input-bg inset;
+    transition: background-color 5000s ease-in-out 0s;
 }
 
 /*
@@ -75,6 +88,7 @@ body {
 * ==========================================================================
 */
 
+// dropdown
 .dropdown-menu {
     @include media-breakpoint-up(md) {
         &:not([aria-labelledby="dropMySignUp"]) {
@@ -89,6 +103,7 @@ body {
     }
 }
 
+// nav
 .nav-link {
     &.disabled {
         font-weight: 500;
@@ -100,7 +115,6 @@ body {
 * swiper 輪播
 * ==========================================================================
 */
-
 
 /*
 * ==========================================================================
