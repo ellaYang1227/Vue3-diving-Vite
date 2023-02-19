@@ -104,10 +104,10 @@ export default {
 </template>
 
 <style lang="scss">
-$margin-y-spacing: 20px;
+@import "../../assets/styles/bootstrap-custom-variables";
 
 .login-card {
-    margin-top: $margin-y-spacing;
+    margin-top: $card-spacer-x;
 
     .login-img {
         @media (max-width: 375px) {
@@ -120,11 +120,11 @@ $margin-y-spacing: 20px;
 
         @media (min-width: 768px) {
             position: absolute;
-            height: calc(100% + $margin-y-spacing * 2);
+            height: calc(100% + $card-spacer-x * 2);
         }
 
-        width: 90%;
-        margin-top: -$margin-y-spacing;
+        width: calc(100% - $card-spacer-x * 2);
+        margin-top: -$card-spacer-x;
     }
 }
 </style>

@@ -36,15 +36,16 @@ export default {
     <div class="container py-4 py-md-5">
         <div class="row justify-content-center">
             <div class="col-md-11 col-lg-10 col-xxl-8">
-                <div class="signup-card card bg-darkPrimary bg-opacity-50 shadow-lg position-relative">
-                    <div class="signup-img-box position-relative w-100">
+                <div class="signup-card card bg-darkPrimary bg-opacity-50 shadow-lg">
+                    <div class="signup-img-box position-relative d-flex justify-content-center">
                         <img
                             :src="loginImg"
-                            class="signup-img card-img-top border border-card-border-width login-img img-cover shadow-lg top-50 start-50 translate-middle"
+                            class="signup-img card-img-top border border-card-border-width login-img img-cover shadow-lg"
                             :alt="`${VITE_COMPANY_NAME}-${title}`"
                         />
                     </div>
                     <div class="card-body">
+                        <h5 class="card-title py-2 fw-bold fs-4 text-primary">{{ title }}</h5>
                         <Form v-slot="{ errors }" @submit="signup">
                             <fieldset :disabled="isLoadingBtn" class="row g-3">
                                 <div class="col-md-6">
@@ -120,30 +121,28 @@ export default {
 </template>
 
 <style lang="scss">
-$margin-y-spacing: 10px;
+@import "../../assets/styles/bootstrap-custom-variables";
 
 .signup-card {
-    margin-top: $margin-y-spacing;
+    margin-top: $card-spacer-x;
 
     .signup-img-box {
         height: 180px;
 
-        .signup-img {
-            // @media (max-width: 375px) {
-            //     height: 150px;
-            // }
+        @media (max-width: 375px) {
+            height: 150px;
+        }
 
-            // @media (min-width: 376px) and (max-width: 767px) {
-            //     height: 180px;
-            // }
+        .signup-img {
+            height: 100%;
 
             @media (min-width: 768px) {
                 position: absolute;
-                height: calc(100% + $margin-y-spacing * 2);
+                height: calc(100% + $card-spacer-x * 1);
             }
 
-            width: 95%;
-            margin-top: -$margin-y-spacing;
+            width: calc(100% - $card-spacer-x * 2);
+            margin-top: -$card-spacer-x;
         }
     }
 }
