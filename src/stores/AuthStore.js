@@ -4,11 +4,11 @@ const { VITE_API_PATH } = import.meta.env;
 
 export default defineStore("AuthStore", {
     state: () => ({
-        // user: {
-        //     name: "ella",
-        //     img: "" ///ella.jpg
-        // }
-        user: null
+        user: {
+            name: "ella",
+            img: "" ///ella.jpg
+        }
+        //user: null
     }),
     getters: {},
     actions: {

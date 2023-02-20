@@ -8,24 +8,14 @@ export default {
             isVerticalMiddle: false
         };
     },
+    provide() {
+        return {
+            frontLayoutData: this
+        };
+    },
     components: {
         HeaderNavbar,
         FooterComponent
-    },
-    watch: {
-        $route() {
-            this.setIsVerticalMiddle();
-        }
-    },
-    created() {
-        this.setIsVerticalMiddle();
-    },
-    methods: {
-        setIsVerticalMiddle() {
-            const { path } = this.$route;
-            console.log(path);
-            this.isVerticalMiddle = path.includes("login") ? true : false;
-        }
     }
 };
 </script>

@@ -34,3 +34,13 @@ $whiteSpaces: "pre-wrap";
         }
     }
 }
+
+// 滑鼠樣式
+$cursorStyles: "default", "pointer";
+.cursor- {
+    @each $cursorStyle in $cursorStyles {
+        &#{$cursorStyle} {
+            cursor: #{$cursorStyle + " !important"};
+        }
+    }
+}

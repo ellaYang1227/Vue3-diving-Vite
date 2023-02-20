@@ -1,6 +1,7 @@
 import axios from "axios";
+const { BASE_URL } = import.meta.env;
+const baseJsonURL = `${BASE_URL}jsons`;
 
-const baseJsonURL = `${import.meta.env.BASE_URL}jsons`;
 // 創建 axios 實例
 const bacsRequest = axios.create({
     baseURL: baseJsonURL

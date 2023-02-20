@@ -44,6 +44,7 @@ body {
     object-fit: cover;
     object-position: 50% 50%;
     width: 100%;
+    height: 100%;
 }
 
 // 按鈕自訂矩形圓角
@@ -110,12 +111,18 @@ select:-webkit-autofill:focus {
     }
 }
 
-/*
-* ==========================================================================
-* swiper 輪播
-* ==========================================================================
-*/
+// form
+// checkbox & radios
+.form-check-input,
+.form-check-label {
+    cursor: pointer;
+}
 
+.form-select {
+    option:disabled{
+        color: $input-placeholder-color;
+    }
+}
 /*
 * ==========================================================================
 * vue-star-rating 評分

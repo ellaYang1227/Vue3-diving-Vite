@@ -7,14 +7,24 @@ const { VITE_COMPANY_NAME } = import.meta.env;
 
 <script>
 import { Form, Field, ErrorMessage } from "vee-validate";
+import { mapActions } from "pinia";
+import OtherStore from "../../stores/OtherStore.js";
+import UploadImg from "../../components/UploadImg.vue";
 
 export default {
     data() {
         return {
             title: "註冊",
+            certificateLevelOptions: [],
+            cylinderTotalOptions: [],
             user: {
                 email: "",
-                password: ""
+                password: "",
+                name: "",
+                img: "",
+                certificateLevels: [],
+                isNitrox: "",
+                cylinderTotal: ""
             },
             isLoadingBtn: false
         };
@@ -22,9 +32,18 @@ export default {
     components: {
         Form,
         Field,
-        ErrorMessage
+        ErrorMessage,
+        UploadImg
+    },
+    mounted() {
+        Promise.all([this.getCertificateLevelOptions(), this.getCylinderTotalOptions()]).then(resArr => {
+            console.log(resArr);
+            this.certificateLevelOptions = resArr[0];
+            this.cylinderTotalOptions = resArr[1];
+        });
     },
     methods: {
+        ...mapActions(OtherStore, ["getCertificateLevelOptions", "getCylinderTotalOptions"]),
         signup() {
             this.isLoadingBtn = true;
         }
@@ -44,16 +63,19 @@ export default {
                             :alt="`${VITE_COMPANY_NAME}-${title}`"
                         />
                     </div>
-                    <div class="card-body">
-                        <h5 class="card-title py-2 fw-bold fs-4 text-primary">{{ title }}</h5>
+                    <div class="card-body pt-4 pt-md-5">
+                        <h5 class="card-title pb-2 fw-bold fs-4 text-primary">{{ title }}</h5>
                         <Form v-slot="{ errors }" @submit="signup">
                             <fieldset :disabled="isLoadingBtn" class="row g-3">
+                                <div class="col-12">
+                                    <UploadImg :errors="errors" />
+                                </div>
                                 <div class="col-md-6">
-                                    <label :for="`${formSchema.email.label}Input`" class="form-label"
+                                    <label :for="`${formSchema.email.name}Input`" class="form-label"
                                         >{{ formSchema.email.label }}<span class="text-danger" v-if="formSchema.email.isRequired">*</span></label
                                     >
                                     <Field
-                                        :id="`${formSchema.email.label}Input`"
+                                        :id="`${formSchema.email.name}Input`"
                                         :name="formSchema.email.label"
                                         :type="formSchema.email.type"
                                         class="form-control"
@@ -65,37 +87,35 @@ export default {
                                     <ErrorMessage :name="formSchema.email.label" class="invalid-feedback"></ErrorMessage>
                                 </div>
                                 <div class="col-md-6">
-                                    <label :for="`${formSchema.password.label}Input`" class="form-label"
+                                    <label :for="`${formSchema.password.name}Input`" class="form-label"
                                         >{{ formSchema.password.label
                                         }}<span class="text-danger" v-if="formSchema.password.isRequired">*</span></label
                                     >
                                     <Field
-                                        :id="`${formSchema.password.label}Input`"
+                                        :id="`${formSchema.password.name}Input`"
                                         :name="formSchema.password.label"
                                         :type="formSchema.password.type"
                                         class="form-control"
                                         :class="{ 'is-invalid': errors[formSchema.password.label] }"
-                                        :placeholder="`請輸入 ${formSchema.password.label}`"
+                                        :placeholder="`請輸入${formSchema.password.label}`"
                                         :rules="formSchema.password.rules"
                                         v-model="user.password"
                                     ></Field>
                                     <ErrorMessage :name="formSchema.password.label" class="invalid-feedback"></ErrorMessage>
-                                    <div class="invalid-feedback d-block text-lightPrimary" v-if="!errors[formSchema.password.label]">
-                                        {{ formSchema.password.help }}
-                                    </div>
+                                    <span v-if="!errors[formSchema.password.label]" class="invalid-feedback text-body d-block">{{ formSchema.password.help }}</span>
                                 </div>
                                 <div class="col-md-6">
-                                    <label :for="`${formSchema.userName.label}Input`" class="form-label"
+                                    <label :for="`${formSchema.userName.name}Input`" class="form-label"
                                         >{{ formSchema.userName.label
                                         }}<span class="text-danger" v-if="formSchema.userName.isRequired">*</span></label
                                     >
                                     <Field
-                                        :id="`${formSchema.userName.label}Input`"
+                                        :id="`${formSchema.userName.name}Input`"
                                         :name="formSchema.userName.label"
                                         :type="formSchema.userName.type"
                                         class="form-control"
                                         :class="{ 'is-invalid': errors[formSchema.userName.label] }"
-                                        :placeholder="`請輸入 ${formSchema.userName.label}`"
+                                        :placeholder="`請輸入${formSchema.userName.label}`"
                                         :rules="formSchema.userName.rules"
                                         v-model="user.userName"
                                     ></Field>
@@ -105,8 +125,65 @@ export default {
                                     <div class="alert alert-warning" role="alert">
                                         警告：請確實勾選您的證照，出團時，須提供證件審查；如有不實，則受退團處分，且不予退費。
                                     </div>
+                                    <label :for="`${formSchema.certificateLevel.name}Input`" class="form-label d-block"
+                                        >{{ formSchema.certificateLevel.label
+                                        }}<span class="text-danger" v-if="formSchema.certificateLevel.isRequired">*</span></label
+                                    >
+                                    <div class="form-check form-check-inline" v-for="option in certificateLevelOptions" :key="option.value">
+                                        <Field
+                                            :class="{ 'is-invalid': errors[formSchema.certificateLevel.label] }"
+                                            class="form-check-input"
+                                            :id="`certificateLevelCheckbox-${option.value}`"
+                                            :name="formSchema.certificateLevel.name"
+                                            :type="formSchema.certificateLevel.type"
+                                            :value="option.value"
+                                            :rules="formSchema.certificateLevel.rules"
+                                            v-model="user.certificateLevels"
+                                        /><label class="form-check-label" :for="`certificateLevelCheckbox-${option.value}`">{{ option.name }}</label>
+                                    </div>
+                                    <ErrorMessage :name="formSchema.certificateLevel.label" class="invalid-feedback d-block"></ErrorMessage>
                                 </div>
-                                <div class="col-12 text-end border-top pt-3">
+                                <div class="col-12">
+                                    <label :for="`${formSchema.isNitrox.name}Input`" class="form-label d-block"
+                                        >{{ formSchema.isNitrox.label
+                                        }}<span class="text-danger" v-if="formSchema.isNitrox.isRequired">*</span></label
+                                    >
+                                    <div class="form-check form-check-inline" v-for="option in formSchema.isNitrox.options" :key="option">
+                                        <Field
+                                            :class="{ 'is-invalid': errors[formSchema.isNitrox.label] }"
+                                            class="form-check-input"
+                                            :id="`isNitroxRadio-${option}`"
+                                            :name="formSchema.isNitrox.name"
+                                            :type="formSchema.isNitrox.type"
+                                            :value="option"
+                                            :rules="formSchema.isNitrox.rules"
+                                            v-model="user.isNitrox"
+                                        /><label class="form-check-label" :for="`isNitroxRadio-${option}`">{{ option ? "是" : "否" }}</label>
+                                    </div>
+                                    <ErrorMessage :name="formSchema.isNitrox.label" class="invalid-feedback d-block"></ErrorMessage>
+                                </div>
+                                <div class="col-auto">
+                                    <label :for="`${formSchema.cylinderTotal.name}Input`" class="form-label d-block"
+                                        >{{ formSchema.cylinderTotal.label
+                                        }}<span class="text-danger" v-if="formSchema.cylinderTotal.isRequired">*</span></label
+                                    >
+                                    <Field
+                                        :class="{ 'is-invalid': errors[formSchema.cylinderTotal.label] }"
+                                        class="form-select"
+                                        :id="`${formSchema.cylinderTotal.name}Select`"
+                                        :name="formSchema.cylinderTotal.label"
+                                        :as="formSchema.cylinderTotal.as"
+                                        :rules="formSchema.cylinderTotal.rules"
+                                        v-model="user.cylinderTotal"
+                                    >
+                                        <option value="" disabled>請選擇</option>
+                                        <option v-for="option in cylinderTotalOptions" :key="option" :value="option">
+                                            {{ option }}
+                                        </option></Field
+                                    >
+                                    <ErrorMessage :name="formSchema.cylinderTotal.label" class="invalid-feedback"></ErrorMessage>
+                                </div>
+                                <div class="col-12 text-end border-top pt-3 mt-4 mt-md-5">
                                     <button type="submit" class="btn btn-primary" :disabled="isLoadingBtn || Object.keys(errors).length">
                                         {{ title }}
                                     </button>
@@ -134,8 +211,6 @@ export default {
         }
 
         .signup-img {
-            height: 100%;
-
             @media (min-width: 768px) {
                 position: absolute;
                 height: calc(100% + $card-spacer-x * 1);

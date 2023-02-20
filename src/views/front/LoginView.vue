@@ -24,6 +24,10 @@ export default {
         Field,
         ErrorMessage
     },
+    inject: ["frontLayoutData"],
+    created() {
+        this.frontLayoutData.isVerticalMiddle = true;
+    },
     methods: {
         login() {
             this.isLoadingBtn = true;
@@ -33,7 +37,7 @@ export default {
 </script>
 
 <template>
-    <div class="container py-4 py-md-5">
+    <div class="container py-2 py-sm-4 py-md-5">
         <div class="row justify-content-center">
             <div class="col-md-11 col-lg-10 col-xxl-8">
                 <div class="login-card card bg-darkPrimary bg-opacity-50 shadow-lg">
@@ -78,7 +82,7 @@ export default {
                                                 :type="formSchema.password.type"
                                                 class="form-control"
                                                 :class="{ 'is-invalid': errors[formSchema.password.label] }"
-                                                :placeholder="`請輸入 ${formSchema.password.label}`"
+                                                :placeholder="`請輸入${formSchema.password.label}`"
                                                 :rules="formSchema.password.rules"
                                                 v-model="user.password"
                                             ></Field>

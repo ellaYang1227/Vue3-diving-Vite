@@ -1,5 +1,6 @@
 export default {
     email: {
+        name: "email",
         label: "Email",
         type: "email",
         as: "input",
@@ -7,6 +8,7 @@ export default {
         isRequired: true
     },
     password: {
+        name: "password",
         label: "密碼",
         type: "password",
         as: "password",
@@ -18,6 +20,7 @@ export default {
         help: "密碼需至少 8 碼以上，並英數混合"
     },
     userName: {
+        name: "userName",
         label: "名字",
         type: "text",
         as: "input",
@@ -25,13 +28,24 @@ export default {
         isRequired: true
     },
     userImg: {
+        name: "userImg",
         label: "大頭照",
         type: "file",
         as: "input",
         rules: "image",
         isRequired: false
     },
+    uploadImg: {
+        name: "uploadImg",
+        label: "上傳照片",
+        type: "file",
+        as: "input",
+        accept: "",
+        rules: "image|size:1024",
+        isRequired: false
+    },
     certificateLevel: {
+        name: "certificateLevel",
         label: "潛水證照等級",
         type: "checkbox",
         as: "input",
@@ -39,13 +53,16 @@ export default {
         isRequired: true
     },
     isNitrox: {
+        name: "isNitrox",
         label: "擁有高氧證照",
         type: "radio",
         as: "input",
         rules: "required",
-        isRequired: true
+        isRequired: true,
+        options: [0, 1]
     },
     cylinderTotal: {
+        name: "cylinderTotal",
         label: "潛水支數",
         as: "select",
         rules: "",
