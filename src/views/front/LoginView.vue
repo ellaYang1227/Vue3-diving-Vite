@@ -1,11 +1,12 @@
 <script setup>
 import formSchema from "../../data/formSchema.js";
 import { loginImg } from "../../data/imagePaths.js";
-
 const { VITE_COMPANY_NAME } = import.meta.env;
 </script>
 
 <script>
+import { mapActions } from "pinia";
+import LoadingStore from "../../stores/LoadingStore.js";
 import { Form, Field, ErrorMessage } from "vee-validate";
 
 export default {
@@ -27,9 +28,11 @@ export default {
     inject: ["frontLayoutData"],
     created() {
         this.frontLayoutData.isVerticalMiddle = true;
+        //this.hideLoading();
     },
     methods: {
-        login() {
+        ...mapActions(LoadingStore, ["showLoading", "hideLoading"]),
+        onSubmit() {
             this.isLoadingBtn = true;
         }
     }
@@ -52,7 +55,7 @@ export default {
                         <div class="col-md-7">
                             <div class="card-body py-4 py-md-5">
                                 <h5 class="card-title mb-2 mb-mb-4 fw-bold fs-4 text-primary">{{ title }}</h5>
-                                <Form v-slot="{ errors }" @submit="login">
+                                <Form v-slot="{ errors }" @submit="onSubmit">
                                     <fieldset :disabled="isLoadingBtn">
                                         <div class="mb-3">
                                             <label :for="`${formSchema.email.label}Input`" class="form-label"

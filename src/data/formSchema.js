@@ -40,9 +40,9 @@ export default {
         label: "上傳照片",
         type: "file",
         as: "input",
-        accept: "",
-        rules: "image|size:1024",
-        isRequired: false
+        accept: "image/*",
+        rules: "required|image|size:1024",
+        isRequired: true
     },
     certificateLevel: {
         name: "certificateLevel",

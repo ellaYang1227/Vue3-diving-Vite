@@ -4,14 +4,10 @@ import formSchema from "../data/formSchema.js";
 
 <script>
 import { Field, ErrorMessage } from "vee-validate";
-import { mapActions } from "pinia";
-import HexschoolUploadStore from "../stores/HexschoolUploadStore.js";
 
 export default {
     data() {
         return {
-            uploadImgUrl: "",
-            errMsgs: [],
             isLoading: false
         };
     },
@@ -19,58 +15,43 @@ export default {
         errors: {
             type: Object,
             required: true
+        },
+        img: {
+            type: String,
+            required: true
         }
     },
+    emits: ["update:img"],
     components: {
         Field,
         ErrorMessage
     },
-    mounted() {},
     methods: {
-        ...mapActions(HexschoolUploadStore, ["uploadImg"]),
         upload(event) {
             const file = event.target.files[0];
-            console.log(file);
-            this.isLoading = true;
-            this.uploadImg(file).then(res => {
-                console.log(res);
-                this.isLoading = false;
-                console.log(this.errors)
-            });
-            // this.errMsgs = [];
-            // const { data, type, size } = this.formSchema.upload_img.validates;
-            // const file = event.target.files[0];
+            if (this.errors[formSchema.uploadImg.label] || !file) {
+                this.setUploadErr();
+            } else {
+                this.isLoading = true;
+                setTimeout(() => {
+                    let reader = new FileReader();
+                    // 轉 Base64
+                    reader.onload = e => {
+                        this.isLoading = false;
+                        this.$emit("update:img", e.target.result);
+                    };
 
-            // if (!file) {
-            //     this.errMsgs.push(data);
-            // } else {
-            //     // 檢查格式
-            //     const regex = new RegExp("^image/(png|jpg|jpeg)$");
-            //     if (!regex.test(file.type)) {
-            //         this.errMsgs.push(type);
-            //     }
-
-            //     // 檢查檔案大小 小於等於 1 mb
-            //     if (file.size / 1024 / 1024 > 1) {
-            //         this.errMsgs.push(size);
-            //     }
-            // }
-
-            // if (!this.errMsgs.length) {
-            //     this.upload(file);
-            // } else {
-            //     this.setSwalError();
-            // }
+                    reader.onerror = err => {
+                        console.error(err);
+                        this.setUploadErr();
+                    };
+                    // 讀取檔案
+                    reader.readAsDataURL(file);
+                }, 500);
+            }
         },
-        emitData() {
-            const data = {
-                dataKey: this.dataKey,
-                uploadImgUrl: this.uploadImgUrl,
-                isInputErr: this.isRequired && (this.errMsgs.length || !this.uploadImgUrl) ? true : false
-            };
-
-            this.isLoading = false;
-            //this.$emit("update-image", data);
+        setUploadErr() {
+            console.error("上船錯誤");
         }
     }
 };
@@ -82,7 +63,7 @@ export default {
         :name="formSchema.uploadImg.label"
         :type="formSchema.uploadImg.type"
         :rules="formSchema.uploadImg.rules"
-        @change="upload($event)"
+        @change="upload"
     >
         <label class="file-img rounded p-1" :class="{ 'border-danger': errors[formSchema.uploadImg.label], 'cursor-pointer': !isLoading }">
             <input
@@ -94,7 +75,7 @@ export default {
             />
             <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center">
                 <template v-if="!isLoading">
-                    <img :src="uploadImgUrl" v-if="uploadImgUrl" class="img-cover" />
+                    <img :src="img" v-if="img" class="img-cover" />
                     <font-awesome-icon v-else size="2x" icon="fa-solid fa-arrow-up-from-bracket" class="icon-color" />
                 </template>
                 <div v-else class="d-flex flex-column align-items-center justify-content-center icon-color">

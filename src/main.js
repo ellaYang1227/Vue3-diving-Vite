@@ -41,6 +41,9 @@ configure({
     validateOnInput: true // 調整為：輸入文字時，就立即進行驗證
 });
 
+import VueLoading from "vue-loading-overlay";
+import "vue-loading-overlay/dist/css/index.css";
+
 import "./assets/main.scss";
 
 const app = createApp(App);
@@ -49,4 +52,5 @@ app.use(createPinia());
 app.use(router);
 app.use(VueAxios, axios);
 app.component("font-awesome-icon", FontAwesomeIcon);
+app.component("VueLoading", VueLoading);
 app.mount("#app");

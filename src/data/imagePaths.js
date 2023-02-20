@@ -7,5 +7,6 @@ import licenseImg from "../assets/images/index/features/license.svg";
 import scoreImg from "../assets/images/index/features/score.svg";
 import commentImg from "../assets/images/index/comment.png";
 import loginImg from "../assets/images/login.jpg";
+import loadingImg from "../assets/images/loading.gif";
 
-export { logo, userDefaultImg, divingIcon, peoplesIcon, areaIcon, licenseImg, scoreImg, commentImg, loginImg };
+export { logo, userDefaultImg, divingIcon, peoplesIcon, areaIcon, licenseImg, scoreImg, commentImg, loginImg, loadingImg };
