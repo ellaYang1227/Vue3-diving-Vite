@@ -34,7 +34,7 @@ export default {
         <div class="bottom-frame-card">
             <div class="img-frame mb-3">
                 <div class="outer-border custom-rectangle border border-card-border-width"></div>
-                <div class="card custom-rectangle bg-primary">
+                <div class="card custom-rectangle">
                     <img :src="activity.imgs[0]" class="card-img custom-rectangle img-cover" :alt="`[${activity.location}]${activity.title}`" />
                     <div class="card-img-overlay text-body w-75">
                         <UserMugShot :name="activity.user?.name" :img="activity.user?.img" :score="activity.user?.score" :isShowRating="false" />

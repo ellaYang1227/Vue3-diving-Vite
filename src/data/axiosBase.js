@@ -1,10 +1,14 @@
 import axios from "axios";
-const { BASE_URL } = import.meta.env;
+import { setSwalFire } from "../data/sweetalert2.js";
+
+const { BASE_URL, VITE_API_ROOT } = import.meta.env;
 const baseJsonURL = `${BASE_URL}jsons`;
+const baseURL = `${VITE_API_ROOT}jsons`;
 
 // 創建 axios 實例
 const bacsRequest = axios.create({
-    baseURL: baseJsonURL
+    //baseURL: baseJsonURL
+    baseURL
 });
 
 // 請求攔截
@@ -16,6 +20,7 @@ bacsRequest.interceptors.request.use(
     },
     error => {
         // 如果送出前失敗了，這邊就可以做一些處理
+        setSwalFire("popup", "error", "系統錯誤", error.response.data);
         return Promise.reject(error);
     }
 );
@@ -28,8 +33,13 @@ bacsRequest.interceptors.response.use(
     },
     error => {
         // 這邊當 API 發生錯誤的時候就可以處理 Error handling
-        return Promise.reject(error.response.data);
+        let errorMsg = error.response.data;
+        if (!errorMsg) {
+            errorMsg = "發生不明錯誤，請重新操作";
+        }
+        setSwalFire("popup", "error", "系統錯誤", errorMsg);
+        return Promise.reject(errorMsg);
     }
 );
 
-export { baseJsonURL, bacsRequest };
+export { baseJsonURL, baseURL, bacsRequest };

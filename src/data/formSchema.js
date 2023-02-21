@@ -14,10 +14,10 @@ export default {
         as: "password",
         rules: value => {
             const pattern = /^(?=.*[0-9])(?=.*[a-zA-Z]).{8,}$/;
-            return pattern.test(value) ? true : "必填欄位，密碼需至少 8 碼以上，並英數混合";
+            return pattern.test(value) ? true : "密碼為必填，至少 8 碼以上英數混合";
         },
         isRequired: true,
-        help: "密碼需至少 8 碼以上，並英數混合"
+        help: "密碼至少 8 碼以上英數混合"
     },
     userName: {
         name: "userName",

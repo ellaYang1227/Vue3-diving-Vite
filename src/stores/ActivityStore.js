@@ -29,22 +29,22 @@ export default defineStore("ActivityStore", {
     actions: {
         // 只取已啟用且未違規，更新貼文日期由新到舊
         getActivitys() {
-            bacsRequest.get("/activitys.json").then(res => {
-                this.activitys = res
-                    .reverse()
-                    .filter(item => item.isEnable && !item.isViolation)
-                    .map(item => {
-                        return {
-                            ...item,
-                            ...this.statusFormat(item)
-                        };
-                    });
-            });
+            // bacsRequest.get("/activitys.json").then(res => {
+            //     this.activitys = res
+            //         .reverse()
+            //         .filter(item => item.isEnable && !item.isViolation)
+            //         .map(item => {
+            //             return {
+            //                 ...item,
+            //                 ...this.statusFormat(item)
+            //             };
+            //         });
+            // });
         },
         getLocations() {
-            bacsRequest.get("/locations.json").then(res => {
-                this.locations = res;
-            });
+            // bacsRequest.get("/locations.json").then(res => {
+            //     this.locations = res;
+            // });
         }
     }
 });

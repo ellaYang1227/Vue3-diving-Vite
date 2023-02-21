@@ -1,14 +1,16 @@
 <script>
 import AOS from "aos";
 import CountUp from "vue-countup-v3";
+import Swiper from "swiper/bundle";
 import { mapState, mapActions } from "pinia";
+import LoadingStore from "../../stores/LoadingStore.js";
+import ActivityStore from "../../stores/ActivityStore.js";
+import CommentStore from "../../stores/CommentStore.js";
+import swiperParams from "../../data/swiperParams.js";
 import { divingIcon, peoplesIcon, areaIcon, licenseImg, scoreImg, commentImg } from "../../data/imagePaths.js";
 import CornerActivityCard from "../../components/CornerActivityCard.vue";
 import BottomFrameActivityCard from "../../components/BottomFrameActivityCard.vue";
 import UserMugShot from "../../components/UserMugShot.vue";
-import ActivityStore from "../../stores/ActivityStore.js";
-import CommentStore from "../../stores/CommentStore.js";
-import swiperParams from "../../data/swiperParams.js";
 
 export default {
     data() {
@@ -49,6 +51,12 @@ export default {
             comments: []
         };
     },
+    components: {
+        CornerActivityCard,
+        BottomFrameActivityCard,
+        UserMugShot,
+        CountUp
+    },
     mounted() {
         AOS.init({
             duration: 1200,
@@ -62,6 +70,7 @@ export default {
             this.comments = resArr[0];
             this.setSwiper("commentSwiper");
             this.setSwiper("goodRatingSwiper");
+            this.hideLoading();
         });
     },
     computed: {
@@ -83,11 +92,11 @@ export default {
     methods: {
         ...mapActions(ActivityStore, ["getActivitys", "getLocations"]),
         ...mapActions(CommentStore, ["getComments"]),
+        ...mapActions(LoadingStore, ["showLoading", "hideLoading"]),
         toggleActiveActivityNav(nav) {
             this.activeActivityNav = nav;
         },
         setSwiper(refName) {
-            const swiperEl = this.$refs[refName];
             let addSwiperParams = null;
             if (refName === "commentSwiper") {
                 addSwiperParams = {
@@ -106,17 +115,8 @@ export default {
                 };
             }
 
-            // 將參數(swiperParams)分配給 Swiper 元素(swiperEl)
-            Object.assign(swiperEl, { ...swiperParams, ...addSwiperParams });
-            // 初始化
-            swiperEl.initialize();
+            new Swiper(this.$refs[refName], { ...swiperParams, ...addSwiperParams });
         }
-    },
-    components: {
-        CornerActivityCard,
-        BottomFrameActivityCard,
-        UserMugShot,
-        CountUp
     }
 };
 </script>
@@ -129,7 +129,7 @@ export default {
             <h1 class="main-title display-3 mb-0 fw-bold">潛安伴旅這裡揪</h1>
             <h2 class="sub-title opacity-75 fs-4">在氣瓶海人遇見好潛伴</h2>
             <div class="d-grid col-7 col-md-4 col-lg-3 mx-auto mt-4">
-                <router-link to="addGroup" class="btn btn-outline-lightPrimary btn-lg rounded-pill opacity-75" role="button">我要揪團</router-link>
+                <router-link to="addGroup" class="btn btn-outline-lightPrimary btn-lg rounded-pill" role="button">我要揪團</router-link>
             </div>
         </div>
         <div class="bg-primary bg-opacity-20 mt-3" data-aos="fade-up" data-aos-delay="600">
@@ -192,11 +192,11 @@ export default {
         </div>
     </div>
     <!-- 地點 -->
-    <div class="bg-primary bg-opacity-10 my-4 my-md-5 py-3" data-aos="fade-up">
+    <div class="bg-primary bg-opacity-20 my-4 my-md-5 py-3" data-aos="fade-up">
         <div class="container-fluid waterfalls-flow-imgs">
             <router-link
                 to="#"
-                class="position-relative shadow-lg"
+                class="position-relative shadow"
                 v-for="(adLocation, index) in adLocations"
                 :key="adLocation.id"
                 :class="`waterfalls-flow-item-${index + 1}`"
@@ -225,19 +225,22 @@ export default {
                     <img :src="commentImg" alt="評論" class="comment-img-height" />
                 </div>
                 <div class="col" data-aos="zoom-out">
-                    <swiper-container init="false" ref="commentSwiper" class="comment-height offset-pagination">
-                        <swiper-slide v-for="comment in comments" :key="comment.id" class="align-items-start">
-                            <div class="row align-items-end">
-                                <div class="col-sm-5">
-                                    <UserMugShot :name="comment.user.name" :img="comment.user.img" :score="comment.score" :isShowRating="false" />
+                    <div ref="commentSwiper" class="swiper comment-swiper offset-pagination">
+                        <div class="swiper-wrapper">
+                            <div v-for="comment in comments" :key="comment.id" class="swiper-slide align-items-start">
+                                <div class="row align-items-end">
+                                    <div class="col-sm-5">
+                                        <UserMugShot :name="comment.user.name" :img="comment.user.img" :score="comment.score" :isShowRating="false" />
+                                    </div>
+                                    <strong class="fs-5 col-sm-7 text-primary text-truncate text-sm-end mt-2 mt-sm-0">{{
+                                        comment.activity.title
+                                    }}</strong>
+                                    <p class="mb-0 col-12 mt-sm-2 text-truncate-row-4">{{ comment.content }}</p>
                                 </div>
-                                <strong class="fs-5 col-sm-7 text-primary text-truncate text-sm-end mt-2 mt-sm-0">{{
-                                    comment.activity.title
-                                }}</strong>
-                                <p class="mb-0 col-12 mt-sm-2 text-truncate-row-4">{{ comment.content }}</p>
                             </div>
-                        </swiper-slide>
-                    </swiper-container>
+                        </div>
+                        <div class="swiper-pagination"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -246,11 +249,14 @@ export default {
             <h5 class="fs-3 text-center text-primary mb-3">
                 <strong>好評主揪開團</strong><small class="d-block text-body fs-5">跟著好主揪 享受安心潛旅</small>
             </h5>
-            <swiper-container init="false" ref="goodRatingSwiper" class="good-rating-height offset-pagination">
-                <swiper-slide v-for="activityCard in activityCards" :key="activityCard.id">
-                    <BottomFrameActivityCard data-aos="flip-left" :activity="activityCard" :class="{ 'd-block d-sm-none d-lg-block': index >= 2 }" />
-                </swiper-slide>
-            </swiper-container>
+            <div ref="goodRatingSwiper" class="swiper good-rating-swiper offset-pagination">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide" v-for="activityCard in activityCards" :key="activityCard.id">
+                        <BottomFrameActivityCard data-aos="flip-left" :activity="activityCard" />
+                    </div>
+                </div>
+                <div class="swiper-pagination"></div>
+            </div>
         </div>
     </div>
 </template>
@@ -478,21 +484,21 @@ $comment-height: 420px;
     }
 }
 
-swiper-container.comment-height {
+.comment-swiper {
     height: 440px;
 
     @media (min-width: 576px) {
         height: $comment-height;
     }
 
-    swiper-slide {
+    .swiper-slide {
         height: calc((100% - 30px) / 2) !important;
     }
 }
 
 // 好評主揪開團
-.good-rating-height {
-    swiper-slide {
+.good-rating-swiper {
+    .swiper-slide {
         height: 90%;
     }
 }

@@ -19,9 +19,6 @@ library.add(fas, fab, far);
 import "aos/dist/aos.css";
 import "aos/dist/aos.js";
 
-import { register } from "swiper/element/bundle";
-register();
-
 import { defineRule, configure } from "vee-validate";
 import AllRules from "@vee-validate/rules";
 import { localize, loadLocaleFromURL } from "@vee-validate/i18n";

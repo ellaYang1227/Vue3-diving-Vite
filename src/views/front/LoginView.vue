@@ -28,7 +28,7 @@ export default {
     inject: ["frontLayoutData"],
     created() {
         this.frontLayoutData.isVerticalMiddle = true;
-        //this.hideLoading();
+        this.hideLoading();
     },
     methods: {
         ...mapActions(LoadingStore, ["showLoading", "hideLoading"]),
@@ -43,18 +43,20 @@ export default {
     <div class="container py-2 py-sm-4 py-md-5">
         <div class="row justify-content-center">
             <div class="col-md-11 col-lg-10 col-xxl-8">
-                <div class="login-card card bg-darkPrimary bg-opacity-50 shadow-lg">
+                <div class="login-card card">
                     <div class="row g-0">
                         <div class="col-md-5 position-relative d-flex justify-content-center">
                             <img
                                 :src="loginImg"
-                                class="border border-card-border-width login-img img-cover shadow-lg"
+                                class="border border-card-border-width login-img img-cover shadow"
                                 :alt="`${VITE_COMPANY_NAME}-${title}`"
                             />
                         </div>
                         <div class="col-md-7">
                             <div class="card-body py-4 py-md-5">
-                                <h5 class="card-title mb-2 mb-mb-4 fw-bold fs-4 text-primary">{{ title }}</h5>
+                                <h5 class="card-title mb-2 fw-bold fs-4 text-primary text-end opacity-80">
+                                    {{ title }}<small class="font-barlow text-uppercase fw-normal ms-1">login</small>
+                                </h5>
                                 <Form v-slot="{ errors }" @submit="onSubmit">
                                     <fieldset :disabled="isLoadingBtn">
                                         <div class="mb-3">
@@ -104,7 +106,7 @@ export default {
                         </div>
                     </div>
                 </div>
-                <div class="col-md-7 offset-md-5 text-center pt-1">沒有帳號？<router-link to="/signup" class="text-reset">立即註冊</router-link></div>
+                <div class="col-md-7 offset-md-5 text-center pt-2">沒有帳號？<router-link to="/signup" class="text-reset">立即註冊</router-link></div>
             </div>
         </div>
     </div>

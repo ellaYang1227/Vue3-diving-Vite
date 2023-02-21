@@ -35,7 +35,7 @@ export default {
         <div class="corner-card">
             <div class="img-frame mb-3">
                 <div class="outer-border"></div>
-                <div class="card custom-rectangle bg-primary">
+                <div class="card custom-rectangle">
                     <img :src="activity.imgs[0]" class="card-img custom-rectangle img-cover" :alt="`[${activity.location}]${activity.title}`" />
                     <div class="card-img-overlay">
                         <span

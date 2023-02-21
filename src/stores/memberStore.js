@@ -12,21 +12,31 @@ export default defineStore("MemberStore", {
     actions: {
         // startDate 由新到舊
         getMySignUp(count) {
-            bacsRequest.get("/my-sign-up.json").then(res => {
-                this.mySignUp = res
-                    .sort((a, b) => (a.startDate > b.startDate ? 1 : -1))
-                    .map(item => {
-                        return {
-                            ...item,
-                            ...this.statusFormat(item)
-                        };
-                    })
-                    .filter(item => item.activityStatus === "未開始" || item.activityStatus === "進行中");
+            // bacsRequest.get("/my-sign-up.json").then(res => {
+            //     this.mySignUp = res
+            //         .sort((a, b) => (a.startDate > b.startDate ? 1 : -1))
+            //         .map(item => {
+            //             return {
+            //                 ...item,
+            //                 ...this.statusFormat(item)
+            //             };
+            //         })
+            //         .filter(item => item.activityStatus === "未開始" || item.activityStatus === "進行中");
 
-                if (count) {
-                    this.mySignUp = this.mySignUp.slice(0, count);
-                }
-            });
+            //     if (count) {
+            //         this.mySignUp = this.mySignUp.slice(0, count);
+            //     }
+            // });
+        },
+        signup(user) {
+            // user = {
+
+            // };
+
+            console.log(user);
+            // bacsRequest.post("signup", user).then(res => {
+            //     console.log()
+            // });
         }
     }
 });

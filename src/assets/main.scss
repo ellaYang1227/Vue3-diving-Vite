@@ -1,9 +1,12 @@
 @import "./styles/bootstrap-custom-variables";
-@import "./styles/_bootstrap-custom-utilities";
+@import "./styles/bootstrap-custom-utilities";
 @import "bootstrap/scss/bootstrap";
-@import "./styles/_bootstrap-custom-loop";
-@import "./styles/swiper-custom-variables";
-@import "./styles/_other";
+@import "./styles/bootstrap-custom-loop";
+@import "./styles/swiper-custom";
+@import "swiper/css/bundle";
+@import "./styles/sweetalert2-custom-variables";
+@import "sweetalert2/src/sweetalert2";
+@import "./styles/other";
 
 .font-barlow {
     font-family: $font-barlow !important;
@@ -55,6 +58,7 @@ body {
 }
 
 .custom-rectangle {
+    background-color: $border-color;
     -webkit-clip-path: polygon(0% 0%, 100% 0, 100% 70%, 75% 100%, 0% 100%);
     clip-path: polygon(0% 0%, 100% 0, 100% 70%, 75% 100%, 0% 100%);
 }
@@ -123,6 +127,12 @@ select:-webkit-autofill:focus {
         color: $input-placeholder-color;
     }
 }
+
+// card
+.card {
+    box-shadow: var(--bs-card-box-shadow);
+}
+
 /*
 * ==========================================================================
 * vue-star-rating 評分
@@ -135,4 +145,15 @@ select:-webkit-autofill:focus {
 
 .vue-star-rating-rating-text {
     margin-top: 1px;
+}
+
+/*
+* ==========================================================================
+* sweetalert2
+* ==========================================================================
+*/
+
+// popup
+.swal2-popup{
+    box-shadow: $swal2-box-shadow;
 }
