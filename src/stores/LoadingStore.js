@@ -7,9 +7,11 @@ export default defineStore("LoadingStore", {
     actions: {
         showLoading() {
             this.isLoading = true;
+            document.body.classList.add("overflow-hidden");
         },
         hideLoading() {
             this.isLoading = false;
+            document.body.classList.remove("overflow-hidden");
         }
     }
 });

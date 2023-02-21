@@ -1,6 +1,6 @@
 <script setup>
 import formSchema from "../../data/formSchema.js";
-import { loginImg } from "../../data/imagePaths.js";
+import { signupImg } from "../../data/imagePaths.js";
 
 const { VITE_COMPANY_NAME } = import.meta.env;
 </script>
@@ -64,12 +64,12 @@ export default {
                 <div class="signup-card card">
                     <div class="signup-img-box position-relative d-flex justify-content-center">
                         <img
-                            :src="loginImg"
+                            :src="signupImg"
                             class="signup-img card-img-top border border-card-border-width login-img img-cover shadow"
                             :alt="`${VITE_COMPANY_NAME}-${title}`"
                         />
                         <div class="card-img-overlay d-flex justify-content-end align-items-end">
-                            <h5 class="card-title fw-bold fs-4 text-primary opacity-90">
+                            <h5 class="card-title fw-bold fs-4 text-primary opacity-80">
                                 {{ title }}<small class="font-barlow text-uppercase fw-normal ms-1">signup</small>
                             </h5>
                         </div>

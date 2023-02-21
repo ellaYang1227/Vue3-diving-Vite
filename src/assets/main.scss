@@ -27,7 +27,7 @@ html {
 }
 
 body {
-    background: url("../assets/images/bg.png") top center no-repeat;
+    background: url("../assets/images/bg.jpg") top center no-repeat;
     background-size: cover;
     background-color: $body-bg;
 }
@@ -123,7 +123,7 @@ select:-webkit-autofill:focus {
 }
 
 .form-select {
-    option:disabled{
+    option:disabled {
         color: $input-placeholder-color;
     }
 }
@@ -154,6 +154,6 @@ select:-webkit-autofill:focus {
 */
 
 // popup
-.swal2-popup{
+.swal2-popup {
     box-shadow: $swal2-box-shadow;
 }

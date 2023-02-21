@@ -64,7 +64,6 @@ export default {
         });
         this.getActivitys();
         this.getLocations();
-
         Promise.all([this.getComments()]).then(resArr => {
             console.log(resArr);
             this.comments = resArr[0];
@@ -462,7 +461,7 @@ $comment-height: 420px;
 
         img {
             height: 100%;
-            filter: brightness(0.75) blur(0.9px);
+            filter: brightness(0.75) blur(0.5px);
             transition: all 0.5s ease-in-out;
 
             &:hover {
