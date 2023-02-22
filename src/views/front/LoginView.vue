@@ -1,12 +1,14 @@
 <script setup>
 import formSchema from "../../data/formSchema.js";
 import { loginImg } from "../../data/imagePaths.js";
+import { guestGuard } from "../../data/routeGuard.js";
 const { VITE_COMPANY_NAME } = import.meta.env;
 </script>
 
 <script>
-import { mapActions } from "pinia";
+import { mapActions, mapState } from "pinia";
 import LoadingStore from "../../stores/LoadingStore.js";
+import MemberStore from "../../stores/MemberStore.js";
 import { Form, Field, ErrorMessage } from "vee-validate";
 
 export default {
@@ -16,24 +18,33 @@ export default {
             user: {
                 email: "",
                 password: ""
-            },
-            isLoadingBtn: false
+            }
         };
     },
     components: {
-        Form,
+        VForm: Form,
         Field,
         ErrorMessage
     },
     inject: ["frontLayoutData"],
+    computed: {
+        ...mapState(LoadingStore, ["isLoadingBtn"])
+    },
+    beforeRouteEnter(to, from, next) {
+        guestGuard(to, from, next);
+    },
     created() {
         this.frontLayoutData.isVerticalMiddle = true;
         this.hideLoading();
     },
     methods: {
         ...mapActions(LoadingStore, ["showLoading", "hideLoading"]),
+        ...mapActions(MemberStore, ["login"]),
         onSubmit() {
-            this.isLoadingBtn = true;
+            this.showLoading("btn");
+            this.login(this.user).then(() => {
+                this.hideLoading("btn");
+            });
         }
     }
 };
@@ -57,7 +68,7 @@ export default {
                                 <h5 class="card-title mb-2 fw-bold fs-4 text-primary text-end opacity-75 text-shadow">
                                     {{ title }}<small class="font-barlow text-uppercase fw-normal ms-1">login</small>
                                 </h5>
-                                <Form v-slot="{ errors }" @submit="onSubmit">
+                                <VForm v-slot="{ errors }" @submit="onSubmit">
                                     <fieldset :disabled="isLoadingBtn">
                                         <div class="mb-3">
                                             <label :for="`${formSchema.email.label}Input`" class="form-label"
@@ -88,7 +99,7 @@ export default {
                                                 class="form-control"
                                                 :class="{ 'is-invalid': errors[formSchema.password.label] }"
                                                 :placeholder="`請輸入${formSchema.password.label}`"
-                                                :rules="formSchema.password.rules"
+                                                :rules="formSchema.password.rules.required"
                                                 v-model="user.password"
                                             ></Field>
                                             <ErrorMessage :name="formSchema.password.label" class="invalid-feedback"></ErrorMessage>
@@ -102,7 +113,7 @@ export default {
                                             {{ title }}
                                         </button>
                                     </fieldset>
-                                </Form>
+                                </VForm>
                             </div>
                         </div>
                     </div>

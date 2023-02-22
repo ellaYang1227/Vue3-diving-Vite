@@ -12,12 +12,15 @@ export default {
         label: "密碼",
         type: "password",
         as: "password",
-        rules: value => {
-            const pattern = /^(?=.*[0-9])(?=.*[a-zA-Z]).{8,}$/;
-            return pattern.test(value) ? true : "密碼為必填，至少 8 碼以上英數混合";
+        rules: {
+            required: "required",
+            full: value => {
+                const pattern = /^(?=.*[0-9])(?=.*[a-zA-Z]).{8,}$/;
+                return pattern.test(value) ? true : "密碼為必填，至少 8 碼以上英數混合";
+            }
         },
         isRequired: true,
-        help: "密碼至少 8 碼以上英數混合"
+        help: "密碼為 8 碼以上英數混合"
     },
     userName: {
         name: "userName",

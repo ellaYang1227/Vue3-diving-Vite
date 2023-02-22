@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from "vue-router";
+import AuthStore from "../stores/AuthStore.js";
 const { VITE_COMPANY_NAME } = import.meta.env;
 
 const routes = [
@@ -8,13 +9,11 @@ const routes = [
         children: [
             {
                 path: "",
-                component: () => import("../views/front/IndexView.vue"),
-                meta: { title: "首頁" }
+                component: () => import("../views/front/IndexView.vue")
             },
             {
                 path: "index",
-                component: () => import("../views/front/IndexView.vue"),
-                meta: { title: "首頁" }
+                component: () => import("../views/front/IndexView.vue")
             },
             {
                 path: "login",
@@ -39,7 +38,8 @@ const routes = [
         children: [
             {
                 path: "index",
-                component: () => import("../views/admin/AdminIndexView.vue")
+                component: () => import("../views/admin/AdminIndexView.vue"),
+                meta: { title: "首頁" }
             },
             {
                 // 重新導向
@@ -62,10 +62,16 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    if (to.meta.title) {
-        document.title = `${to.meta.title} - ${VITE_COMPANY_NAME}`;
+    let { title } = to.meta;
+    if (title) {
+        const { path } = to;
+        if(path.indexOf('/admin') > -1) { title = `後台管理 - ${title}` }
+        document.title = `${title} - ${VITE_COMPANY_NAME}`;
     }
 
+    const { getStorageUser, user } = AuthStore();
+    getStorageUser();
+    console.log(user)
     next();
 });
 

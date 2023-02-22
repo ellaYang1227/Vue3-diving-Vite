@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import AuthStore from "../stores/AuthStore.js";
+import AuthStore from "./AuthStore.js";
 import { bacsRequest } from "../data/axiosBase.js";
 import { setSwalFire } from "../data/sweetalert2.js";
 import statusFormat from "../handle-formats/statusFormat.js";
@@ -30,15 +30,36 @@ export default defineStore("MemberStore", {
             //     }
             // });
         },
-        signup(user) {
-            console.log(user);
-            user.creationDate = new Date().getTime();
+        login(user){
+            return bacsRequest
+                .post("login", user)
+                .then(({ accessToken, user }) => {
+                    console.log('true')
+                    changeCookie("add", accessToken, user);
+                    router.go();
+                    console.log('true')
+                    return true;
+                })
+                .catch(({ data }) => {
+                    if (data === "Cannot find user") {
+                        data = "找不到用戶";
+                    }else if(data === "Incorrect password"){
+                        data = "密碼錯誤";
+                    }
 
+                    setSwalFire("popup", "error", "登入失敗", data);
+                    return false;
+                });
+        },
+        signup(user) {
+            user.creationDate = new Date().getTime();
+            // "0"：管理者、"1"：一般(預設)
+            user.identityId = "1";
             return bacsRequest
                 .post("signup", user)
                 .then(({ accessToken, user }) => {
                     changeCookie("add", accessToken, user);
-                    router.push("/index");
+                    router.go();
                     return true;
                 })
                 .catch(({ data }) => {

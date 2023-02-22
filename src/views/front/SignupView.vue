@@ -1,7 +1,7 @@
 <script setup>
 import formSchema from "../../data/formSchema.js";
 import { signupImg } from "../../data/imagePaths.js";
-
+import { guestGuard } from "../../data/routeGuard.js";
 const { VITE_COMPANY_NAME } = import.meta.env;
 </script>
 
@@ -30,8 +30,11 @@ export default {
             }
         };
     },
+    beforeRouteEnter(to, from, next) {
+        guestGuard(to, from, next);
+    },
     components: {
-        Form,
+        VForm: Form,
         Field,
         ErrorMessage,
         UploadImg
@@ -41,7 +44,6 @@ export default {
     },
     mounted() {
         Promise.all([this.getCertificateLevels(), this.getCylinderTotals()]).then(resArr => {
-            console.log(resArr);
             this.certificateLevels = resArr[0];
             this.cylinderTotals = resArr[1];
             this.hideLoading();
@@ -53,8 +55,6 @@ export default {
         ...mapActions(MemberStore, ["signup"]),
         onSubmit() {
             this.showLoading("btn");
-            console.log(this.isLoadingBtn);
-
             this.signup(this.user).then(() => {
                 this.hideLoading("btn");
             });
@@ -81,7 +81,7 @@ export default {
                         </div>
                     </div>
                     <div class="card-body pt-4 pt-md-5">
-                        <Form v-slot="{ errors }" @submit="onSubmit">
+                        <VForm v-slot="{ errors }" @submit="onSubmit">
                             <fieldset :disabled="isLoadingBtn" class="row g-3">
                                 <div class="col-12">
                                     <UploadImg :errors="errors" v-model:img="user.img" />
@@ -114,7 +114,7 @@ export default {
                                         class="form-control"
                                         :class="{ 'is-invalid': errors[formSchema.password.label] }"
                                         :placeholder="`請輸入${formSchema.password.label}`"
-                                        :rules="formSchema.password.rules"
+                                        :rules="formSchema.password.rules.full"
                                         v-model="user.password"
                                     ></Field>
                                     <ErrorMessage :name="formSchema.password.label" class="invalid-feedback"></ErrorMessage>
@@ -212,7 +212,7 @@ export default {
                                     </button>
                                 </div>
                             </fieldset>
-                        </Form>
+                        </VForm>
                     </div>
                 </div>
             </div>

@@ -5,59 +5,66 @@ export default defineStore("AuthStore", {
     state: () => ({
         user: null
     }),
-    getters: {
-        // user() {
-        //     const encryptUser = localStorage.getItem("user");
-        //     return encryptUser ? this.handleCrypt("decrypt", localStorage.getItem("user")) : null;
-        // }
-    },
+    getters: {},
     actions: {
-        // getUser() {
-        //     const encryptUser = localStorage.getItem("user");
-            
-        //     console.log(encryptUser)
-        //     return encryptUser ? this.handleCrypt("decrypt", localStorage.getItem("user")) : null;
-        // },
+        getStorageUser() {
+            const encryptUser = localStorage.getItem("user");
+            this.user = encryptUser ? this.handleCrypt("decrypt", "user", encryptUser) : null;
+            return this.user;
+        },
         logout() {
-            console.log("logout");
             this.changeCookie("remove");
             router.push("/login");
         },
-        getCookie() {
-            return document.cookie.replace(/(?:(?:^|.*;\s*)ella-diving-token\s*=\s*([^;]*).*$)|^.*$/, "$1");
+        getToken() {
+            return document.cookie.replace(/(?:(?:^|.*;\s*)access-token\s*=\s*([^;]*).*$)|^.*$/, "$1");
         },
         changeCookie(method, token, user) {
+            console.log(method)
             let cookie = `access-token=${token};`;
 
             if (method === "remove") {
+                console.log(method)
                 cookie += "max-age=0";
                 localStorage.removeItem("user");
-                this.$patch({ user: null });
+                this.user = null;
             } else if (method === "add") {
-                const { exp } = this.handleCrypt("decrypt", token, "token");
+                console.log(method)
+                const { exp } = this.handleCrypt("decrypt", "token", token);
                 cookie += `${new Date(exp)}`;
-
-                const encryptUser = this.handleCrypt("encrypt", user);
+                console.log(exp)
+                console.log(user)
+                const encryptUser = this.handleCrypt("encrypt", "user", user);
+                console.log(encryptUser)
                 localStorage.setItem("user", encryptUser);
-                this.$patch({ user });
+                this.user = user;
             }
 
+            console.log(this.user)
             document.cookie = cookie;
             
         },
-        handleCrypt(type, data, decryptData) {
-            console.log(type, data);
+        handleCrypt(type, decryptData, data) {
+            console.log(data)
             if (type === "encrypt") {
+                console.log(type)
                 // 加密
-                return window.btoa(JSON.stringify(data));
+                console.log(window.btoa(encodeURIComponent(JSON.stringify(data))))
+                // encodeURIComponent()：unicode(中文)轉 base64(避免報錯)
+                return window.btoa(encodeURIComponent(JSON.stringify(data)));
             } else if (type === "decrypt") {
+                console.log(type)
                 // 解密
+                let decryptRes = '';
                 if (decryptData === "token") {
-                    data = data.split(".")[1];
+                    decryptRes = window.atob(data);
+                }else if(decryptData === "user"){
+                    decryptRes = decodeURIComponent(window.atob(data))
                 }
 
-                return JSON.parse(window.atob(data));
+                console.log(decryptRes)
+                return JSON.parse(decryptRes);
             }
-        }
+        },
     }
 });
