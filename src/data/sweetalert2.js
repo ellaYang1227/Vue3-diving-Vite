@@ -9,7 +9,7 @@ export const swalPopup = Swal.mixin({
     showConfirmButton: false,
     showCancelButton: true,
     cancelButtonText: "關閉",
-    //timer: 3000,
+    timer: 3000,
     timerProgressBar: true
 });
 
@@ -34,5 +34,5 @@ export function setSwalFire(stype, icon, title, text, isHTML = false, isCloseTim
         options.timer = null;
     }
 
-    currentSwal.fire(options);
+    return currentSwal.fire(options);
 }

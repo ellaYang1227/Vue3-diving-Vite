@@ -54,7 +54,7 @@ export default {
                         </div>
                         <div class="col-md-7">
                             <div class="card-body py-4 py-md-5">
-                                <h5 class="card-title mb-2 fw-bold fs-4 text-primary text-end opacity-80">
+                                <h5 class="card-title mb-2 fw-bold fs-4 text-primary text-end opacity-75 text-shadow">
                                     {{ title }}<small class="font-barlow text-uppercase fw-normal ms-1">login</small>
                                 </h5>
                                 <Form v-slot="{ errors }" @submit="onSubmit">
@@ -98,6 +98,7 @@ export default {
                                             class="btn btn-primary w-100 mt-3"
                                             :disabled="isLoadingBtn || Object.keys(errors).length"
                                         >
+                                            <span class="spinner-border spinner-border-sm text-dark-primary" role="status" v-if="isLoadingBtn"></span>
                                             {{ title }}
                                         </button>
                                     </fieldset>

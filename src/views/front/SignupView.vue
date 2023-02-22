@@ -7,7 +7,7 @@ const { VITE_COMPANY_NAME } = import.meta.env;
 
 <script>
 import { Form, Field, ErrorMessage } from "vee-validate";
-import { mapActions } from "pinia";
+import { mapActions, mapState } from "pinia";
 import MemberStore from "../../stores/MemberStore.js";
 import LoadingStore from "../../stores/LoadingStore.js";
 import OtherStore from "../../stores/OtherStore.js";
@@ -17,8 +17,8 @@ export default {
     data() {
         return {
             title: "註冊",
-            certificateLevelOptions: [],
-            cylinderTotalOptions: [],
+            certificateLevels: [],
+            cylinderTotals: [],
             user: {
                 email: "",
                 password: "",
@@ -27,8 +27,7 @@ export default {
                 certificateLevels: [],
                 isNitrox: "",
                 cylinderTotal: ""
-            },
-            isLoadingBtn: false
+            }
         };
     },
     components: {
@@ -37,21 +36,28 @@ export default {
         ErrorMessage,
         UploadImg
     },
+    computed: {
+        ...mapState(LoadingStore, ["isLoadingBtn"])
+    },
     mounted() {
-        Promise.all([this.getCertificateLevelOptions(), this.getCylinderTotalOptions()]).then(resArr => {
+        Promise.all([this.getCertificateLevels(), this.getCylinderTotals()]).then(resArr => {
             console.log(resArr);
-            this.certificateLevelOptions = resArr[0];
-            this.cylinderTotalOptions = resArr[1];
+            this.certificateLevels = resArr[0];
+            this.cylinderTotals = resArr[1];
             this.hideLoading();
         });
     },
     methods: {
         ...mapActions(LoadingStore, ["showLoading", "hideLoading"]),
-        ...mapActions(OtherStore, ["getCertificateLevelOptions", "getCylinderTotalOptions"]),
+        ...mapActions(OtherStore, ["getCertificateLevels", "getCylinderTotals"]),
         ...mapActions(MemberStore, ["signup"]),
         onSubmit() {
-            this.isLoadingBtn = true;
-            this.signup(this.user);
+            this.showLoading("btn");
+            console.log(this.isLoadingBtn);
+
+            this.signup(this.user).then(() => {
+                this.hideLoading("btn");
+            });
         }
     }
 };
@@ -69,7 +75,7 @@ export default {
                             :alt="`${VITE_COMPANY_NAME}-${title}`"
                         />
                         <div class="card-img-overlay d-flex justify-content-end align-items-end">
-                            <h5 class="card-title fw-bold fs-4 text-primary opacity-80">
+                            <h5 class="card-title fw-bold fs-4 opacity-75 mb-0 text-shadow">
                                 {{ title }}<small class="font-barlow text-uppercase fw-normal ms-1">signup</small>
                             </h5>
                         </div>
@@ -129,7 +135,7 @@ export default {
                                         :class="{ 'is-invalid': errors[formSchema.userName.label] }"
                                         :placeholder="`請輸入${formSchema.userName.label}`"
                                         :rules="formSchema.userName.rules"
-                                        v-model="user.userName"
+                                        v-model="user.name"
                                     ></Field>
                                     <ErrorMessage :name="formSchema.userName.label" class="invalid-feedback"></ErrorMessage>
                                 </div>
@@ -141,7 +147,7 @@ export default {
                                         >{{ formSchema.certificateLevel.label
                                         }}<span class="text-danger" v-if="formSchema.certificateLevel.isRequired">*</span></label
                                     >
-                                    <div class="form-check form-check-inline" v-for="option in certificateLevelOptions" :key="option.value">
+                                    <div class="form-check form-check-inline" v-for="option in certificateLevels" :key="option.value">
                                         <Field
                                             :class="{ 'is-invalid': errors[formSchema.certificateLevel.label] }"
                                             class="form-check-input"
@@ -193,14 +199,15 @@ export default {
                                         v-model="user.cylinderTotal"
                                     >
                                         <option value="" disabled>請選擇</option>
-                                        <option v-for="option in cylinderTotalOptions" :key="option" :value="option">
-                                            {{ option }}
+                                        <option v-for="option in cylinderTotals" :key="option.id" :value="option.name">
+                                            {{ option.name }}
                                         </option></Field
                                     >
                                     <ErrorMessage :name="formSchema.cylinderTotal.label" class="invalid-feedback"></ErrorMessage>
                                 </div>
                                 <div class="col-12 text-end border-top pt-3 mt-4 mt-md-5">
                                     <button type="submit" class="btn btn-primary" :disabled="isLoadingBtn || Object.keys(errors).length">
+                                        <span class="spinner-border spinner-border-sm text-dark-primary" role="status" v-if="isLoadingBtn"></span>
                                         {{ title }}
                                     </button>
                                 </div>

@@ -27,21 +27,16 @@ export default {
         rules: "required|max:10",
         isRequired: true
     },
-    userImg: {
-        name: "userImg",
-        label: "大頭照",
-        type: "file",
-        as: "input",
-        rules: "image",
-        isRequired: false
-    },
     uploadImg: {
         name: "uploadImg",
         label: "上傳照片",
         type: "file",
         as: "input",
         accept: "image/*",
-        rules: "required|image|size:1024",
+        rules: {
+            required: "required|image|size:1024",
+            noRequired: "image|size:1024"
+        },
         isRequired: true
     },
     certificateLevel: {

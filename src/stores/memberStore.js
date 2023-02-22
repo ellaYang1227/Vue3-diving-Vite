@@ -1,7 +1,10 @@
 import { defineStore } from "pinia";
-
+import AuthStore from "../stores/AuthStore.js";
 import { bacsRequest } from "../data/axiosBase.js";
+import { setSwalFire } from "../data/sweetalert2.js";
 import statusFormat from "../handle-formats/statusFormat.js";
+import router from "../router/index.js";
+const { changeCookie } = AuthStore();
 
 export default defineStore("MemberStore", {
     state: () => ({
@@ -22,21 +25,30 @@ export default defineStore("MemberStore", {
             //             };
             //         })
             //         .filter(item => item.activityStatus === "未開始" || item.activityStatus === "進行中");
-
             //     if (count) {
             //         this.mySignUp = this.mySignUp.slice(0, count);
             //     }
             // });
         },
         signup(user) {
-            // user = {
-
-            // };
-
             console.log(user);
-            // bacsRequest.post("signup", user).then(res => {
-            //     console.log()
-            // });
+            user.creationDate = new Date().getTime();
+
+            return bacsRequest
+                .post("signup", user)
+                .then(({ accessToken, user }) => {
+                    changeCookie("add", accessToken, user);
+                    router.push("/index");
+                    return true;
+                })
+                .catch(({ data }) => {
+                    if (data === "Email already exists") {
+                        data = "Email 信箱已註冊";
+                    }
+
+                    setSwalFire("popup", "error", "註冊失敗", data);
+                    return false;
+                });
         }
     }
 });

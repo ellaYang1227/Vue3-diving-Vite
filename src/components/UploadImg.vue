@@ -19,6 +19,11 @@ export default {
         img: {
             type: String,
             required: true
+        },
+        isRequired: {
+            type: Boolean,
+            required: false,
+            default: false
         }
     },
     emits: ["update:img"],
@@ -29,29 +34,30 @@ export default {
     methods: {
         upload(event) {
             const file = event.target.files[0];
+
             if (this.errors[formSchema.uploadImg.label] || !file) {
-                this.setUploadErr();
+                this.handleUploadResult("error");
             } else {
                 this.isLoading = true;
                 setTimeout(() => {
                     let reader = new FileReader();
                     // 轉 Base64
                     reader.onload = e => {
-                        this.isLoading = false;
-                        this.$emit("update:img", e.target.result);
+                        this.handleUploadResult("success", e.target.result);
                     };
 
                     reader.onerror = err => {
                         console.error(err);
-                        this.setUploadErr();
+                        this.handleUploadResult("error");
                     };
                     // 讀取檔案
                     reader.readAsDataURL(file);
                 }, 500);
             }
         },
-        setUploadErr() {
-            console.error("上船錯誤");
+        handleUploadResult(state, img = "") {
+            this.isLoading = false;
+            this.$emit("update:img", img);
         }
     }
 };
@@ -62,7 +68,7 @@ export default {
         v-slot="{ field }"
         :name="formSchema.uploadImg.label"
         :type="formSchema.uploadImg.type"
-        :rules="formSchema.uploadImg.rules"
+        :rules="formSchema.uploadImg.rules[isRequired ? 'required' : 'noRequired']"
         @change="upload"
     >
         <label class="file-img rounded p-1" :class="{ 'border-danger': errors[formSchema.uploadImg.label], 'cursor-pointer': !isLoading }">

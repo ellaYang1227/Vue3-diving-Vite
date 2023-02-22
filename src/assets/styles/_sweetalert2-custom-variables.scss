@@ -25,7 +25,7 @@ $swal2-font: inherit !default;
 $swal2-font-size: 1rem !default;
 
 // BACKDROP
-$swal2-backdrop: rgba($swal2-black, 0.5) !default;
+$swal2-backdrop: rgba($swal2-black, 0.7) !default;
 $swal2-backdrop-transition: background-color 0.1s !default;
 
 // ICONS
@@ -61,7 +61,7 @@ $swal2-html-container-justify-content: center !default;
 $swal2-html-container-margin: 0.3em 1.6em !default;
 $swal2-html-container-padding: 0 !default;
 $swal2-html-container-overflow: auto !default;
-$swal2-html-container-color: inherit !default;
+$swal2-html-container-color: rgba($light-primary, 0.8) !default;
 $swal2-html-container-font-size: 1.125em !default;
 $swal2-html-container-font-weight: normal !default;
 $swal2-html-container-line-height: normal !default;
@@ -134,7 +134,7 @@ $swal2-footer-font-size: 1em !default;
 
 // TIMER POGRESS BAR
 $swal2-timer-progress-bar-height: 0.25em;
-$swal2-timer-progress-bar-background: rgba($swal2-black, 0.2) !default;
+$swal2-timer-progress-bar-background: $bg-primary-20 !default;
 
 // CLOSE BUTTON
 $swal2-close-button-justify-self: end !default;

@@ -1,31 +1,63 @@
 import { defineStore } from "pinia";
 import router from "../router/index.js";
-const { VITE_API_PATH } = import.meta.env;
 
 export default defineStore("AuthStore", {
     state: () => ({
-        user: {
-            name: "ella",
-            img: "" ///ella.jpg
-        }
-        //user: null
+        user: null
     }),
-    getters: {},
-    actions: {
-        // setToken(){
-        //     document.cookie = `${path}-token=${token}; expires=${new Date(expired)}`;
+    getters: {
+        // user() {
+        //     const encryptUser = localStorage.getItem("user");
+        //     return encryptUser ? this.handleCrypt("decrypt", localStorage.getItem("user")) : null;
         // }
+    },
+    actions: {
+        // getUser() {
+        //     const encryptUser = localStorage.getItem("user");
+            
+        //     console.log(encryptUser)
+        //     return encryptUser ? this.handleCrypt("decrypt", localStorage.getItem("user")) : null;
+        // },
         logout() {
             console.log("logout");
-            this.removeToken();
+            this.changeCookie("remove");
             router.push("/login");
         },
-        getToken() {
+        getCookie() {
             return document.cookie.replace(/(?:(?:^|.*;\s*)ella-diving-token\s*=\s*([^;]*).*$)|^.*$/, "$1");
         },
-        removeToken() {
-            document.cookie = `${VITE_API_PATH}-token=${this.getToken()}; max-age=0`;
-            this.user = null;
+        changeCookie(method, token, user) {
+            let cookie = `access-token=${token};`;
+
+            if (method === "remove") {
+                cookie += "max-age=0";
+                localStorage.removeItem("user");
+                this.$patch({ user: null });
+            } else if (method === "add") {
+                const { exp } = this.handleCrypt("decrypt", token, "token");
+                cookie += `${new Date(exp)}`;
+
+                const encryptUser = this.handleCrypt("encrypt", user);
+                localStorage.setItem("user", encryptUser);
+                this.$patch({ user });
+            }
+
+            document.cookie = cookie;
+            
+        },
+        handleCrypt(type, data, decryptData) {
+            console.log(type, data);
+            if (type === "encrypt") {
+                // 加密
+                return window.btoa(JSON.stringify(data));
+            } else if (type === "decrypt") {
+                // 解密
+                if (decryptData === "token") {
+                    data = data.split(".")[1];
+                }
+
+                return JSON.parse(window.atob(data));
+            }
         }
     }
 });

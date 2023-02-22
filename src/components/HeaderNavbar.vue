@@ -12,6 +12,20 @@ import { mapState, mapActions } from "pinia";
 import UserMugShot from "./UserMugShot.vue";
 import AuthStore from "../stores/AuthStore.js";
 import MemberStore from "../stores/MemberStore.js";
+const authStore = AuthStore()
+console.log(AuthStore)
+console.log(authStore)
+authStore.$subscribe((mutation, state) => {
+  // import { MutationType } from 'pinia'
+//   mutation.type // 'direct' | 'patch object' | 'patch function'
+//   // 和 cartStore.$id 一样
+//   mutation.storeId // 'cart'
+//   // 只有 mutation.type === 'patch object'的情况下才可用
+//   mutation.payload // 传递给 cartStore.$patch() 的补丁对象。
+console.log(mutation,state)
+  // 每当状态发生变化时，将整个 state 持久化到本地存储。
+  //localStorage.setItem('cart', JSON.stringify(state))
+})
 
 export default {
     data() {

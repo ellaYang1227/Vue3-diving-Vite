@@ -5,11 +5,11 @@ export default defineStore("OtherStore", {
     state: () => ({}),
     getters: {},
     actions: {
-        getCertificateLevelOptions() {
-            //return bacsRequest.get("/certificate-levels.json").then(res => res);
+        getCertificateLevels() {
+            return bacsRequest.get("certificateLevels").then(res => res);
         },
-        getCylinderTotalOptions() {
-            //return bacsRequest.get("/cylinder-totals.json").then(res => res);
+        getCylinderTotals() {
+            return bacsRequest.get("cylinderTotals").then(res => res);
         }
     }
 });
