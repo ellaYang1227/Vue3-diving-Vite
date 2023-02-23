@@ -42,9 +42,8 @@ export default {
         ...mapActions(MemberStore, ["login"]),
         onSubmit() {
             this.showLoading("btn");
-            this.login(this.user).then(() => {
-                this.hideLoading("btn");
-            });
+            const { returnUrl } = this.$route.query;
+            this.login(this.user, returnUrl);
         }
     }
 };

@@ -30,20 +30,24 @@ export default defineStore("MemberStore", {
             //     }
             // });
         },
-        login(user){
+        login(user, returnUrl) {
+            console.log(returnUrl)
             return bacsRequest
                 .post("login", user)
                 .then(({ accessToken, user }) => {
-                    console.log('true')
                     changeCookie("add", accessToken, user);
-                    router.go();
-                    console.log('true')
-                    return true;
+
+                    if(!returnUrl){
+                        const { identityId } = user;
+                        returnUrl = identityId === "0" ? "/admin/index" : "/index"
+                    }
+                    router.push(returnUrl);
+                    return Promise.resolve(true);
                 })
                 .catch(({ data }) => {
                     if (data === "Cannot find user") {
                         data = "找不到用戶";
-                    }else if(data === "Incorrect password"){
+                    } else if (data === "Incorrect password") {
                         data = "密碼錯誤";
                     }
 
@@ -51,7 +55,7 @@ export default defineStore("MemberStore", {
                     return false;
                 });
         },
-        signup(user) {
+        signup(user, returnUrl) {
             user.creationDate = new Date().getTime();
             // "0"：管理者、"1"：一般(預設)
             user.identityId = "1";
@@ -59,8 +63,13 @@ export default defineStore("MemberStore", {
                 .post("signup", user)
                 .then(({ accessToken, user }) => {
                     changeCookie("add", accessToken, user);
-                    router.go();
-                    return true;
+
+                    if(!returnUrl){
+                        const { identityId } = user;
+                        returnUrl = identityId === "0" ? "/admin/index" : "/index"
+                    }
+                    router.push(returnUrl);
+                    return Promise.resolve(true);
                 })
                 .catch(({ data }) => {
                     if (data === "Email already exists") {
@@ -70,6 +79,13 @@ export default defineStore("MemberStore", {
                     setSwalFire("popup", "error", "註冊失敗", data);
                     return false;
                 });
+        },
+        getMyinfo(userId){
+            return bacsRequest
+                .get(`600/users/${userId}`)
+                .then(res => Promise.resolve(res))
+                .catch(err => Promise.reject(false));
+
         }
     }
 });

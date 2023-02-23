@@ -16,6 +16,26 @@ const routes = [
                 component: () => import("../views/front/IndexView.vue")
             },
             {
+                path: "activitys",
+                component: () => import("../views/front/ActivitysView.vue"),
+                meta: { title: "活動總覽" },
+            },
+            {
+                path: "activitys/:activityId",
+                component: () => import("../views/front/ActivityView.vue"),
+                meta: { title: "單一活動" },
+            },
+            {
+                path: "addActivity",
+                component: () => import("../views/front/EditActivityView.vue"),
+                meta: { title: "新增活動" }
+            },
+            {
+                path: "editActivity/:activityId",
+                component: () => import("../views/front/EditActivityView.vue"),
+                meta: { title: "編輯活動" }
+            },
+            {
                 path: "login",
                 component: () => import("../views/front/LoginView.vue"),
                 meta: { title: "登入" }
@@ -63,15 +83,20 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     let { title } = to.meta;
+
     if (title) {
         const { path } = to;
-        if(path.indexOf('/admin') > -1) { title = `後台管理 - ${title}` }
-        document.title = `${title} - ${VITE_COMPANY_NAME}`;
+        if (path.indexOf("/admin") > -1) {
+            title = `後台管理 - ${title}`;
+        }
+
+        title = `${title} - `;
     }
 
-    const { getStorageUser, user } = AuthStore();
+    document.title = `${title ? title : ""}${VITE_COMPANY_NAME}`;
+
+    const { getStorageUser } = AuthStore();
     getStorageUser();
-    console.log(user)
     next();
 });
 

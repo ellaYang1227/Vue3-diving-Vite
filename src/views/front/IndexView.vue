@@ -128,7 +128,7 @@ export default {
             <h1 class="main-title display-3 mb-0 fw-bold">潛安伴旅這裡揪</h1>
             <h2 class="sub-title opacity-75 fs-4">在氣瓶海人遇見好潛伴</h2>
             <div class="d-grid col-7 col-md-4 col-lg-3 mx-auto mt-4">
-                <router-link to="addGroup" class="btn btn-outline-lightPrimary btn-lg rounded-pill" role="button">我要揪團</router-link>
+                <router-link to="addActivity" class="btn btn-outline-lightPrimary btn-lg rounded-pill" role="button">我要揪團</router-link>
             </div>
         </div>
         <div class="bg-primary bg-opacity-20 mt-3" data-aos="fade-up" data-aos-delay="600">

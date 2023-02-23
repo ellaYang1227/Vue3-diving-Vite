@@ -45,23 +45,30 @@ bacsRequest.interceptors.response.use(
         if (status !== 400) {
             let title = "系統錯誤";
             let errorMsg = "";
-            let redirectUrl = "";
+            let isRedirectLogin = false;
+            let isBackPage = false;
 
             if (status === 404) {
-                title = "請求失敗";
-                errorMsg = "API 路徑錯誤";
+                errorMsg = "找不到該筆資料";
+                isBackPage = true;
+            } else if (status === 401){
+                title = "驗證失敗";
+                errorMsg = "您的身分驗證失敗，請重新登入";
+                isRedirectLogin = true;
             } else {
                 errorMsg = "發生不明錯誤，請重新操作";
             }
 
             setSwalFire("popup", "error", title, errorMsg).then(() => {
-                if (redirectUrl) {
-                    router.push(redirectUrl);
+                if (isRedirectLogin) {
+                    router.push("/login");
+                }else if(isBackPage){
+                    router.go(-1);
                 }
             });
         }
 
-        console.log(error.response.status);
+        console.error(error.response.status);
         return Promise.reject({
             success: false,
             ...error.response

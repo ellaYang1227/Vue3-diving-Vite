@@ -35,6 +35,9 @@ export default {
     methods: {
         ...mapActions(MemberStore, ["getMySignUp"]),
         ...mapActions(AuthStore, ["logout"]),
+        getCurrentPath(){
+            return this.$route.path;
+        },
         scrollEvent() {
             this.hasHavbarBg = window.scrollY > 0 ? true : false;
         },
@@ -56,7 +59,7 @@ export default {
             <router-link class="navbar-brand" to="/index">
                 <img :src="logo" :alt="VITE_COMPANY_NAME" class="mb-md-2 logo-img" />
             </router-link>
-            <router-link class="btn btn-primary btn-custom-rectangle ms-auto me-3 me-md-0 ms-md-2 order-md-last" to="#" role="button"
+            <router-link class="btn btn-primary btn-custom-rectangle ms-auto me-3 me-md-0 ms-md-2 order-md-last" to="/addActivity" role="button"
                 >我要揪團</router-link
             >
             <button class="navbar-toggler" type="button" aria-controls="offcanvasNavbar" @click="toggleOffcanvasNavbar">
@@ -70,7 +73,7 @@ export default {
             >
                 <div class="offcanvas-body px-0 pt-0">
                     <ul class="navbar-nav ms-auto align-items-md-center">
-                        <li class="nav-item dropdown order-md-last">
+                        <li class="nav-item dropdown order-md-last" :class="{ 'd-md-none': !user }">
                             <a
                                 class="nav-link dropdown-toggle dropdown-hide-arrow d-flex align-items-center border-bottom border-color-dropdown"
                                 href="#"
@@ -121,7 +124,7 @@ export default {
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <router-link class="nav-link" to="#" @click="toggleOffcanvasNavbar">找揪團</router-link>
+                            <router-link class="nav-link" to="/activitys" @click="toggleOffcanvasNavbar">找揪團</router-link>
                         </li>
                         <li class="nav-item dropdown d-none d-md-block" v-if="user">
                             <a
@@ -165,13 +168,16 @@ export default {
                         </li>
                         <template v-if="!user">
                             <li class="nav-item">
-                                <router-link class="nav-link" to="/login" @click="toggleOffcanvasNavbar">登入</router-link>
+                                <router-link class="nav-link" :to="{ path: '/login', query: { returnUrl: getCurrentPath() }}" @click="toggleOffcanvasNavbar">登入</router-link>
                             </li>
                             <li class="nav-item">
-                                <router-link class="nav-link" to="/signup" @click="toggleOffcanvasNavbar">註冊</router-link>
+                                <router-link class="nav-link" :to="{ path: '/signup', query: { returnUrl: getCurrentPath() }}" @click="toggleOffcanvasNavbar">註冊</router-link>
                             </li>
                         </template>
                         <template v-else>
+                            <li class="nav-item">
+                                <router-link class="nav-link" to="/admin/index" @click="toggleOffcanvasNavbar">後台管理</router-link>
+                            </li>
                             <li class="nav-item d-md-none border-top border-color-dropdown">
                                 <a
                                     class="nav-link"

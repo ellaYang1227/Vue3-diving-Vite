@@ -20,51 +20,42 @@ export default defineStore("AuthStore", {
             return document.cookie.replace(/(?:(?:^|.*;\s*)access-token\s*=\s*([^;]*).*$)|^.*$/, "$1");
         },
         changeCookie(method, token, user) {
-            console.log(method)
             let cookie = `access-token=${token};`;
 
             if (method === "remove") {
-                console.log(method)
                 cookie += "max-age=0";
                 localStorage.removeItem("user");
                 this.user = null;
             } else if (method === "add") {
-                console.log(method)
                 const { exp } = this.handleCrypt("decrypt", "token", token);
                 cookie += `${new Date(exp)}`;
-                console.log(exp)
-                console.log(user)
                 const encryptUser = this.handleCrypt("encrypt", "user", user);
-                console.log(encryptUser)
                 localStorage.setItem("user", encryptUser);
                 this.user = user;
             }
 
-            console.log(this.user)
             document.cookie = cookie;
-            
         },
         handleCrypt(type, decryptData, data) {
-            console.log(data)
             if (type === "encrypt") {
-                console.log(type)
                 // 加密
-                console.log(window.btoa(encodeURIComponent(JSON.stringify(data))))
-                // encodeURIComponent()：unicode(中文)轉 base64(避免報錯)
-                return window.btoa(encodeURIComponent(JSON.stringify(data)));
-            } else if (type === "decrypt") {
-                console.log(type)
-                // 解密
-                let decryptRes = '';
-                if (decryptData === "token") {
-                    decryptRes = window.atob(data);
-                }else if(decryptData === "user"){
-                    decryptRes = decodeURIComponent(window.atob(data))
+                if (decryptData !== "token") {
+                    // encodeURIComponent()：unicode(中文)轉 base64(避免報錯)
+                    data = window.btoa(encodeURIComponent(JSON.stringify(data)));
                 }
 
-                console.log(decryptRes)
-                return JSON.parse(decryptRes);
+                return data;
+            } else if (type === "decrypt") {
+                // 解密
+                if (decryptData === "token") {
+                    data = window.atob(data.split(".")[1]);
+                } else {
+                    // encodeURIComponent()：base64 轉 unicode(中文)
+                    data = decodeURIComponent(window.atob(data));
+                }
+
+                return JSON.parse(data);
             }
-        },
+        }
     }
 });

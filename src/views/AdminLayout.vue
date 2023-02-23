@@ -1,5 +1,11 @@
 <script>
-export default {};
+import { adminGuard } from "../data/routeGuard.js";
+
+export default {
+    beforeRouteEnter(to, from, next) {
+        adminGuard(to, from, next);
+    },
+};
 </script>
 
 <template>

@@ -6,10 +6,14 @@ export default defineStore("OtherStore", {
     getters: {},
     actions: {
         getCertificateLevels() {
-            return bacsRequest.get("certificateLevels").then(res => res);
+            return bacsRequest.get("certificateLevels")
+            .then(res => Promise.resolve(res))
+            .catch(err => Promise.reject(false));
         },
         getCylinderTotals() {
-            return bacsRequest.get("cylinderTotals").then(res => res);
+            return bacsRequest.get("cylinderTotals")
+            .then(res => Promise.resolve(res))
+            .catch(err => Promise.reject(false));
         }
     }
 });
