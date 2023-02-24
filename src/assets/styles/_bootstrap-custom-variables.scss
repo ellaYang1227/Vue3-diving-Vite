@@ -853,9 +853,9 @@ $input-border-color: $border-color !default;
 $input-border-width: $input-btn-border-width !default;
 $input-box-shadow: $box-shadow-inset !default;
 
-$input-border-radius: $border-radius !default;
-$input-border-radius-sm: $border-radius-sm !default;
-$input-border-radius-lg: $border-radius-lg !default;
+$input-border-radius: $border-radius * 0 !default;
+$input-border-radius-sm: $border-radius-sm * 0 !default;
+$input-border-radius-lg: $border-radius-lg * 0 !default;
 
 $input-focus-bg: $input-bg !default;
 $input-focus-border-color: tint-color($component-active-bg, 75%) !default;
@@ -1447,7 +1447,7 @@ $modal-scale-transform: scale(1.02) !default;
 $alert-padding-y: $spacer * 0.5 !default;
 $alert-padding-x: $spacer !default;
 $alert-margin-bottom: 1rem !default;
-$alert-border-radius: $border-radius !default;
+$alert-border-radius: $border-radius * 0 !default;
 $alert-link-font-weight: $font-weight-bold !default;
 $alert-border-width: $border-width !default;
 $alert-bg-scale: -80% !default;

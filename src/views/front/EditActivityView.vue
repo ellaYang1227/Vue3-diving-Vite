@@ -1,8 +1,7 @@
 <script setup>
 import formSchema from "../../data/formSchema.js";
-import { loginImg } from "../../data/imagePaths.js";
+import { activityImg } from "../../data/imagePaths.js";
 import { authGuard } from "../../data/routeGuard.js";
-const { VITE_COMPANY_NAME } = import.meta.env;
 </script>
 
 <script>
@@ -11,14 +10,18 @@ import { mapActions, mapState } from "pinia";
 import LoadingStore from "../../stores/LoadingStore.js";
 import OtherStore from "../../stores/OtherStore.js";
 import UploadImg from "../../components/UploadImg.vue";
+import FormUtilitieLayoutVue from "../../components/FormUtilitieLayout.vue";
 
 export default {
     data(){
         return{
+            title: "",
             activityId: "",
             certificateLevels: [],
             cylinderTotals: [],
-            activity: {
+            locations: [],
+            tags: ["新手","船淺"],
+            form: {
                 title: "",
                 imgs: [],
                 locationId: "",
@@ -36,31 +39,49 @@ export default {
             }
         }
     },
+    inject: ["frontLayoutData"],
+    computed: {
+        ...mapState(LoadingStore, ["isLoadingBtn"]),
+    },
     components: {
         VForm: Form,
         Field,
         ErrorMessage,
-        UploadImg
+        UploadImg,
+        FormUtilitieLayoutVue
     },
     beforeRouteEnter(to, from, next) {
         authGuard(to, from, next);
+        
+    },
+    created() {
+        this.frontLayoutData.isVerticalMiddle = false;
+        this.$watch(
+            () => this.$route.params,
+            () => {this.fetchData()},
+            { immediate: true }
+        );
     },
     mounted() {
-        this.activityId = this.$route.params.activityId;
-        console.log(this.activityId)
-        const APIs = [this.getCertificateLevels(), this.getCylinderTotals()];
-        //if(this.activityId){ APIs.push(this.getMyinfo(this.activityId)) }
-        Promise.all(APIs).then(resArr => {
-            console.log(resArr)
-            this.certificateLevels = resArr[0];
-            this.cylinderTotals = resArr[1];
-            //if(this.id) { this.activity = resArr[2] }
-            this.hideLoading();
-        });
+        
     },
     methods: {
         ...mapActions(LoadingStore, ["showLoading", "hideLoading"]),
         ...mapActions(OtherStore, ["getCertificateLevels", "getCylinderTotals"]),
+        fetchData(){
+            this.activityId = this.$route.params.activityId;
+            this.title = this.activityId ? "編輯" : "新增";
+
+            const APIs = [this.getCertificateLevels(), this.getCylinderTotals()];
+            //if(this.activityId){ APIs.push(this.getMyinfo(this.activityId)) }
+            Promise.all(APIs).then(resArr => {
+                console.log(resArr)
+                this.certificateLevels = resArr[0];
+                this.cylinderTotals = resArr[1];
+                //if(this.id) { this.form = resArr[2] }
+                this.hideLoading();
+            });
+        },
         onSubmit() {
             this.showLoading("btn");
             console.log(this.activityId)
@@ -69,6 +90,281 @@ export default {
 };
 </script>
 
-<template>編輯活動s</template>
+<template>
+    <FormUtilitieLayoutVue :title="`${title}揪團`" en-title="Activity" :img="activityImg">
+        <template #body>
+            <VForm v-slot="{ errors }" @submit="onSubmit">
+                <fieldset :disabled="isLoadingBtn" class="row g-3">
+                    <!-- <div class="col-12">
+                        <UploadImg :errors="errors" v-model:img="user.img" />
+                    </div> -->
+                    <div class="col-md-12">
+                        <label :for="formSchema.activity.title.name" class="form-label"
+                            >{{ formSchema.activity.title.label
+                            }}<span class="text-danger" v-if="formSchema.activity.title.isRequired">*</span></label
+                        >
+                        <Field
+                            :id="formSchema.activity.title.name"
+                            :name="formSchema.activity.title.label"
+                            :type="formSchema.activity.title.type"
+                            class="form-control"
+                            :class="{ 'is-invalid': errors[formSchema.activity.title.label] }"
+                            :placeholder="`請輸入${formSchema.activity.title.label}`"
+                            :rules="formSchema.activity.title.rules"
+                            v-model="form.title"
+                        ></Field>
+                        <ErrorMessage :name="formSchema.activity.title.label" class="invalid-feedback"></ErrorMessage>
+                    </div>
+                    <div class="col-md-12">
+                        <label :for="formSchema.activity.features.name" class="form-label"
+                            >{{ formSchema.activity.features.label
+                            }}<span class="text-danger" v-if="formSchema.activity.features.isRequired">*</span></label
+                        >
+                        <Field
+                            :id="formSchema.activity.features.name"
+                            :name="formSchema.activity.features.label"
+                            class="form-control"
+                            :as="formSchema.activity.features.as"
+                            :class="{ 'is-invalid': errors[formSchema.activity.features.label] }"
+                            :placeholder="`請輸入${formSchema.activity.features.label}`"
+                            :rules="formSchema.activity.features.rules"
+                            v-model="form.features"
+                            rows="5"
+                        ></Field>
+                        <ErrorMessage :name="formSchema.activity.features.label" class="invalid-feedback"></ErrorMessage>
+                    </div>
+                    <div class="col-md-12">
+                        <label :for="formSchema.activity.content.name" class="form-label"
+                            >{{ formSchema.activity.content.label
+                            }}<span class="text-danger" v-if="formSchema.activity.content.isRequired">*</span></label
+                        >
+                        <Field
+                            :id="formSchema.activity.content.name"
+                            :name="formSchema.activity.content.label"
+                            class="form-control"
+                            :as="formSchema.activity.features.as"
+                            :class="{ 'is-invalid': errors[formSchema.activity.content.label] }"
+                            :placeholder="`請輸入${formSchema.activity.content.label}`"
+                            :rules="formSchema.activity.content.rules"
+                            v-model="form.content"
+                            rows="5"
+                        ></Field>
+                        <ErrorMessage :name="formSchema.activity.content.label" class="invalid-feedback"></ErrorMessage>
+                    </div>
+                    <div class="col-md-4">
+                        <label :for="formSchema.activity.startDate.name" class="form-label"
+                            >{{ formSchema.activity.startDate.label
+                            }}<span class="text-danger" v-if="formSchema.activity.startDate.isRequired">*</span></label
+                        >
+                        <Field
+                            :id="formSchema.activity.startDate.name"
+                            :name="formSchema.activity.startDate.label"
+                            :type="formSchema.activity.startDate.type"
+                            :as="formSchema.activity.startDate.as"
+                            class="form-control"
+                            :class="{ 'is-invalid': errors[formSchema.activity.startDate.label] }"
+                            :rules="formSchema.activity.startDate.rules"
+                            v-model="form.startDate"
+                        ></Field>
+                        <ErrorMessage :name="formSchema.activity.startDate.label" class="invalid-feedback"></ErrorMessage>
+                    </div>
+                    <div class="col-md-4">
+                        <label :for="formSchema.activity.endDate.name" class="form-label"
+                            >{{ formSchema.activity.endDate.label
+                            }}<span class="text-danger" v-if="formSchema.activity.endDate.isRequired">*</span></label
+                        >
+                        <Field
+                            :id="formSchema.activity.endDate.name"
+                            :name="formSchema.activity.endDate.label"
+                            :type="formSchema.activity.endDate.type"
+                            :as="formSchema.activity.endDate.as"
+                            class="form-control"
+                            :class="{ 'is-invalid': errors[formSchema.activity.endDate.label] }"
+                            :rules="formSchema.activity.endDate.rules"
+                            v-model="form.endDate"
+                        ></Field>
+                        <ErrorMessage :name="formSchema.activity.endDate.label" class="invalid-feedback"></ErrorMessage>
+                    </div>
+                    <div class="col-md-4">
+                        <label :for="formSchema.activity.orderExpiryDate.name" class="form-label"
+                            >{{ formSchema.activity.orderExpiryDate.label
+                            }}<span class="text-danger" v-if="formSchema.activity.orderExpiryDate.isRequired">*</span></label
+                        >
+                        <Field
+                            :id="formSchema.activity.orderExpiryDate.name"
+                            :name="formSchema.activity.orderExpiryDate.label"
+                            :type="formSchema.activity.orderExpiryDate.type"
+                            :as="formSchema.activity.orderExpiryDate.as"
+                            class="form-control"
+                            :class="{ 'is-invalid': errors[formSchema.activity.orderExpiryDate.label] }"
+                            :rules="formSchema.activity.orderExpiryDate.rules"
+                            v-model="form.orderExpiryDate"
+                        ></Field>
+                        <ErrorMessage :name="formSchema.activity.orderExpiryDate.label" class="invalid-feedback"></ErrorMessage>
+                        <span v-if="!errors[formSchema.activity.orderExpiryDate.label]" class="invalid-feedback form-help">{{
+                        formSchema.activity.orderExpiryDate.help }}
+                        </span>
+                    </div>
+                    <div class="col-md-4">
+                        <label :for="formSchema.activity.locationId.name" class="form-label"
+                            >{{ formSchema.activity.locationId.label
+                            }}<span class="text-danger" v-if="formSchema.activity.locationId.isRequired">*</span></label
+                        >
+                        <Field
+                            :id="formSchema.activity.locationId.name"
+                            :name="formSchema.activity.locationId.label"
+                            :as="formSchema.activity.locationId.as"
+                            class="form-select"
+                            :class="{ 'is-invalid': errors[formSchema.activity.locationId.label] }"
+                            :rules="formSchema.activity.locationId.rules"
+                            v-model="form.locationId"
+                        >
+                        <option value="" disabled>請選擇</option>
+                        <option v-for="option in locations" :key="option.id" :value="option.name">
+                            {{ option.name }}
+                        </option></Field>
+                        <ErrorMessage :name="formSchema.activity.locationId.label" class="invalid-feedback"></ErrorMessage>
+                        <span v-if="!errors[formSchema.activity.locationId.label]" class="invalid-feedback form-help">{{
+                        formSchema.activity.locationId.help }}
+                        </span>
+                    </div>
+                    <div class="col-md-4">
+                        <label :for="formSchema.activity.maxOrderTotal.name" class="form-label"
+                            >{{ formSchema.activity.maxOrderTotal.label
+                            }}<span class="text-danger" v-if="formSchema.activity.maxOrderTotal.isRequired">*</span></label
+                        >
+                        <Field
+                            :id="formSchema.activity.maxOrderTotal.name"
+                            :name="formSchema.activity.maxOrderTotal.label"
+                            :type="formSchema.activity.cost.type"
+                            :as="formSchema.activity.maxOrderTotal.as"
+                            class="form-control"
+                            :class="{ 'is-invalid': errors[formSchema.activity.maxOrderTotal.label] }"
+                            :rules="formSchema.activity.maxOrderTotal.rules"
+                            v-model="form.maxOrderTotal"
+                        ></Field>
+                        <ErrorMessage :name="formSchema.activity.maxOrderTotal.label" class="invalid-feedback"></ErrorMessage>
+                        <span v-if="!errors[formSchema.activity.maxOrderTotal.label]" class="invalid-feedback form-help">{{
+                        formSchema.activity.maxOrderTotal.help }}
+                        </span>
+                    </div>
+                    <div class="col-md-4">
+                        <label :for="formSchema.activity.cost.name" class="form-label"
+                            >{{ formSchema.activity.cost.label
+                            }}<span class="text-danger" v-if="formSchema.activity.cost.isRequired">*</span></label
+                        >
+                        <Field
+                            :id="formSchema.activity.cost.name"
+                            :name="formSchema.activity.cost.label"
+                            :type="formSchema.activity.cost.type"
+                            :as="formSchema.activity.cost.as"
+                            class="form-control"
+                            :class="{ 'is-invalid': errors[formSchema.activity.cost.label] }"
+                            :rules="formSchema.activity.cost.rules"
+                            v-model="form.cost"
+                        ></Field>
+                        <ErrorMessage :name="formSchema.activity.cost.label" class="invalid-feedback"></ErrorMessage>
+                        <span v-if="!errors[formSchema.activity.cost.label]" class="invalid-feedback form-help">{{
+                        formSchema.activity.cost.help }}
+                        </span>
+                    </div>
+                    <div class="col-md-4">
+                        <label :for="formSchema.activity.certificateLevel.name" class="form-label"
+                            >{{ formSchema.activity.certificateLevel.label
+                            }}<span class="text-danger" v-if="formSchema.activity.certificateLevel.isRequired">*</span></label
+                        >
+                        <Field
+                            :id="formSchema.activity.certificateLevel.name"
+                            :name="formSchema.activity.certificateLevel.label"
+                            :as="formSchema.activity.certificateLevel.as"
+                            class="form-select"
+                            :class="{ 'is-invalid': errors[formSchema.activity.certificateLevel.label] }"
+                            :rules="formSchema.activity.certificateLevel.rules"
+                            v-model="form.certificateLevel"
+                        >
+                        <option value="" disabled>請選擇</option>
+                        <option v-for="option in certificateLevels" :key="option.id" :value="option.name">
+                            {{ option.name }}
+                        </option>
+                        </Field>
+                        <ErrorMessage :name="formSchema.activity.certificateLevel.label" class="invalid-feedback"></ErrorMessage>
+                        <span v-if="!errors[formSchema.activity.certificateLevel.label]" class="invalid-feedback form-help">{{
+                        formSchema.activity.certificateLevel.help }}
+                        </span>
+                    </div>
+                    <div class="col-md-4">
+                        <label :for="formSchema.cylinderTotal.name" class="form-label d-block"
+                            >{{ formSchema.cylinderTotal.label
+                            }}<span class="text-danger" v-if="formSchema.cylinderTotal.isRequired">*</span></label
+                        >
+                        <Field
+                            :class="{ 'is-invalid': errors[formSchema.cylinderTotal.label] }"
+                            class="form-select"
+                            :id="formSchema.cylinderTotal.name"
+                            :name="formSchema.cylinderTotal.label"
+                            :as="formSchema.cylinderTotal.as"
+                            :rules="formSchema.cylinderTotal.rules"
+                            v-model="form.cylinderTotal"
+                        >
+                            <option value="" disabled>請選擇</option>
+                            <option v-for="option in cylinderTotals" :key="option.id" :value="option.name">
+                                {{ option.name }}
+                            </option></Field
+                        >
+                        <ErrorMessage :name="formSchema.cylinderTotal.label" class="invalid-feedback"></ErrorMessage>
+                    </div>
+                    <div class="col-md-4 align-self-center">
+                        <label class="form-label d-block"
+                            >{{ formSchema.isNitrox.label
+                            }}<span class="text-danger" v-if="formSchema.isNitrox.isRequired">*</span></label
+                        >
+                        <div class="form-check form-check-inline" v-for="option in formSchema.isNitrox.options" :key="option">
+                            <Field
+                                :class="{ 'is-invalid': errors[formSchema.isNitrox.label] }"
+                                class="form-check-input"
+                                :id="`${formSchema.isNitrox.name}-${option}`"
+                                :name="formSchema.isNitrox.label"
+                                :type="formSchema.isNitrox.type"
+                                :value="option"
+                                :rules="formSchema.isNitrox.rules"
+                                v-model="form.isNitrox"
+                            /><label class="form-check-label" :for="`${formSchema.isNitrox.name}-${option}`">{{
+                                option ? "是" : "否"
+                            }}</label>
+                        </div>
+                        <ErrorMessage :name="formSchema.isNitrox.label" class="invalid-feedback d-block"></ErrorMessage>
+                    </div>
+                    <div class="col-md-12">
+                        <label :for="formSchema.activity.tags.name" class="form-label d-block"
+                            >{{ formSchema.activity.tags.label
+                            }}<span class="text-danger" v-if="formSchema.activity.tags.isRequired">*</span></label
+                        >
+                        <div class="row gx-1">
+                            <div class="col-auto" v-for="tag in tags" :key="tag">
+                                <Field 
+                                :id="`${formSchema.activity.tags.name}-${tag}`"
+                                :name="formSchema.activity.tags.label"
+                                :type="formSchema.activity.tags.type"
+                                :as="formSchema.activity.tags.as"
+                                class="btn-check"
+                                :class="{ 'is-invalid': errors[formSchema.activity.tags.label] }"
+                                :rules="formSchema.activity.tags.rules"
+                                v-model="form.tags" />
+                                <label class="btn btn-outline-primary btn-sm rounded-0" :for="`${formSchema.activity.tags.name}-${tag}`">{{ tag }}</label>
+                                </div>
+                            </div>
+                        <ErrorMessage :name="formSchema.activity.tags.label" class="invalid-feedback"></ErrorMessage>
+                    </div>
+                    <div class="col-12 text-end border-top pt-3 mt-4 mt-md-5">
+                        <button type="submit" class="btn btn-primary btn-custom-rectangle" :disabled="isLoadingBtn || Object.keys(errors).length">
+                            <span class="spinner-border spinner-border-sm text-dark-primary" role="status" v-if="isLoadingBtn"></span>
+                            {{ title }}
+                        </button>
+                    </div>
+                </fieldset>
+            </VForm>
+        </template>
+    </FormUtilitieLayoutVue>
+</template>
 
 <style lang="scss"></style>

@@ -23,21 +23,18 @@ export default {
     components: {
         UserMugShot
     },
+    computed: {
+        ...mapState(MemberStore, ["mySignUp"]),
+        ...mapState(AuthStore, ["user"])
+    },
     mounted() {
         this.getMySignUp(3);
         window.addEventListener("scroll", this.scrollEvent);
         this.offcanvasNavbar = new bootstrap.Offcanvas(this.$refs.offcanvasNavbar, { keyboard: false });
     },
-    computed: {
-        ...mapState(MemberStore, ["mySignUp"]),
-        ...mapState(AuthStore, ["user"])
-    },
     methods: {
         ...mapActions(MemberStore, ["getMySignUp"]),
         ...mapActions(AuthStore, ["logout"]),
-        getCurrentPath(){
-            return this.$route.path;
-        },
         scrollEvent() {
             this.hasHavbarBg = window.scrollY > 0 ? true : false;
         },
@@ -168,14 +165,14 @@ export default {
                         </li>
                         <template v-if="!user">
                             <li class="nav-item">
-                                <router-link class="nav-link" :to="{ path: '/login', query: { returnUrl: getCurrentPath() }}" @click="toggleOffcanvasNavbar">登入</router-link>
+                                <router-link class="nav-link" to="/login" @click="toggleOffcanvasNavbar">登入</router-link>
                             </li>
                             <li class="nav-item">
-                                <router-link class="nav-link" :to="{ path: '/signup', query: { returnUrl: getCurrentPath() }}" @click="toggleOffcanvasNavbar">註冊</router-link>
+                                <router-link class="nav-link" to="/signup" @click="toggleOffcanvasNavbar">註冊</router-link>
                             </li>
                         </template>
                         <template v-else>
-                            <li class="nav-item">
+                            <li class="nav-item" v-if="user.identityId === '0'">
                                 <router-link class="nav-link" to="/admin/index" @click="toggleOffcanvasNavbar">後台管理</router-link>
                             </li>
                             <li class="nav-item d-md-none border-top border-color-dropdown">

@@ -4,7 +4,8 @@
 // contents：Array - 設定要回傳的日期格式內容，預設 "date"
 // "date"：只有日期
 // "time"：日期 + 時間
-export default function (value, contents = ["date"]) {
+// "splitStyle"：日期的樣式 "/" 或 "-"，預設 "/"
+export default function (value, contents = ["date"], splitStyle = "/") {
     value = new Date(value);
     let time = "";
     const year = value.getFullYear();
@@ -23,7 +24,7 @@ export default function (value, contents = ["date"]) {
         time = `${hour}:${minute}:${second}`;
     }
 
-    return `${year}/${month}/${date} ${time}`;
+    return `${year}${splitStyle}${month}${splitStyle}${date} ${time}`;
 }
 
 // 小於 10 的數字 前面補 0

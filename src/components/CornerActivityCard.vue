@@ -8,9 +8,6 @@ import propsValidator from "../data/propsValidator.js";
 import UserMugShot from "./UserMugShot.vue";
 
 export default {
-    data() {
-        return {};
-    },
     props: {
         activity: {
             type: Object,
@@ -24,9 +21,7 @@ export default {
     },
     components: {
         UserMugShot
-    },
-    mounted() {},
-    methods: {}
+    }
 };
 </script>
 

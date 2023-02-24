@@ -15,18 +15,18 @@ export default {
     data() {
         return {
             title: "登入",
-            user: {
+            form: {
                 email: "",
                 password: ""
             }
         };
     },
+    inject: ["frontLayoutData"],
     components: {
         VForm: Form,
         Field,
         ErrorMessage
     },
-    inject: ["frontLayoutData"],
     computed: {
         ...mapState(LoadingStore, ["isLoadingBtn"])
     },
@@ -43,7 +43,7 @@ export default {
         onSubmit() {
             this.showLoading("btn");
             const { returnUrl } = this.$route.query;
-            this.login(this.user, returnUrl);
+            this.login(this.form, returnUrl);
         }
     }
 };
@@ -70,47 +70,49 @@ export default {
                                 <VForm v-slot="{ errors }" @submit="onSubmit">
                                     <fieldset :disabled="isLoadingBtn">
                                         <div class="mb-3">
-                                            <label :for="`${formSchema.email.label}Input`" class="form-label"
+                                            <label :for="formSchema.email.label" class="form-label"
                                                 >{{ formSchema.email.label
                                                 }}<span class="text-danger" v-if="formSchema.email.isRequired">*</span></label
                                             >
                                             <Field
-                                                :id="`${formSchema.email.label}Input`"
+                                                :id="formSchema.email.label"
                                                 :name="formSchema.email.label"
                                                 :type="formSchema.email.type"
                                                 class="form-control"
                                                 :class="{ 'is-invalid': errors[formSchema.email.label] }"
                                                 :placeholder="`請輸入 ${formSchema.email.label}`"
                                                 :rules="formSchema.email.rules"
-                                                v-model="user.email"
+                                                v-model="form.email"
                                             ></Field>
                                             <ErrorMessage :name="formSchema.email.label" class="invalid-feedback"></ErrorMessage>
                                         </div>
                                         <div class="mb-3">
-                                            <label :for="`${formSchema.password.label}Input`" class="form-label"
+                                            <label :for="formSchema.password.label" class="form-label"
                                                 >{{ formSchema.password.label
                                                 }}<span class="text-danger" v-if="formSchema.password.isRequired">*</span></label
                                             >
                                             <Field
-                                                :id="`${formSchema.password.label}Input`"
+                                                :id="formSchema.password.label"
                                                 :name="formSchema.password.label"
                                                 :type="formSchema.password.type"
                                                 class="form-control"
                                                 :class="{ 'is-invalid': errors[formSchema.password.label] }"
                                                 :placeholder="`請輸入${formSchema.password.label}`"
                                                 :rules="formSchema.password.rules.required"
-                                                v-model="user.password"
+                                                v-model="form.password"
                                             ></Field>
                                             <ErrorMessage :name="formSchema.password.label" class="invalid-feedback"></ErrorMessage>
                                         </div>
-                                        <button
-                                            type="submit"
-                                            class="btn btn-primary w-100 mt-3"
-                                            :disabled="isLoadingBtn || Object.keys(errors).length"
-                                        >
-                                            <span class="spinner-border spinner-border-sm text-dark-primary" role="status" v-if="isLoadingBtn"></span>
-                                            {{ title }}
-                                        </button>
+                                        <div class="text-end pt-3">
+                                            <button
+                                                type="submit"
+                                                class="btn btn-primary btn-custom-rectangle"
+                                                :disabled="isLoadingBtn || Object.keys(errors).length"
+                                            >
+                                                <span class="spinner-border spinner-border-sm text-dark-primary" role="status" v-if="isLoadingBtn"></span>
+                                                {{ title }}
+                                            </button>
+                                        </div>
                                     </fieldset>
                                 </VForm>
                             </div>

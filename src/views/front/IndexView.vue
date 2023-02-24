@@ -51,26 +51,12 @@ export default {
             comments: []
         };
     },
+    inject: ["frontLayoutData"],
     components: {
         CornerActivityCard,
         BottomFrameActivityCard,
         UserMugShot,
         CountUp
-    },
-    mounted() {
-        AOS.init({
-            duration: 1200,
-            easing: "ease-in-out-back"
-        });
-        this.getActivitys();
-        this.getLocations();
-        Promise.all([this.getComments()]).then(resArr => {
-            console.log(resArr);
-            this.comments = resArr[0];
-            this.setSwiper("commentSwiper");
-            this.setSwiper("goodRatingSwiper");
-            this.hideLoading();
-        });
     },
     computed: {
         ...mapState(ActivityStore, ["newActivitys", "hotActivitys", "adLocations"]),
@@ -87,6 +73,24 @@ export default {
 
             return cards;
         }
+    },
+    created() {
+        this.frontLayoutData.isVerticalMiddle = false;
+    },
+    mounted() {
+        AOS.init({
+            duration: 1200,
+            easing: "ease-in-out-back"
+        });
+        this.getActivitys();
+        this.getLocations();
+        Promise.all([this.getComments()]).then(resArr => {
+            console.log(resArr);
+            this.comments = resArr[0];
+            this.setSwiper("commentSwiper");
+            this.setSwiper("goodRatingSwiper");
+            this.hideLoading();
+        });
     },
     methods: {
         ...mapActions(ActivityStore, ["getActivitys", "getLocations"]),

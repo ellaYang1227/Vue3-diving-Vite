@@ -27,12 +27,15 @@ export function adminGuard(to, from, next) {
     if(user && user.identityId === "0"){
         next();
     }else{
-        const toUrl = { 
-            path: user ? "/index" : "/login",
+        let toUrl = { 
+            path: "/index",
         };
 
         if(!user){
-            toUrl.query = { returnUrl: to.path }
+            toUrl = {
+                path: "/login",
+                query:{ returnUrl: to.path }
+            }
         }
 
         next(toUrl);

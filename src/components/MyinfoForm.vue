@@ -16,7 +16,7 @@ export default {
             userId: "",
             certificateLevels: [],
             cylinderTotals: [],
-            user: {
+            form: {
                 email: "",
                 password: "",
                 name: "",
@@ -36,30 +36,36 @@ export default {
     computed: {
         ...mapState(LoadingStore, ["isLoadingBtn"])
     },
-    mounted() {
-        this.userId = this.$route.params.userId;
-        console.log(this.userId)
-        const APIs = [this.getCertificateLevels(), this.getCylinderTotals()];
-        if(this.userId){ APIs.push(this.getMyinfo(this.userId)) }
-        Promise.all(APIs).then(resArr => {
-            console.log(resArr)
-            this.certificateLevels = resArr[0];
-            this.cylinderTotals = resArr[1];
-            if(this.userId) { this.user = resArr[2] }
-            this.hideLoading();
-        });
+    created() {
+        this.$watch(
+            () => this.$route.params,
+            () => {this.fetchData()},
+            { immediate: true }
+        );
     },
     methods: {
         ...mapActions(LoadingStore, ["showLoading", "hideLoading"]),
         ...mapActions(OtherStore, ["getCertificateLevels", "getCylinderTotals"]),
         ...mapActions(MemberStore, ["signup","getMyinfo"]),
+        fetchData() {
+            this.userId = this.$route.params.userId;
+            const APIs = [this.getCertificateLevels(), this.getCylinderTotals()];
+            if(this.userId){ APIs.push(this.getMyinfo(this.userId)) }
+            Promise.all(APIs).then(resArr => {
+                console.log(resArr)
+                this.certificateLevels = resArr[0];
+                this.cylinderTotals = resArr[1];
+                if(this.userId) { this.form = resArr[2] }
+                this.hideLoading();
+            });
+        },
         onSubmit() {
             this.showLoading("btn");
             if(!this.userId){
                 const { returnUrl } = this.$route.query;
-                this.signup(this.user, returnUrl);
+                this.signup(this.form, returnUrl);
             }else{
-                console.log('編輯', this.user)
+                console.log('編輯', this.form)
             }
             
         }
@@ -71,60 +77,60 @@ export default {
     <VForm v-slot="{ errors }" @submit="onSubmit">
         <fieldset :disabled="isLoadingBtn" class="row g-3">
             <div class="col-12">
-                <UploadImg :errors="errors" v-model:img="user.img" />
+                <UploadImg :errors="errors" v-model:img="form.img" />
             </div>
             <template v-if="!userId">
                 <div class="col-md-6">
-                    <label :for="`${formSchema.email.name}Input`" class="form-label"
+                    <label :for="formSchema.email.name" class="form-label"
                         >{{ formSchema.email.label }}<span class="text-danger" v-if="formSchema.email.isRequired">*</span></label
                     >
                     <Field
-                        :id="`${formSchema.email.name}Input`"
+                        :id="formSchema.email.name"
                         :name="formSchema.email.label"
                         :type="formSchema.email.type"
                         class="form-control"
                         :class="{ 'is-invalid': errors[formSchema.email.label] }"
                         :placeholder="`請輸入 ${formSchema.email.label}`"
                         :rules="formSchema.email.rules"
-                        v-model="user.email"
+                        v-model="form.email"
                     ></Field>
                     <ErrorMessage :name="formSchema.email.label" class="invalid-feedback"></ErrorMessage>
                 </div>
                 <div class="col-md-6">
-                    <label :for="`${formSchema.password.name}Input`" class="form-label"
+                    <label :for="formSchema.password.name" class="form-label"
                         >{{ formSchema.password.label
                         }}<span class="text-danger" v-if="formSchema.password.isRequired">*</span></label
                     >
                     <Field
-                        :id="`${formSchema.password.name}Input`"
+                        :id="formSchema.password.name"
                         :name="formSchema.password.label"
                         :type="formSchema.password.type"
                         class="form-control"
                         :class="{ 'is-invalid': errors[formSchema.password.label] }"
                         :placeholder="`請輸入${formSchema.password.label}`"
                         :rules="formSchema.password.rules.full"
-                        v-model="user.password"
+                        v-model="form.password"
                     ></Field>
                     <ErrorMessage :name="formSchema.password.label" class="invalid-feedback"></ErrorMessage>
-                    <span v-if="!errors[formSchema.password.label]" class="invalid-feedback text-body d-block">{{
+                    <span v-if="!errors[formSchema.password.label]" class="invalid-feedback form-help">{{
                         formSchema.password.help
                     }}</span>
                 </div>
             </template>
             <div class="col-md-6">
-                <label :for="`${formSchema.userName.name}Input`" class="form-label"
+                <label :for="formSchema.userName.name" class="form-label"
                     >{{ formSchema.userName.label
                     }}<span class="text-danger" v-if="formSchema.userName.isRequired">*</span></label
                 >
                 <Field
-                    :id="`${formSchema.userName.name}Input`"
+                    :id="formSchema.userName.name"
                     :name="formSchema.userName.label"
                     :type="formSchema.userName.type"
                     class="form-control"
                     :class="{ 'is-invalid': errors[formSchema.userName.label] }"
                     :placeholder="`請輸入${formSchema.userName.label}`"
                     :rules="formSchema.userName.rules"
-                    v-model="user.name"
+                    v-model="form.name"
                 ></Field>
                 <ErrorMessage :name="formSchema.userName.label" class="invalid-feedback"></ErrorMessage>
             </div>
@@ -140,13 +146,13 @@ export default {
                     <Field
                         :class="{ 'is-invalid': errors[formSchema.certificateLevel.label] }"
                         class="form-check-input"
-                        :id="`${formSchema.certificateLevel.name}Checkbox-${option.value}`"
+                        :id="`${formSchema.certificateLevel.name}-${option.value}`"
                         :name="formSchema.certificateLevel.label"
                         :type="formSchema.certificateLevel.type"
                         :value="option.value"
                         :rules="formSchema.certificateLevel.rules"
-                        v-model="user.certificateLevels"
-                    /><label class="form-check-label" :for="`${formSchema.certificateLevel.name}Checkbox-${option.value}`">{{
+                        v-model="form.certificateLevels"
+                    /><label class="form-check-label" :for="`${formSchema.certificateLevel.name}-${option.value}`">{{
                         option.name
                     }}</label>
                 </div>
@@ -161,31 +167,31 @@ export default {
                     <Field
                         :class="{ 'is-invalid': errors[formSchema.isNitrox.label] }"
                         class="form-check-input"
-                        :id="`${formSchema.isNitrox.name}Radio-${option}`"
+                        :id="`${formSchema.isNitrox.name}-${option}`"
                         :name="formSchema.isNitrox.label"
                         :type="formSchema.isNitrox.type"
                         :value="option"
                         :rules="formSchema.isNitrox.rules"
-                        v-model="user.isNitrox"
-                    /><label class="form-check-label" :for="`${formSchema.isNitrox.name}Radio-${option}`">{{
+                        v-model="form.isNitrox"
+                    /><label class="form-check-label" :for="`${formSchema.isNitrox.name}-${option}`">{{
                         option ? "是" : "否"
                     }}</label>
                 </div>
                 <ErrorMessage :name="formSchema.isNitrox.label" class="invalid-feedback d-block"></ErrorMessage>
             </div>
             <div class="col-auto">
-                <label :for="`${formSchema.cylinderTotal.name}Select`" class="form-label d-block"
+                <label :for="formSchema.cylinderTotal.name" class="form-label d-block"
                     >{{ formSchema.cylinderTotal.label
                     }}<span class="text-danger" v-if="formSchema.cylinderTotal.isRequired">*</span></label
                 >
                 <Field
                     :class="{ 'is-invalid': errors[formSchema.cylinderTotal.label] }"
                     class="form-select"
-                    :id="`${formSchema.cylinderTotal.name}Select`"
+                    :id="formSchema.cylinderTotal.name"
                     :name="formSchema.cylinderTotal.label"
                     :as="formSchema.cylinderTotal.as"
                     :rules="formSchema.cylinderTotal.rules"
-                    v-model="user.cylinderTotal"
+                    v-model="form.cylinderTotal"
                 >
                     <option value="" disabled>請選擇</option>
                     <option v-for="option in cylinderTotals" :key="option.id" :value="option.name">
@@ -195,7 +201,7 @@ export default {
                 <ErrorMessage :name="formSchema.cylinderTotal.label" class="invalid-feedback"></ErrorMessage>
             </div>
             <div class="col-12 text-end border-top pt-3 mt-4 mt-md-5">
-                <button type="submit" class="btn btn-primary" :disabled="isLoadingBtn || Object.keys(errors).length">
+                <button type="submit" class="btn btn-primary btn-custom-rectangle" :disabled="isLoadingBtn || Object.keys(errors).length">
                     <span class="spinner-border spinner-border-sm text-dark-primary" role="status" v-if="isLoadingBtn"></span>
                     {{ userId ? '編輯' : '註冊' }}
                 </button>

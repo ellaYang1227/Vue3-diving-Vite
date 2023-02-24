@@ -10,6 +10,10 @@ export default defineStore("AuthStore", {
         getStorageUser() {
             const encryptUser = localStorage.getItem("user");
             this.user = encryptUser ? this.handleCrypt("decrypt", "user", encryptUser) : null;
+            if(!this.user){
+                this.changeCookie("remove");
+            }
+            
             return this.user;
         },
         logout() {

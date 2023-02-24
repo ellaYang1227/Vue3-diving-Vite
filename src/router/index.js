@@ -23,17 +23,17 @@ const routes = [
             {
                 path: "activitys/:activityId",
                 component: () => import("../views/front/ActivityView.vue"),
-                meta: { title: "單一活動" },
+                meta: { title: "單一揪團" },
             },
             {
                 path: "addActivity",
                 component: () => import("../views/front/EditActivityView.vue"),
-                meta: { title: "新增活動" }
+                meta: { title: "新增揪團" }
             },
             {
                 path: "editActivity/:activityId",
                 component: () => import("../views/front/EditActivityView.vue"),
-                meta: { title: "編輯活動" }
+                meta: { title: "編輯揪團" }
             },
             {
                 path: "login",

@@ -71,7 +71,7 @@ export default {
         :rules="formSchema.uploadImg.rules[isRequired ? 'required' : 'noRequired']"
         @change="upload"
     >
-        <label class="file-img rounded p-1" :class="{ 'border-danger': errors[formSchema.uploadImg.label], 'cursor-pointer': !isLoading }">
+        <label class="file-img p-1" :class="{ 'border-danger': errors[formSchema.uploadImg.label], 'cursor-pointer': !isLoading }">
             <input
                 v-bind="field"
                 class="form-control d-none"

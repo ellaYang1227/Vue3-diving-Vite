@@ -21,11 +21,17 @@ import "aos/dist/aos.js";
 
 import { defineRule, configure } from "vee-validate";
 import AllRules from "@vee-validate/rules";
+import customDefineRule from "./data/customDefineRule.js";
 import { localize, loadLocaleFromURL } from "@vee-validate/i18n";
 
 /* VeeValidate 定義規則 */
 Object.keys(AllRules).forEach(rule => {
     defineRule(rule, AllRules[rule]);
+});
+
+/* 自訂 VeeValidate 規則 */
+Object.keys(customDefineRule).forEach(rule => {
+    defineRule(rule, customDefineRule[rule]);
 });
 
 /* 加入多國語系 */

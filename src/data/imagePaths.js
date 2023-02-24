@@ -9,5 +9,6 @@ import scoreImg from "../assets/images/index/features/score.svg";
 import commentImg from "../assets/images/index/comment.png";
 import loginImg from "../assets/images/login.jpg";
 import signupImg from "../assets/images/signup.jpg";
+import activityImg from "../assets/images/activity.jpg";
 
-export { logo, userDefaultImg, divingIcon, peoplesIcon, areaIcon, licenseImg, scoreImg, commentImg, loginImg, loadingImg, signupImg };
+export { logo, userDefaultImg, divingIcon, peoplesIcon, areaIcon, licenseImg, scoreImg, commentImg, loginImg, loadingImg, signupImg, activityImg };
