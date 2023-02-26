@@ -48,7 +48,8 @@ export default {
                     img: scoreImg
                 }
             ],
-            comments: []
+            comments: [],
+            adLocations: []
         };
     },
     inject: ["frontLayoutData"],
@@ -59,7 +60,7 @@ export default {
         CountUp
     },
     computed: {
-        ...mapState(ActivityStore, ["newActivitys", "hotActivitys", "adLocations"]),
+        ...mapState(ActivityStore, ["newActivitys", "hotActivitys"]),
         activityCards() {
             let cards = [];
             switch (this.activeActivityNav) {
@@ -82,18 +83,22 @@ export default {
             duration: 1200,
             easing: "ease-in-out-back"
         });
-        this.getActivitys();
-        this.getLocations();
-        Promise.all([this.getComments()]).then(resArr => {
+        //this.getActivitys();
+        //this.getLocations();
+        Promise.all([
+            this.getAdLocations()
+            //this.getComments()
+        ]).then(resArr => {
             console.log(resArr);
-            this.comments = resArr[0];
-            this.setSwiper("commentSwiper");
-            this.setSwiper("goodRatingSwiper");
+            this.adLocations = resArr[0];
+            // this.comments = resArr[0];
+            // this.setSwiper("commentSwiper");
+            // this.setSwiper("goodRatingSwiper");
             this.hideLoading();
         });
     },
     methods: {
-        ...mapActions(ActivityStore, ["getActivitys", "getLocations"]),
+        ...mapActions(ActivityStore, ["getActivitys", "getLocations", "getAdLocations"]),
         ...mapActions(CommentStore, ["getComments"]),
         ...mapActions(LoadingStore, ["showLoading", "hideLoading"]),
         toggleActiveActivityNav(nav) {

@@ -18,7 +18,10 @@ export default defineStore("AuthStore", {
         },
         logout() {
             this.changeCookie("remove");
-            router.push("/login");
+            router.push({ 
+                path: "/login",
+                query: { returnUrl: location.hash.replace('#', '') }
+            });
         },
         getToken() {
             return document.cookie.replace(/(?:(?:^|.*;\s*)access-token\s*=\s*([^;]*).*$)|^.*$/, "$1");

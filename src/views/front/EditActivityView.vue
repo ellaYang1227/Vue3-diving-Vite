@@ -8,7 +8,8 @@ import { authGuard } from "../../data/routeGuard.js";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import { mapActions, mapState } from "pinia";
 import LoadingStore from "../../stores/LoadingStore.js";
-import OtherStore from "../../stores/OtherStore.js";
+import OptionStore from "../../stores/OptionStore.js";
+import MemberStore from "../../stores/MemberStore.js";
 import UploadImg from "../../components/UploadImg.vue";
 import FormUtilitieLayoutVue from "../../components/FormUtilitieLayout.vue";
 
@@ -20,23 +21,8 @@ export default {
             certificateLevels: [],
             cylinderTotals: [],
             locations: [],
-            tags: ["新手","船淺"],
-            form: {
-                title: "",
-                imgs: [],
-                locationId: "",
-                features: "",
-                content: "",
-                startDate: "",
-                endDate: "",
-                orderExpiryDate: "",
-                maxOrderTotal: null,
-                cost: null,
-                certificateLevel: "",
-                cylinderTotal: "",
-                isNitrox: null,
-                tags: []
-            }
+            tags: [],
+            form: {}
         }
     },
     inject: ["frontLayoutData"],
@@ -67,24 +53,82 @@ export default {
     },
     methods: {
         ...mapActions(LoadingStore, ["showLoading", "hideLoading"]),
-        ...mapActions(OtherStore, ["getCertificateLevels", "getCylinderTotals"]),
-        fetchData(){
+        ...mapActions(OptionStore, ["getCertificateLevels", "getCylinderTotals", "getLocations", "getTags"]),
+        ...mapActions(MemberStore, ["updateActivity", "getActivity"]),
+        setInitform(){
+            this.form = {
+                title: "",
+                imgs: {
+                    img_1: {
+                        img: "",
+                        isMain: true
+                    }
+                },
+                locationId: "",
+                features: "",
+                content: "",
+                startDate: "",
+                endDate: "",
+                orderExpiryDate: "",
+                maxOrderTotal: null,
+                cost: null,
+                certificateLevel: "",
+                cylinderTotal: "",
+                isNitrox: null,
+                tags: []
+            };
+        },
+        fetchData() {
+            this.setInitform();
             this.activityId = this.$route.params.activityId;
             this.title = this.activityId ? "編輯" : "新增";
 
-            const APIs = [this.getCertificateLevels(), this.getCylinderTotals()];
-            //if(this.activityId){ APIs.push(this.getMyinfo(this.activityId)) }
+            const APIs = [
+                this.getCertificateLevels(),
+                this.getCylinderTotals(),
+                this.getLocations(),
+                this.getTags()
+            ];
+            if(this.activityId){ APIs.push(this.getActivity(this.activityId)) }
             Promise.all(APIs).then(resArr => {
-                console.log(resArr)
                 this.certificateLevels = resArr[0];
                 this.cylinderTotals = resArr[1];
-                //if(this.id) { this.form = resArr[2] }
+                this.locations = resArr[2];
+                this.tags = resArr[3];
+                if(this.activityId){ this.form = resArr[4] }
                 this.hideLoading();
             });
         },
+        changeImg(key){
+            if(!key){
+                const newKey = `img_${new Date().getTime()}`;
+                this.form.imgs[newKey] = {
+                    img: "",
+                    isMain: false
+                };
+            }else{
+                delete this.form.imgs[key];
+            }
+        },
+        setMainImg(key){
+            Object.keys(this.form.imgs).forEach(imgKey => {
+                this.form.imgs[imgKey].isMain = imgKey === key ? true : false;
+            });
+        },
+        showImgsErrMsg(errs){
+            return Object.keys(errs).some(errKey => errKey.indexOf('img') > -1);
+        },
         onSubmit() {
             this.showLoading("btn");
-            console.log(this.activityId)
+            Object.keys(this.form.imgs).every(imgKey => {
+                if(!this.form.imgs[imgKey].img){
+                    delete this.form.imgs[imgKey];
+                }
+
+                return true;
+            });
+
+            this.updateActivity(this.form);
         }
     }
 };
@@ -95,9 +139,29 @@ export default {
         <template #body>
             <VForm v-slot="{ errors }" @submit="onSubmit">
                 <fieldset :disabled="isLoadingBtn" class="row g-3">
-                    <!-- <div class="col-12">
-                        <UploadImg :errors="errors" v-model:img="user.img" />
-                    </div> -->
+                    <div class="col-12">
+                        <label class="form-label d-block">{{ formSchema.activity.imgs.label }}<span class="text-danger" v-if="formSchema.activity.imgs.isRequired">*</span></label
+                        >      
+                        <div class="row g-3">
+                            <div class="col-auto" v-for="(imgItem, key) in form.imgs" :key="key" >
+                                <UploadImg :errors="errors" :showErrMsg="false" :isRequired="imgItem.isMain && !imgItem.img" :inputName="key" v-model:img="imgItem.img">
+                                    <template #imgFunctions>
+                                        <div class="img-functions cursor-default" :class="{ 'opacity-90': imgItem.isMain }" @click.prevent.self>
+                                            <template v-if="!imgItem.isMain">
+                                                <button type="button" class="btn btn-link btn-sm fs-8 text-lightPrimary text-decoration-none flex-shrink-0 px-0" :disabled="isLoadingBtn" @click.self="setMainImg(key)">設為封面</button>
+                                                <button type="button" class="btn btn-link btn-sm fs-8 text-lightPrimary text-decoration-none flex-shrink-0 px-0" :disabled="isLoadingBtn" @click.self="changeImg(key)">刪除</button>
+                                            </template>
+                                            <span v-else class="fs-8">封面</span>
+                                        </div>
+                                    </template>
+                                </UploadImg>
+                            </div>
+                            <div class="col-1" v-if="5 > Object.keys(form.imgs).length">
+                                <button type="button" class="btn opacity-50 file-img" :disabled="isLoadingBtn" @click="changeImg()"><font-awesome-icon icon="fa-solid fa-plus" size="2x" class="icon-color" /></button>
+                            </div>
+                        </div>
+                        <span class="invalid-feedback d-block" v-if="showImgsErrMsg(errors)">須為圖片格式，且檔案須小於 1024 KB</span>
+                    </div>
                     <div class="col-md-12">
                         <label :for="formSchema.activity.title.name" class="form-label"
                             >{{ formSchema.activity.title.label
@@ -111,7 +175,7 @@ export default {
                             :class="{ 'is-invalid': errors[formSchema.activity.title.label] }"
                             :placeholder="`請輸入${formSchema.activity.title.label}`"
                             :rules="formSchema.activity.title.rules"
-                            v-model="form.title"
+                            v-model.trim="form.title"
                         ></Field>
                         <ErrorMessage :name="formSchema.activity.title.label" class="invalid-feedback"></ErrorMessage>
                     </div>
@@ -128,8 +192,8 @@ export default {
                             :class="{ 'is-invalid': errors[formSchema.activity.features.label] }"
                             :placeholder="`請輸入${formSchema.activity.features.label}`"
                             :rules="formSchema.activity.features.rules"
-                            v-model="form.features"
-                            rows="5"
+                            v-model.trim="form.features"
+                            rows="10"
                         ></Field>
                         <ErrorMessage :name="formSchema.activity.features.label" class="invalid-feedback"></ErrorMessage>
                     </div>
@@ -146,8 +210,8 @@ export default {
                             :class="{ 'is-invalid': errors[formSchema.activity.content.label] }"
                             :placeholder="`請輸入${formSchema.activity.content.label}`"
                             :rules="formSchema.activity.content.rules"
-                            v-model="form.content"
-                            rows="5"
+                            v-model.trim="form.content"
+                            rows="10"
                         ></Field>
                         <ErrorMessage :name="formSchema.activity.content.label" class="invalid-feedback"></ErrorMessage>
                     </div>
@@ -201,9 +265,6 @@ export default {
                             v-model="form.orderExpiryDate"
                         ></Field>
                         <ErrorMessage :name="formSchema.activity.orderExpiryDate.label" class="invalid-feedback"></ErrorMessage>
-                        <span v-if="!errors[formSchema.activity.orderExpiryDate.label]" class="invalid-feedback form-help">{{
-                        formSchema.activity.orderExpiryDate.help }}
-                        </span>
                     </div>
                     <div class="col-md-4">
                         <label :for="formSchema.activity.locationId.name" class="form-label"
@@ -220,7 +281,7 @@ export default {
                             v-model="form.locationId"
                         >
                         <option value="" disabled>請選擇</option>
-                        <option v-for="option in locations" :key="option.id" :value="option.name">
+                        <option v-for="option in locations" :key="option.id" :value="option.id">
                             {{ option.name }}
                         </option></Field>
                         <ErrorMessage :name="formSchema.activity.locationId.label" class="invalid-feedback"></ErrorMessage>
@@ -241,7 +302,7 @@ export default {
                             class="form-control"
                             :class="{ 'is-invalid': errors[formSchema.activity.maxOrderTotal.label] }"
                             :rules="formSchema.activity.maxOrderTotal.rules"
-                            v-model="form.maxOrderTotal"
+                            v-model.number="form.maxOrderTotal"
                         ></Field>
                         <ErrorMessage :name="formSchema.activity.maxOrderTotal.label" class="invalid-feedback"></ErrorMessage>
                         <span v-if="!errors[formSchema.activity.maxOrderTotal.label]" class="invalid-feedback form-help">{{
@@ -253,20 +314,20 @@ export default {
                             >{{ formSchema.activity.cost.label
                             }}<span class="text-danger" v-if="formSchema.activity.cost.isRequired">*</span></label
                         >
-                        <Field
-                            :id="formSchema.activity.cost.name"
-                            :name="formSchema.activity.cost.label"
-                            :type="formSchema.activity.cost.type"
-                            :as="formSchema.activity.cost.as"
-                            class="form-control"
-                            :class="{ 'is-invalid': errors[formSchema.activity.cost.label] }"
-                            :rules="formSchema.activity.cost.rules"
-                            v-model="form.cost"
-                        ></Field>
-                        <ErrorMessage :name="formSchema.activity.cost.label" class="invalid-feedback"></ErrorMessage>
-                        <span v-if="!errors[formSchema.activity.cost.label]" class="invalid-feedback form-help">{{
-                        formSchema.activity.cost.help }}
-                        </span>
+                        <div class="input-group">
+                            <span class="input-group-text">NT$</span>
+                            <Field
+                                :id="formSchema.activity.cost.name"
+                                :name="formSchema.activity.cost.label"
+                                :type="formSchema.activity.cost.type"
+                                :as="formSchema.activity.cost.as"
+                                class="form-control"
+                                :class="{ 'is-invalid': errors[formSchema.activity.cost.label] }"
+                                :rules="formSchema.activity.cost.rules"
+                                v-model.number="form.cost"
+                            ></Field>
+                        </div>
+                        <ErrorMessage :name="formSchema.activity.cost.label" class="invalid-feedback d-block"></ErrorMessage>
                     </div>
                     <div class="col-md-4">
                         <label :for="formSchema.activity.certificateLevel.name" class="form-label"
@@ -283,7 +344,7 @@ export default {
                             v-model="form.certificateLevel"
                         >
                         <option value="" disabled>請選擇</option>
-                        <option v-for="option in certificateLevels" :key="option.id" :value="option.name">
+                        <option v-for="option in certificateLevels" :key="option.value" :value="option.value">
                             {{ option.name }}
                         </option>
                         </Field>
@@ -347,13 +408,14 @@ export default {
                                 :type="formSchema.activity.tags.type"
                                 :as="formSchema.activity.tags.as"
                                 class="btn-check"
+                                :value="tag"
                                 :class="{ 'is-invalid': errors[formSchema.activity.tags.label] }"
                                 :rules="formSchema.activity.tags.rules"
                                 v-model="form.tags" />
                                 <label class="btn btn-outline-primary btn-sm rounded-0" :for="`${formSchema.activity.tags.name}-${tag}`">{{ tag }}</label>
                                 </div>
                             </div>
-                        <ErrorMessage :name="formSchema.activity.tags.label" class="invalid-feedback"></ErrorMessage>
+                        <ErrorMessage :name="formSchema.activity.tags.label" class="invalid-feedback d-block"></ErrorMessage>
                     </div>
                     <div class="col-12 text-end border-top pt-3 mt-4 mt-md-5">
                         <button type="submit" class="btn btn-primary btn-custom-rectangle" :disabled="isLoadingBtn || Object.keys(errors).length">
@@ -367,4 +429,23 @@ export default {
     </FormUtilitieLayoutVue>
 </template>
 
-<style lang="scss"></style>
+<style lang="scss">
+@import "../../assets/styles/bootstrap-custom-variables";
+
+.img-functions {
+    position: absolute;
+    bottom: 0;
+    background-color: rgba($dark, 0.75);
+    width: 100%;
+    height: 35px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    opacity: 0;
+
+    &:hover{
+        opacity: 0.9;
+        transition: all 0.5s ease-in-out;
+    }
+}
+</style>

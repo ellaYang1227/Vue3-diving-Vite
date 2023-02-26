@@ -4,28 +4,36 @@ const today = (() => {
     return dateFormat(new Date(), "date", "-");
 })();
 
-// 需大於等於今天且小於等於結束日期(target)
-const confirmedStartDate = (value, [target]) => {
-        console.log(today, value, target)
-    if (value >= today && target >= value) {
+// 須大於今天且小於等於結束日期(target)
+const start_date = (value, [target]) => {
+    if (value > today && target >= value) {
         return true;
     }
 
-    return `出發日期須不能早於今天(${today})，也不能比結束日期${target ? `(${target})` : ''}晚`;
+    return `出發日期須在今天(${today})以後，且不能比結束日期${target ? `(${target})` : ''}晚`;
 }
 
-// 需大於等於今天與出發日期(target)
-const confirmedEndDate = (value, [target]) => {
-        console.log(today, value, target)
-    if (value >= today && value >= target) {
+// 須大於今天且大於等於出發日期(target)
+const end_date = (value, [target]) => {
+    if (value > today && value >= target) {
         return true;
     }
 
-    return `結束日期須不能晚於今天(${today})與出發日期${target ? `(${target})` : ''}`;
+    return `結束日期須晚於今天(${today})與出發日期${target ? `(${target})` : ''}`;
+}
+
+// 須小於出發日期(target)且大於今天
+const order_expiry_date = (value, [target]) => {
+    if (target > value && value > today) {
+        return true;
+    }
+
+    return `報名截止日期須早於出發日期${target ? `(${target})` : ''}，且不能是今天(${today})`;
 }
 
 export default {
-  confirmedStartDate,
-  confirmedEndDate
+    start_date,
+    end_date,
+    order_expiry_date
 }
 

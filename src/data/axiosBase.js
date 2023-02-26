@@ -4,7 +4,7 @@ import LoadingStore from "../stores/LoadingStore.js";
 import AuthStore from "../stores/AuthStore.js";
 import router from "../router/index.js";
 const { hideLoading } = LoadingStore();
-const { getToken } = AuthStore();
+const { getToken, logout } = AuthStore();
 
 const { BASE_URL, VITE_API_ROOT } = import.meta.env;
 const baseJsonURL = `${BASE_URL}jsons`;
@@ -19,7 +19,7 @@ const bacsRequest = axios.create({
 // 請求攔截
 bacsRequest.interceptors.request.use(
     request => {
-        request.headers['Authorization'] = getToken();
+        request.headers['Authorization'] = `Bearer ${getToken()}`;
         return request;
     },
     error => {
@@ -43,6 +43,7 @@ bacsRequest.interceptors.response.use(
         const { status, statusText } = error.response;
 
         if (status !== 400) {
+            console.log(status);
             let title = "系統錯誤";
             let errorMsg = "";
             let isRedirectLogin = false;
@@ -52,6 +53,7 @@ bacsRequest.interceptors.response.use(
                 errorMsg = "找不到該筆資料";
                 isBackPage = true;
             } else if (status === 401){
+                console.log(status)
                 title = "驗證失敗";
                 errorMsg = "您的身分驗證失敗，請重新登入";
                 isRedirectLogin = true;
@@ -59,16 +61,19 @@ bacsRequest.interceptors.response.use(
                 errorMsg = "發生不明錯誤，請重新操作";
             }
 
+
+            console.log(isRedirectLogin)
             setSwalFire("popup", "error", title, errorMsg).then(() => {
                 if (isRedirectLogin) {
-                    router.push("/login");
+                    console.log(isRedirectLogin)
+                    logout();
                 }else if(isBackPage){
                     router.go(-1);
                 }
             });
         }
 
-        console.error(error.response.status);
+        console.error(status);
         return Promise.reject({
             success: false,
             ...error.response

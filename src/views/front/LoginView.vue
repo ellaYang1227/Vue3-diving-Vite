@@ -82,7 +82,7 @@ export default {
                                                 :class="{ 'is-invalid': errors[formSchema.email.label] }"
                                                 :placeholder="`請輸入 ${formSchema.email.label}`"
                                                 :rules="formSchema.email.rules"
-                                                v-model="form.email"
+                                                v-model.trim="form.email"
                                             ></Field>
                                             <ErrorMessage :name="formSchema.email.label" class="invalid-feedback"></ErrorMessage>
                                         </div>
@@ -99,7 +99,7 @@ export default {
                                                 :class="{ 'is-invalid': errors[formSchema.password.label] }"
                                                 :placeholder="`請輸入${formSchema.password.label}`"
                                                 :rules="formSchema.password.rules.required"
-                                                v-model="form.password"
+                                                v-model.trim="form.password"
                                             ></Field>
                                             <ErrorMessage :name="formSchema.password.label" class="invalid-feedback"></ErrorMessage>
                                         </div>

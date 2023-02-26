@@ -3,7 +3,9 @@ import formSchema from "../data/formSchema.js";
 </script>
 
 <script>
+import { mapState } from "pinia";
 import { Field, ErrorMessage } from "vee-validate";
+import LoadingStore from "../stores/LoadingStore.js";
 
 export default {
     data() {
@@ -16,6 +18,11 @@ export default {
             type: Object,
             required: true
         },
+        inputName: {
+            type: String,
+            required: false,
+            default: 'img_0'
+        },
         img: {
             type: String,
             required: true
@@ -24,9 +31,17 @@ export default {
             type: Boolean,
             required: false,
             default: false
+        },
+        showErrMsg: {
+            type: Boolean,
+            required: false,
+            default: true
         }
     },
     emits: ["update:img"],
+    computed: {
+        ...mapState(LoadingStore, ["isLoadingBtn"]),
+    },
     components: {
         Field,
         ErrorMessage
@@ -35,27 +50,27 @@ export default {
         upload(event) {
             const file = event.target.files[0];
 
-            if (this.errors[formSchema.uploadImg.label] || !file) {
-                this.handleUploadResult("error");
+            if (this.errors[this.inputName] || !file) {
+                this.handleUploadResult();
             } else {
                 this.isLoading = true;
                 setTimeout(() => {
                     let reader = new FileReader();
                     // 轉 Base64
                     reader.onload = e => {
-                        this.handleUploadResult("success", e.target.result);
+                        this.handleUploadResult(e.target.result);
                     };
 
                     reader.onerror = err => {
                         console.error(err);
-                        this.handleUploadResult("error");
+                        this.handleUploadResult();
                     };
                     // 讀取檔案
                     reader.readAsDataURL(file);
                 }, 500);
             }
         },
-        handleUploadResult(state, img = "") {
+        handleUploadResult(img = "") {
             this.isLoading = false;
             this.$emit("update:img", img);
         }
@@ -65,21 +80,22 @@ export default {
 
 <template>
     <Field
+        ref="provider"
         v-slot="{ field }"
-        :name="formSchema.uploadImg.label"
+        :name="inputName"
         :type="formSchema.uploadImg.type"
         :rules="formSchema.uploadImg.rules[isRequired ? 'required' : 'noRequired']"
-        @change="upload"
     >
-        <label class="file-img p-1" :class="{ 'border-danger': errors[formSchema.uploadImg.label], 'cursor-pointer': !isLoading }">
+        <label class="file-img" :class="{ 'border-danger': errors[inputName], 'cursor-default': isLoading || isLoadingBtn}">
             <input
                 v-bind="field"
                 class="form-control d-none"
                 :type="formSchema.uploadImg.type"
                 :accept="formSchema.uploadImg.accept"
-                :disabled="isLoading"
+                :disabled="isLoading || isLoadingBtn"
+                @change="upload"
             />
-            <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center">
+            <div class="w-100 h-100 p-1 d-flex flex-column align-items-center justify-content-center position-relative">
                 <template v-if="!isLoading">
                     <img :src="img" v-if="img" class="img-cover" />
                     <font-awesome-icon v-else size="2x" icon="fa-solid fa-arrow-up-from-bracket" class="icon-color" />
@@ -88,27 +104,11 @@ export default {
                     <div class="spinner-border" role="status" aria-hidden="true"></div>
                     <small class="pt-1">Loading...</small>
                 </div>
+                <slot name="imgFunctions"></slot>
             </div>
         </label></Field
     >
-    <ErrorMessage :name="formSchema.uploadImg.label" class="invalid-feedback d-block"></ErrorMessage>
+    <ErrorMessage :name="inputName" class="invalid-feedback" :class="{ 'd-block': showErrMsg }"></ErrorMessage>
 </template>
 
-<style lang="scss">
-@import "../assets/styles/bootstrap-custom-variables";
-
-.file-img {
-    width: 120px;
-    height: 120px;
-    background-color: $input-bg;
-    border: 1px dashed $input-border-color;
-
-    &:hover {
-        border-color: $input-focus-border-color;
-    }
-
-    .icon-color {
-        color: $form-select-indicator-color;
-    }
-}
-</style>
+<style lang="scss"></style>

@@ -21,7 +21,7 @@ const routes = [
                 meta: { title: "活動總覽" },
             },
             {
-                path: "activitys/:activityId",
+                path: "activity/:activityId",
                 component: () => import("../views/front/ActivityView.vue"),
                 meta: { title: "單一揪團" },
             },
@@ -34,6 +34,15 @@ const routes = [
                 path: "editActivity/:activityId",
                 component: () => import("../views/front/EditActivityView.vue"),
                 meta: { title: "編輯揪團" }
+            },
+            {
+                path: "member",
+                component: () => import("../views/front/MemberView.vue"),
+                children: [{
+                    path: "myActivity",
+                    component: () => import("../views/front/member/MyActivityView.vue"),
+                    meta: { title: "我的揪團" }
+                }]
             },
             {
                 path: "login",

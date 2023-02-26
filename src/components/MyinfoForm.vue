@@ -7,7 +7,7 @@ import { Form, Field, ErrorMessage } from "vee-validate";
 import { mapActions, mapState } from "pinia";
 import MemberStore from "../stores/MemberStore.js";
 import LoadingStore from "../stores/LoadingStore.js";
-import OtherStore from "../stores/OtherStore.js";
+import OptionStore from "../stores/OptionStore.js";
 import UploadImg from "./UploadImg.vue";
 
 export default {
@@ -45,7 +45,7 @@ export default {
     },
     methods: {
         ...mapActions(LoadingStore, ["showLoading", "hideLoading"]),
-        ...mapActions(OtherStore, ["getCertificateLevels", "getCylinderTotals"]),
+        ...mapActions(OptionStore, ["getCertificateLevels", "getCylinderTotals"]),
         ...mapActions(MemberStore, ["signup","getMyinfo"]),
         fetchData() {
             this.userId = this.$route.params.userId;
@@ -92,7 +92,7 @@ export default {
                         :class="{ 'is-invalid': errors[formSchema.email.label] }"
                         :placeholder="`請輸入 ${formSchema.email.label}`"
                         :rules="formSchema.email.rules"
-                        v-model="form.email"
+                        v-model.trim="form.email"
                     ></Field>
                     <ErrorMessage :name="formSchema.email.label" class="invalid-feedback"></ErrorMessage>
                 </div>
@@ -109,7 +109,7 @@ export default {
                         :class="{ 'is-invalid': errors[formSchema.password.label] }"
                         :placeholder="`請輸入${formSchema.password.label}`"
                         :rules="formSchema.password.rules.full"
-                        v-model="form.password"
+                        v-model.trim="form.password"
                     ></Field>
                     <ErrorMessage :name="formSchema.password.label" class="invalid-feedback"></ErrorMessage>
                     <span v-if="!errors[formSchema.password.label]" class="invalid-feedback form-help">{{
@@ -130,7 +130,7 @@ export default {
                     :class="{ 'is-invalid': errors[formSchema.userName.label] }"
                     :placeholder="`請輸入${formSchema.userName.label}`"
                     :rules="formSchema.userName.rules"
-                    v-model="form.name"
+                    v-model.trim="form.name"
                 ></Field>
                 <ErrorMessage :name="formSchema.userName.label" class="invalid-feedback"></ErrorMessage>
             </div>

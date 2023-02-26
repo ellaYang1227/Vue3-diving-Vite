@@ -45,7 +45,7 @@ export default {
     certificateLevel: {
         name: "certificateLevel",
         label: "潛水證照等級",
-        type: "checkbox",
+        type: "radio",
         as: "input",
         rules: "required",
         isRequired: true
@@ -67,6 +67,11 @@ export default {
         isRequired: false
     },
     activity: {
+        imgs: {
+            name: "imgs",
+            label: "活動圖片",
+            isRequired: true
+        },
         title: {
             name: "title",
             label: "活動名稱",
@@ -79,8 +84,8 @@ export default {
             name: "features",
             label: "活動特點",
             as: "textarea",
-            rules: "required",
-            isRequired: true
+            rules: "",
+            isRequired: false
         },
         content: {
             name: "content",
@@ -94,7 +99,7 @@ export default {
             label: "出發日期",
             type: "date",
             as: "input",
-            rules: "required|confirmedStartDate:@結束日期",
+            rules: "required|start_date:@結束日期",
             isRequired: true
         },
         endDate: {
@@ -102,7 +107,7 @@ export default {
             label: "結束日期",
             type: "date",
             as: "input",
-            rules: "required|confirmedEndDate:@出發日期",
+            rules: "required|end_date:@出發日期",
             isRequired: true
         },
         orderExpiryDate: {
@@ -110,14 +115,8 @@ export default {
             label: "報名截止日期",
             type: "date",
             as: "input",
-            rules: value => {
-                console.log(value)
-                // 需小於出發、結束日期
-                const pattern = /^(?=.*[0-9])(?=.*[a-zA-Z]).{8,}$/;
-                return pattern.test(value) ? true : "報名截止日期不能比出發、結束日期晚";
-            },
+            rules: "required|order_expiry_date:@出發日期",
             isRequired: true,
-            help: "需比出發日期"
         },
         locationId: {
             name: "location",
@@ -131,15 +130,15 @@ export default {
             label: "報名人數上限",
             type: "number",
             as: "input",
-            rules: "required|integer|between: [1, 100]",
+            rules: "required|integer|min_value:1|max_value:100",
             isRequired: true
         },
         cost: {
             name: "cost",
-            label: "每人費用(NT$)",
+            label: "每人費用",
             type: "number",
             as: "input",
-            rules: "required|integer|between: [1, 100]",
+            rules: "required|integer|min_value:1",
             isRequired: true
         },
         certificateLevel: {
@@ -154,7 +153,9 @@ export default {
             label: "標籤(最多 5 個)",
             type: "checkbox",
             as: "input",
-            rules: "",
+            rules: value => {
+                return !value || 5 >= value.length ? true : "標籤不能超過 5 個";
+            },
             isRequired: false
         },
     }

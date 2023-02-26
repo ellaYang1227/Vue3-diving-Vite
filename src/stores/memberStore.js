@@ -4,7 +4,8 @@ import { bacsRequest } from "../data/axiosBase.js";
 import { setSwalFire } from "../data/sweetalert2.js";
 import statusFormat from "../handle-formats/statusFormat.js";
 import router from "../router/index.js";
-const { changeCookie } = AuthStore();
+const { changeCookie, getStorageUser } = AuthStore();
+const user = getStorageUser();
 
 export default defineStore("MemberStore", {
     state: () => ({
@@ -86,6 +87,40 @@ export default defineStore("MemberStore", {
                 .then(res => Promise.resolve(res))
                 .catch(err => Promise.reject(false));
 
+        },
+        updateActivity(body){
+            body.updateDate = new Date().getTime();
+            let apiMethod = 'post';
+            let apiUrl = `664/users/${user.id}/activitys`;
+            if(body.id){
+                apiMethod = 'patch';
+                apiUrl = `600/activitys/${body.id}`;
+            }
+            
+            const title = `${body.id ? '編輯': '新增'}活動`;
+
+            return bacsRequest
+                [apiMethod](apiUrl, body)
+                .then(res => {
+                    setSwalFire("toast", "success", `${title}成功`).then(() => {
+                        router.push('/member/myActivity');
+                    });
+                    
+                    return Promise.resolve(true);
+                })
+                .catch(({status}) => {
+                    if(status !== 401){
+                        setSwalFire("toast", "error", `${title}失敗`);
+                    }
+
+                    return false;
+                });
+        },
+        getActivity(activityId){
+            return bacsRequest
+                .get(`600/activitys/${activityId}`)
+                .then(res => Promise.resolve(res))
+                .catch(err => Promise.reject(false));
         }
     }
 });
