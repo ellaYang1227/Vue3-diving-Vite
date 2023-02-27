@@ -49,8 +49,8 @@ export default {
             :alt="name"
             class="rounded-circle border border-lightPrimary bg-lightPrimary bg-opacity-10 rounded-circle flex-shrink-0"
         />
-        <div :class="{ 'ms-2': isShowName }" class="text-truncate">
-            <strong v-if="name && isShowName" class="text-truncate">{{ name }}</strong>
+        <div :class="{ 'ms-1': isShowName }" class="text-truncate">
+            <span v-if="name && isShowName" class="text-truncate fw-normal">{{ name }}</span>
             <star-rating
                 :text-class="textClass"
                 :increment="increment"

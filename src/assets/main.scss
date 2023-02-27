@@ -34,8 +34,12 @@ body {
 }
 
 // 置頂高度(距離 header 高度)
-.fixed-margin-top-headerHeight {
+.fixed-margin-top-headerHeight{
     margin-top: $header-height;
+}
+
+.sticky-top-headerHeight {
+    top: $header-height;
 }
 
 // 邊框顏色同下拉下單選單
@@ -207,12 +211,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     font-size: $form-select-font-size;
 
     .multiselect__tags {
+        min-height: 0;
         font-size: $form-select-font-size;
         border-color: $form-select-border-color;
         border-width: $form-select-border-width;
         background: $form-select-bg;
         border-radius: $form-select-border-radius;
-        padding: $form-select-padding-y $form-select-padding-x;
+        padding: $form-select-padding-y 2.25rem $form-select-padding-y $form-select-padding-x;
     }
 
     .multiselect__input,

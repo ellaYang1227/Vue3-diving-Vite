@@ -7,7 +7,8 @@ export default {
     data() {
         return {
             isVerticalMiddle: false,
-            showSearchBar: true
+            showSearchBar: true,
+            isMainOverflowHidden: false,
         };
     },
     provide() {
@@ -27,6 +28,7 @@ export default {
                 console.log('created')
                 this.isVerticalMiddle = false;
                 this.showSearchBar = true;
+                this.isMainOverflowHidden = false;
             },
             { immediate: true }
         );
@@ -36,7 +38,7 @@ export default {
 </script>
 
 <template>
-    <div class="min-vh-100 d-flex flex-column overflow-hidden">
+    <div class="min-vh-100 d-flex flex-column" :class="{ 'overflow-hidden': isMainOverflowHidden }">
         <HeaderNavbar />
         <div class="flex-fill fixed-margin-top-headerHeight" :class="{ 'd-flex flex-column justify-content-center': isVerticalMiddle }">
             <SearchActivityBar v-if="showSearchBar" />

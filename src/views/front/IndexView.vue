@@ -77,6 +77,7 @@ export default {
     },
     created() {
         this.frontLayoutData.showSearchBar = false;
+        this.frontLayoutData.isMainOverflowHidden = true;
     },
     mounted() {
         AOS.init({

@@ -41,8 +41,6 @@ export default {
         
     },
     created() {
-        this.frontLayoutData.showSearchBar = false;
-
         this.$watch(
             () => this.$route.params,
             () => {this.fetchData()},
@@ -78,6 +76,7 @@ export default {
             };
         },
         fetchData() {
+            this.frontLayoutData.showSearchBar = false;
             this.setInitform();
             this.activityId = this.$route.params.activityId;
             this.title = this.activityId ? "編輯" : "新增";

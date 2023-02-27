@@ -11,14 +11,7 @@ export default defineStore("ActivityStore", {
         statusFormat,
         // activitys: [],
         // locations: [],
-        activitys: [],
-        sort: "updateDate",
-        search: {
-            locationId: "",
-            startDate: "",
-            endDate: "",
-            tag: ""
-        }
+        activitys: []
     }),
     getters: {
         // 揪團進行中
@@ -30,6 +23,10 @@ export default defineStore("ActivityStore", {
         hotActivitys: ({ activitys }) => {
             const filter = activitys.filter(activity => activity.activityStatus !== "已結束");
             return filter.sort(() => (Math.random() > 0.5 ? -1 : 1)).slice(0, 3);
+        },
+        adActivitys: ({ activitys }) => {
+            const filter = activitys.filter(activity => activity.activityStatus !== "已結束" && activity.orderStatus !== "已額滿");
+            return filter.sort(() => (Math.random() > 0.5 ? -1 : 1)).slice(0, 2);
         }
     },
     actions: {
@@ -53,24 +50,33 @@ export default defineStore("ActivityStore", {
             });
         },
         // 只取已啟用且未違規，更新貼文日期由新到舊
-        getActivitys(){
-            console.log(this.sort, this.search)
-            // const params = {};
-            const params = Object.keys(this.search).reduce((accumulator, currentKey) => {
+        getActivitys(search, sort){
+            console.log('search', search, 'sort', sort)
+            const params = Object.keys(search).reduce((accumulator, currentKey) => {
                 console.log(accumulator, currentKey)
-                if(this.search[currentKey]){
-                    accumulator[currentKey] = this.search[currentKey]
+                if(search[currentKey]){
+                    if(currentKey === "startDate"){
+                        accumulator[`${currentKey}_gte`] = search[currentKey];
+                    }else if(currentKey === "endDate"){
+                        accumulator[`${currentKey}_lte`] = search[currentKey];
+                    }else if(currentKey === "tag"){
+                        accumulator.tags_like = search[currentKey];
+                    }else{
+                        accumulator[currentKey] = search[currentKey];
+                    }
                 };
 
                 return accumulator;
             }, {});
 
             console.log(params)
+            
             return bacsRequest.get(`activitys?_sort=${this.sort}&_order=desc&_expand=user&_expand=location&_embed=violations`, { params })
             .then(res => {
                 console.log(res)
                 // 過濾掉有違規紀錄的活動
-                this.activitys = res.filter(item => !item.violations.length);
+                res = res.filter(item => !item.violations.length);
+                this.activitys = this.handleActivityStatus(res);
                 console.log(this.activitys)
                 return Promise.resolve(this.activitys);
             })
@@ -84,6 +90,14 @@ export default defineStore("ActivityStore", {
                 return Promise.resolve(res);
             })
             .catch(err => Promise.reject(false));
+        },
+        handleActivityStatus(activitys) {
+            return activitys.map(activity => {
+                return {
+                    ...activity,
+                    ...this.statusFormat(activity)
+                };
+            });
         }
     }
 });

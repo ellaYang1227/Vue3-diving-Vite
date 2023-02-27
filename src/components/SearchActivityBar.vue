@@ -8,22 +8,34 @@ import { Form, Field, ErrorMessage } from "vee-validate";
 import { mapActions, mapState } from "pinia";
 import OptionStore from "../stores/OptionStore.js";
 import LoadingStore from "../stores/LoadingStore.js";
-import ActivityStore from "../stores/ActivityStore.js";
 
 export default {
     data () {
         return {
             location: null,
             locations: [],
-            tage: []
+            tags: [],
+            search: {
+                locationId: "",
+                startDate: "",
+                endDate: "",
+                tag: ""
+            }
         }
     },
     props: {
     },
     computed: {
         ...mapState(LoadingStore, ["isLoadingBtn"]),
-        ...mapState(ActivityStore, ["search"])
+        selectedTag() {
+            return this.search.tag;
+        }
     },
+    // watch: {
+    //     tag() {
+    //         return this.search.tag;
+    //     }
+    // },
     components: {
         VueMultiselect,
         VForm: Form,
@@ -44,50 +56,51 @@ export default {
             this.getTags()
         ]).then(resArr => {
             this.locations = resArr[0];
-            this.tage = resArr[1];
+            this.tags = resArr[1];
             this.setLocation();
         });
     },
     methods: {
         ...mapActions(OptionStore, ["getLocations", "getTags"]),
-        ...mapActions(LoadingStore, ["showLoading", "hideLoading"]),
-        ...mapActions(ActivityStore, ["getActivitys"]),
+        ...mapActions(LoadingStore, ["showLoading"]),
         setLocation() {
-                const { locationId } = this.search.locationId = this.$route.query;
-                this.location = this.locations.find(location => location.id === locationId);
+                this.search = { ...this.$route.query };
+                const { locationId } = this.search;
+                const findLocation = this.locations.find(location => location.id === locationId);
+                this.location = findLocation ? findLocation : '';
+        },
+        updateSelectedTag(event){
+            const { value } = event.target;
+            this.search.tag = value !== this.search.tag ? value : "";
+            this.onSubmit();
         },
         updateLocation(newValue) {
             this.location = newValue;
             this.search.locationId = newValue?.id;
         },
         onSubmit() {
+            console.log('onSubmit')
             this.showLoading("btn");
-            const { locationId, tag } = this.search;
-            if(tag){
-                this.getActivitys()
-                .then(res => this.hideLoading());
-            }else{
-                if(locationId){
-                    let query = { locationId };
-                    this.$router.push({ query });
-                }else{
-                    this.$router.push({});
-                }
-                
-            }
-            
+            const query = Object.keys(this.search).reduce((accumulator, currentKey) => {
+                if(this.search[currentKey]){ accumulator[currentKey] = this.search[currentKey] }
+                return accumulator;
+            }, {});
+
+            let routerPushData = { path: '/activitys' }
+            if(Object.keys(this.search).length){ routerPushData.query = query }
+            this.$router.push(routerPushData)
         }
     }
 };
 </script>
 
 <template>
-    <div class="bg-lightPrimary bg-opacity-25 py-4">
+    <div class="bg-darkPrimary bg-opacity-85 py-4 sticky-top sticky-top-headerHeight shadow">
         <div class="container">
             {{ search }} - {{ isLoadingBtn }}
             <VForm v-slot="{ errors }" @submit="onSubmit" class="pb-1">
                 <fieldset :disabled="isLoadingBtn" class="row g-2">
-                    <div class="col-sm-6">
+                    <div class="col-md col-lg-6 col-xl-5">
                     <VueMultiselect :options="locations" :placeholder="`請輸入${formSchema.search.location.label}`" :label="formSchema.search.location.optionLabel" :track-by="formSchema.search.location.optionLabel" :disabled="isLoadingBtn" :model-value="location" @update:model-value="updateLocation">
                         <template #noResult>沒有符合條件的結果</template>
                     </VueMultiselect>
@@ -118,16 +131,16 @@ export default {
                             <ErrorMessage :name="formSchema.search.startDate.label" class="invalid-feedback d-block"></ErrorMessage>
                     </div>
                     <div class="col-sm-auto">
-                        <button type="submit" class="btn btn-outline-primary rounded-0" :disabled="isLoadingBtn || Object.keys(errors).length">
+                        <button type="submit" class="btn btn-outline-warning rounded-0 w-100" :disabled="isLoadingBtn || Object.keys(errors).length">
                             <span class="spinner-border spinner-border-sm text-dark-primary" role="status" v-if="isLoadingBtn"></span>
                             搜出好團</button>
                     </div>
                 </fieldset>
             </VForm>
-            <div class="row g-2">
-                <div class="col-auto" v-for="(tag, index) in tage" :key="tag">
-                    <input type="radio" class="btn-check" name="tagOptions" :id="`tagOption-${index}`" autocomplete="off" v-model="search.tag" :value="tag" @change="onSubmit">
-                    <label class="btn btn-outline-primary btn-sm rounded-0 px-1 py-0" :for="`tagOption-${index}`">{{ tag }}</label>
+            <div class="row gx-2 gy-1">
+                <div class="col-auto" v-for="(tag, index) in tags" :key="tag">
+                    <input type="radio" class="btn-check" name="tagOptions" :id="`tagOption-${index}`" autocomplete="off" :value="tag" @click="updateSelectedTag" :checked="tag === selectedTag">
+                    <label class="btn btn-outline-lightPrimary btn-sm rounded-0 px-1 py-0" :for="`tagOption-${index}`">{{ tag }}</label>
                 </div>
             </div>
         </div>
