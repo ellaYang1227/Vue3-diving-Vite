@@ -35,6 +35,7 @@ export default {
     },
     created() {
         this.frontLayoutData.isVerticalMiddle = true;
+        this.frontLayoutData.showSearchBar = false;
         this.hideLoading();
     },
     methods: {

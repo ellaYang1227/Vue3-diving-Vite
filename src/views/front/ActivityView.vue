@@ -1,9 +1,15 @@
 <script>
+import { mapActions, mapState } from "pinia";
+import LoadingStore from "../../stores/LoadingStore.js";
+
 export default {
     inject: ["frontLayoutData"],
     created() {
-        this.frontLayoutData.isVerticalMiddle = false;
+        this.hideLoading();
     },
+    methods: {
+        ...mapActions(LoadingStore, ["showLoading", "hideLoading"]),
+    }
 };
 </script>
 

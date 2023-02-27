@@ -3,13 +3,13 @@
     "tabWidth": 4,
     "arrowParens": "avoid",
     "trailingComma": "none",
-    "rules": {
-        "prettier/prettier": [
-            "error",
-            {},
-            {
-                "usePrettierrc": false // 不希望將 ESLint 設置與 Prettier 配置混合使用
-            }
-        ]
-    }
+    // "rules": {
+    //     "prettier/prettier": [
+    //         "error",
+    //         {},
+    //         {
+    //             "usePrettierrc": false // 不希望將 ESLint 設置與 Prettier 配置混合使用
+    //         }
+    //     ]
+    // }
 }

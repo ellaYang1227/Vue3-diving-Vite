@@ -31,9 +31,19 @@ const order_expiry_date = (value, [target]) => {
     return `報名截止日期須早於出發日期${target ? `(${target})` : ''}，且不能是今天(${today})`;
 }
 
+// 小於結束日期(target)
+const search_start_date = (value, [target]) => {
+    if (target >= value) {
+        return true;
+    }
+
+    return `出發日期不能比結束日期${target ? `(${target})` : ''}晚`;
+}
+
 export default {
     start_date,
     end_date,
-    order_expiry_date
+    order_expiry_date,
+    search_start_date
 }
 

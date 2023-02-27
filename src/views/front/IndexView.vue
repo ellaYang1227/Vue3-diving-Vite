@@ -76,7 +76,7 @@ export default {
         }
     },
     created() {
-        this.frontLayoutData.isVerticalMiddle = false;
+        this.frontLayoutData.showSearchBar = false;
     },
     mounted() {
         AOS.init({

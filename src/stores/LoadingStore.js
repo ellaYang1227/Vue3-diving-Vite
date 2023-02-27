@@ -16,6 +16,7 @@ export default defineStore("LoadingStore", {
         },
         hideLoading(stype) {
             this.isLoadingBtn = false;
+            console.log(this.isLoadingBtn)
 
             if (stype !== "btn") {
                 this.isLoading = false;

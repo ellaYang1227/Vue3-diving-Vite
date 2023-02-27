@@ -9,8 +9,16 @@ const { user } = AuthStore();
 export default defineStore("ActivityStore", {
     state: () => ({
         statusFormat,
+        // activitys: [],
+        // locations: [],
         activitys: [],
-        locations: []
+        sort: "updateDate",
+        search: {
+            locationId: "",
+            startDate: "",
+            endDate: "",
+            tag: ""
+        }
     }),
     getters: {
         // 揪團進行中
@@ -26,23 +34,47 @@ export default defineStore("ActivityStore", {
     },
     actions: {
         // 只取已啟用且未違規，更新貼文日期由新到舊
-        getActivitys() {
-            bacsRequest.get("/activitys.json").then(res => {
-                this.activitys = res
-                    .reverse()
-                    .filter(item => item.isEnable && !item.isViolation)
-                    .map(item => {
-                        return {
-                            ...item,
-                            ...this.statusFormat(item)
-                        };
-                    });
-            });
-        },
+        // getActivitys() {
+        //     bacsRequest.get("/activitys.json").then(res => {
+        //         this.activitys = res
+        //             .reverse()
+        //             .filter(item => item.isEnable && !item.isViolation)
+        //             .map(item => {
+        //                 return {
+        //                     ...item,
+        //                     ...this.statusFormat(item)
+        //                 };
+        //             });
+        //     });
+        // },
         getLocations() {
             bacsRequest.get("/locations.json").then(res => {
                 this.locations = res;
             });
+        },
+        // 只取已啟用且未違規，更新貼文日期由新到舊
+        getActivitys(){
+            console.log(this.sort, this.search)
+            // const params = {};
+            const params = Object.keys(this.search).reduce((accumulator, currentKey) => {
+                console.log(accumulator, currentKey)
+                if(this.search[currentKey]){
+                    accumulator[currentKey] = this.search[currentKey]
+                };
+
+                return accumulator;
+            }, {});
+
+            console.log(params)
+            return bacsRequest.get(`activitys?_sort=${this.sort}&_order=desc&_expand=user&_expand=location&_embed=violations`, { params })
+            .then(res => {
+                console.log(res)
+                // 過濾掉有違規紀錄的活動
+                this.activitys = res.filter(item => !item.violations.length);
+                console.log(this.activitys)
+                return Promise.resolve(this.activitys);
+            })
+            .catch(err => Promise.reject(false));
         },
         getAdLocations(){
             return bacsRequest.get("locations?isAD=true")
@@ -53,32 +85,5 @@ export default defineStore("ActivityStore", {
             })
             .catch(err => Promise.reject(false));
         }
-        // addActivity(data){
-        //     console.log(user.id)
-        //     data.updateDate = new Date().getTime();
-        //     console.log(data)
-        //     return bacsRequest
-        //         .post(`664/users/${user.id}/activitys`, data)
-        //         .then(res => {
-        //             setSwalFire("toast", "success", "新增活動成功").then(() => {
-        //                 router.push('/member/myActivity');
-        //             });
-                    
-        //             return Promise.resolve(true);
-        //         })
-        //         .catch(({status}) => {
-        //             if(status !== 401){
-        //                 setSwalFire("toast", "error", "新增活動失敗");
-        //             }
-
-        //             return false;
-        //         });
-        // },
-        // getActivity(activityId){
-        //     return bacsRequest
-        //         .get(`600/users/${activityId}`)
-        //         .then(res => Promise.resolve(res))
-        //         .catch(err => Promise.reject(false));
-        // }
     }
 });

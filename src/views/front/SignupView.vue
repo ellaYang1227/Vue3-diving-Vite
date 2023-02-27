@@ -22,7 +22,7 @@ export default {
         guestGuard(to, from, next);
     },
     created() {
-        this.frontLayoutData.isVerticalMiddle = false;
+        this.frontLayoutData.showSearchBar = false;
     }
 };
 </script>

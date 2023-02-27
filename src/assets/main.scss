@@ -7,6 +7,7 @@
 @import "./styles/sweetalert2-custom-variables";
 @import "sweetalert2/src/sweetalert2";
 @import "./styles/other";
+@import "vue-multiselect/dist/vue-multiselect";
 
 .font-barlow {
     font-family: $font-barlow !important;
@@ -193,4 +194,96 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 // popup
 .swal2-popup {
     box-shadow: $swal2-box-shadow;
+}
+
+/*
+* ==========================================================================
+* VueMultiselect select 套件
+* ==========================================================================
+*/
+
+.multiselect {
+    color: $dropdown-link-color;
+    font-size: $form-select-font-size;
+
+    .multiselect__tags {
+        font-size: $form-select-font-size;
+        border-color: $form-select-border-color;
+        border-width: $form-select-border-width;
+        background: $form-select-bg;
+        border-radius: $form-select-border-radius;
+        padding: $form-select-padding-y $form-select-padding-x;
+    }
+
+    .multiselect__input,
+    .multiselect__single {
+        color: $form-select-color;
+        line-height: $form-select-line-height;
+        font-size: $form-select-font-size;
+        background: transparent;
+        border-radius: $form-select-border-radius;
+        margin-bottom: 0;
+        padding: 0;
+    }
+
+    // 下拉三角形
+    .multiselect__select {
+        //left: 50%;
+        top: 50%;
+        transform: translateY(-50%);
+        background: $form-select-indicator no-repeat no-repeat;
+        background-size: $form-select-bg-size;
+        background-position: $form-select-bg-position;
+        transition: none;
+
+        // 下拉三角形 icon
+        &::before {
+            display: none;
+        }
+    }
+
+    // 下拉選單區塊
+    .multiselect__content-wrapper {
+        border-color: $dropdown-border-color;
+        border-radius: $dropdown-border-radius;
+        background: $dropdown-bg;
+        box-shadow: $dropdown-box-shadow;
+    }
+
+    // 下拉選單區塊 option hover
+    .multiselect__option--highlight {
+        background: $dropdown-link-hover-bg;
+
+        &::after {
+            display: none;
+        }
+    }
+
+    // 選取中 option
+    .multiselect__option--selected {
+        background: $dropdown-link-active-bg;
+        color: $form-select-color;
+        font-weight: $form-select-font-weight;
+
+        &::after {
+            display: none;
+        }
+    }
+
+    .multiselect__placeholder {
+        margin-bottom: 0;
+        padding-top: 0;
+        color: $input-placeholder-color;
+    }
+
+    // 停用
+    &.multiselect--disabled {
+        background-color: transparent;
+        opacity: 1;
+
+        .multiselect__tags{
+            border-color: $form-select-disabled-border-color;
+            background-color: $form-select-disabled-bg;
+        }
+    }
 }

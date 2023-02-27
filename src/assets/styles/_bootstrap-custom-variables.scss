@@ -337,7 +337,7 @@ $escaped-characters: (("<", "%3c"), (">", "%3e"), ("#", "%23"), ("(", "%28"), ("
 
 $enable-caret: true !default;
 $enable-rounded: true !default;
-$enable-shadows: false !default;
+$enable-shadows: true !default; //false
 $enable-gradients: false !default;
 $enable-transitions: true !default;
 $enable-reduced-motion: true !default;
@@ -1152,7 +1152,7 @@ $dropdown-font-size: $font-size-base !default;
 $dropdown-color: $body-color !default;
 $dropdown-bg: $dark-primary !default;
 $dropdown-border-color: rgba($light-primary, 0.8) !default;
-$dropdown-border-radius: $border-radius !default;
+$dropdown-border-radius: $border-radius * 0 !default;
 $dropdown-border-width: $border-width !default;
 $dropdown-inner-border-radius: subtract($dropdown-border-radius, $dropdown-border-width) !default;
 $dropdown-divider-bg: $dropdown-border-color !default;

@@ -1,11 +1,13 @@
 <script>
 import HeaderNavbar from "../components/HeaderNavbar.vue";
 import FooterComponent from "../components/FooterComponent.vue";
+import SearchActivityBar from "../components/SearchActivityBar.vue";
 
 export default {
     data() {
         return {
-            isVerticalMiddle: false
+            isVerticalMiddle: false,
+            showSearchBar: true
         };
     },
     provide() {
@@ -15,8 +17,21 @@ export default {
     },
     components: {
         HeaderNavbar,
-        FooterComponent
-    }
+        FooterComponent,
+        SearchActivityBar
+    },
+    created() {
+        this.$watch(
+            () => this.$route,
+            () => { 
+                console.log('created')
+                this.isVerticalMiddle = false;
+                this.showSearchBar = true;
+            },
+            { immediate: true }
+        );
+
+    },
 };
 </script>
 
@@ -24,6 +39,7 @@ export default {
     <div class="min-vh-100 d-flex flex-column overflow-hidden">
         <HeaderNavbar />
         <div class="flex-fill fixed-margin-top-headerHeight" :class="{ 'd-flex flex-column justify-content-center': isVerticalMiddle }">
+            <SearchActivityBar v-if="showSearchBar" />
             <router-view></router-view>
         </div>
         <FooterComponent />

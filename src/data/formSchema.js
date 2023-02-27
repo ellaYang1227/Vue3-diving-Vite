@@ -158,6 +158,28 @@ export default {
             },
             isRequired: false
         },
+    },
+    search: {
+        location: {
+            name: "language",
+            label: "地點",
+            optionLabel: "name"
+        },
+        startDate: {
+            name: "startDate",
+            label: "搜尋出發日期",
+            type: "date",
+            as: "input",
+            rules: "search_start_date:@搜尋結束日期",
+            isRequired: false
+        },
+        endDate: {
+            name: "endDate",
+            label: "搜尋結束日期",
+            type: "date",
+            as: "input",
+            rules: "",
+            isRequired: false
+        },
     }
-    
 };
