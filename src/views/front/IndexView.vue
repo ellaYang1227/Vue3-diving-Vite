@@ -50,6 +50,7 @@ export default {
             ],
             newActivitys: [],
             hotActivitys: [],
+            goodRatingActivitys: [],
             adLocations: []
         };
     },
@@ -61,7 +62,7 @@ export default {
         CountUp
     },
     computed: {
-        ...mapState(OtherStore, ["comments"]),
+        ...mapState(OtherStore, ["initComments"]),
         activityCards() {
             let cards = [];
             switch (this.activeActivityNav) {
@@ -74,6 +75,9 @@ export default {
             }
 
             return cards;
+        },
+        comments() {
+            return this.initComments.slice(0, 6);
         }
     },
     created() {
@@ -92,11 +96,12 @@ export default {
             this.getAdLocations(),
             this.getComments()
         ]).then(resArr => {
-            console.log(resArr);
-            this.newActivitys = this.setScore(resArr[0]);
+            resArr[0] = this.setScore(resArr[0]);
+            this.goodRatingActivitys = this.getGoodRatingActivitys(resArr[0]);
+            this.newActivitys = resArr[0].slice(0, 3);
             this.hotActivitys = this.setScore(resArr[1]);
             this.adLocations = resArr[2];
-            console.log(this.comments)
+            console.log('this.initComments-----', this.initComments)
             this.setSwiper("commentSwiper");
             this.setSwiper("goodRatingSwiper");
             this.hideLoading();
@@ -106,6 +111,9 @@ export default {
         ...mapActions(ActivityStore, ["getNewActivitys", "getHotActivitys", "getAdLocations"]),
         ...mapActions(OtherStore, ["getComments", "setScore"]),
         ...mapActions(LoadingStore, ["showLoading", "hideLoading"]),
+        getGoodRatingActivitys(activitys) {
+            return activitys.sort((a, b) => b.score - a.score).slice(0, 3);
+        },
         toggleActiveActivityNav(nav) {
             this.activeActivityNav = nav;
         },
@@ -232,7 +240,7 @@ export default {
     </div>
     <div class="container">
         <!-- 評論 -->
-        <div class="py-4 py-md-5" data-aos="zoom-out" v-if="false">
+        <div class="py-4 py-md-5" data-aos="zoom-out">
             <h5 class="fs-3 text-center text-primary mb-5">
                 <strong>聽聽其他人怎麼說</strong><small class="d-block text-body fs-5">大家參加完潛團的想法是甚麼呢</small>
             </h5>
@@ -249,8 +257,8 @@ export default {
                                         <UserMugShot :name="comment.user.name" :img="comment.user.img" :score="comment.score" :isShowRating="false" />
                                     </div>
                                     <strong class="fs-5 col-sm-7 text-primary text-truncate text-sm-end mt-2 mt-sm-0">{{
-                                        comment.activity.title
-                                    }}</strong>
+                                        comment.activity?.title
+                                    }}缺活動標題</strong>
                                     <p class="mb-0 col-12 mt-sm-2 text-truncate-row-4">{{ comment.content }}</p>
                                 </div>
                             </div>
@@ -267,8 +275,8 @@ export default {
             </h5>
             <div ref="goodRatingSwiper" class="swiper good-rating-swiper offset-pagination">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide" v-for="activityCard in activityCards" :key="activityCard.id">
-                        <BottomFrameActivityCard data-aos="flip-left" :activity="activityCard" />
+                    <div class="swiper-slide" v-for="goodRatingActivity in goodRatingActivitys" :key="goodRatingActivity.id">
+                        <BottomFrameActivityCard data-aos="flip-left" :activity="goodRatingActivity" />
                     </div>
                 </div>
                 <div class="swiper-pagination"></div>

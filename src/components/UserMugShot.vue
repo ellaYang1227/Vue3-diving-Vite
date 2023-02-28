@@ -60,7 +60,7 @@ export default {
                 :show-rating="isShowRating"
                 :active-color="activeColor"
                 :inactive-color="inactiveColor"
-                v-if="score"
+                v-if="score || score === 0"
             ></star-rating>
         </div>
     </div>

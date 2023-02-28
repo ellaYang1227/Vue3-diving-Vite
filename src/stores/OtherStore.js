@@ -9,26 +9,36 @@ export default defineStore("OtherStore", {
     getters: {},
     actions: {
         getComments(){
-            return bacsRequest.get(`comments`)
+            const params = { 
+                _sort: "score",
+                _order: "desc"
+            };
+
+            return bacsRequest.get(`comments?_expand=activity&_expand=user`, { params })
             .then(res => {
+                console.error('缺活動標題')
                 this.initComments = res;
                 this.comments = res.reduce((accumulator, currentValue) => {
-                    const { userId } = currentValue;
-                    const key = `userId_${userId}`;
-                    if(!accumulator[key]){
-                        accumulator[key] = {
-                            data: [],
-                            totalScore: 0
-                        };
-                    }
+                    const { userId, score } = currentValue;
+                    const findComment = accumulator.find(item => item.userId === userId);
 
-                    let { data } = accumulator[key];
-                    data.push(currentValue);
-                    accumulator[key].totalScore += currentValue.score;
-                    accumulator[key].averageScore = accumulator[key].totalScore / data.length;
+                    if(!findComment){
+                        const data = [];
+                        data.push(currentValue);
+                        accumulator.push({
+                            userId,
+                            data,
+                            totalScore: score,
+                            averageScore: score,
+                        });
+                    }else{
+                        findComment.data.push(currentValue);
+                        findComment.totalScore += score;
+                        findComment.averageScore = findComment.totalScore / findComment.data.length;
+                    }
     
                     return accumulator;
-                }, {});
+                }, []);
 
                 return Promise.resolve(this.comments);
             })
@@ -42,8 +52,8 @@ export default defineStore("OtherStore", {
         },
         setScore(activitys){
             return activitys.map(activity => {
-                const comments = this.comments[`userId_${activity.userId}`];
-                activity.score = comments ? comments.averageScore : 0;
+                const findComment = this.comments.find(item => item.userId == activity.userId);
+                activity.score = findComment ? findComment.averageScore : 0;
                 return activity;
             });
         }

@@ -11,45 +11,28 @@ const { user } = AuthStore();
 export default defineStore("ActivityStore", {
     state: () => ({
         statusFormat,
-        activitysApiUrl: "activitys?_sort=updateDate&_order=desc&_expand=user&_expand=location&_expand=certificateLevel&_embed=violations&_embed=orders"
-        // activitys: [],
-        // locations: [],
-        //activitys: []
+        activitysApiUrl: "activitys?_sort=updateDate&_order=desc&_expand=user&_expand=location&_expand=certificateLevel&_embed=violations&_embed=orders",
     }),
     getters: {
-        // 揪團進行中
-        newActivitys: ({ activitys }) => {
-            return []
-            // const filter = activitys.filter(activity => activity.groupStatus === "進行中");
-            // return filter.slice(0, 3);
-        },
-        // 不包含活動已結束(亂數處理)
-        hotActivitys: ({ activitys }) => {
-            return []
-            // const filter = activitys.filter(activity => activity.activityStatus !== "已結束");
-            // return filter.sort(() => (Math.random() > 0.5 ? -1 : 1)).slice(0, 3);
-        },
         yesterday: () => {
             const yesterday = getDateParse(new Date()) - 24 * 60 * 60 * 1000;
             return dateFormat(yesterday, "date", "-");
         },
     },
     actions: {
+        // 只取未違規且報名截止日期(orderExpiryDate)大於等於今天，更新貼文日期由新到舊
         getNewActivitys(){
-            const params = { 
-                orderExpiryDate_gte: this.yesterday,
-                _start: 0,
-                _end: 3 
-            }
+            const params = { orderExpiryDate_gte: this.yesterday }
             return bacsRequest.get(`${this.activitysApiUrl}`, { params })
             .then(res => Promise.resolve(this.getHandleActivitys(res)))
             .catch(err => Promise.reject(false));
         },
+        // 只取未違規且結束日期(endDate)大於等於今天，更新貼文日期由新到舊
         getHotActivitys(){
-            const params = { orderExpiryDate_gte: this.yesterday }
+            const params = { endDate_gte: this.yesterday }
             return bacsRequest.get(`${this.activitysApiUrl}`, { params })
             .then(res => {
-                res.sort((a, b) => a.orders.length - b.orders.length);
+                res.sort((a, b) => b.orders.length - a.orders.length);
                 const sliceRes = res.slice(0, 3);
                 return Promise.resolve(this.getHandleActivitys(sliceRes));
             })
