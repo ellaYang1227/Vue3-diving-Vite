@@ -18,7 +18,7 @@ export default {
         widthSize: {
             type: Number,
             required: false,
-            default: 55
+            default: 45
         },
         isShowName: {
             type: Boolean,
@@ -42,7 +42,7 @@ export default {
 </script>
 
 <template>
-    <div class="d-flex align-items-center">
+    <div class="text-truncate d-flex align-items-center">
         <img
             :style="{ width: `${widthSize}px`, height: `${widthSize}px` }"
             :src="img ? img : userDefaultImg"

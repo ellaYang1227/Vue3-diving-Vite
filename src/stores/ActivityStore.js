@@ -2,58 +2,70 @@ import { defineStore } from "pinia";
 import AuthStore from "../stores/AuthStore.js";
 import { bacsRequest } from "../data/axiosBase.js";
 import { setSwalFire } from "../data/sweetalert2.js";
+import { getRandom, getDateParse } from "../data/utilitieFunctions.js";
 import router from "../router/index.js";
 import statusFormat from "../handle-formats/statusFormat.js";
+import dateFormat from "../handle-formats/dateFormat.js";
 const { user } = AuthStore();
 
 export default defineStore("ActivityStore", {
     state: () => ({
         statusFormat,
+        activitysApiUrl: "activitys?_sort=updateDate&_order=desc&_expand=user&_expand=location&_expand=certificateLevel&_embed=violations&_embed=orders"
         // activitys: [],
         // locations: [],
-        activitys: []
+        //activitys: []
     }),
     getters: {
         // 揪團進行中
         newActivitys: ({ activitys }) => {
-            const filter = activitys.filter(activity => activity.groupStatus === "進行中");
-            return filter.slice(0, 3);
+            return []
+            // const filter = activitys.filter(activity => activity.groupStatus === "進行中");
+            // return filter.slice(0, 3);
         },
         // 不包含活動已結束(亂數處理)
         hotActivitys: ({ activitys }) => {
-            const filter = activitys.filter(activity => activity.activityStatus !== "已結束");
-            return filter.sort(() => (Math.random() > 0.5 ? -1 : 1)).slice(0, 3);
+            return []
+            // const filter = activitys.filter(activity => activity.activityStatus !== "已結束");
+            // return filter.sort(() => (Math.random() > 0.5 ? -1 : 1)).slice(0, 3);
         },
-        adActivitys: ({ activitys }) => {
-            const filter = activitys.filter(activity => activity.activityStatus !== "已結束" && activity.orderStatus !== "已額滿");
-            return filter.sort(() => (Math.random() > 0.5 ? -1 : 1)).slice(0, 2);
-        }
+        yesterday: () => {
+            const yesterday = getDateParse(new Date()) - 24 * 60 * 60 * 1000;
+            return dateFormat(yesterday, "date", "-");
+        },
     },
     actions: {
-        // 只取已啟用且未違規，更新貼文日期由新到舊
-        // getActivitys() {
-        //     bacsRequest.get("/activitys.json").then(res => {
-        //         this.activitys = res
-        //             .reverse()
-        //             .filter(item => item.isEnable && !item.isViolation)
-        //             .map(item => {
-        //                 return {
-        //                     ...item,
-        //                     ...this.statusFormat(item)
-        //                 };
-        //             });
-        //     });
-        // },
-        getLocations() {
-            bacsRequest.get("/locations.json").then(res => {
-                this.locations = res;
-            });
+        getNewActivitys(){
+            const params = { 
+                orderExpiryDate_gte: this.yesterday,
+                _start: 0,
+                _end: 3 
+            }
+            return bacsRequest.get(`${this.activitysApiUrl}`, { params })
+            .then(res => Promise.resolve(this.getHandleActivitys(res)))
+            .catch(err => Promise.reject(false));
         },
-        // 只取已啟用且未違規，更新貼文日期由新到舊
-        getActivitys(search, sort){
-            console.log('search', search, 'sort', sort)
-            const params = Object.keys(search).reduce((accumulator, currentKey) => {
-                console.log(accumulator, currentKey)
+        getHotActivitys(){
+            const params = { orderExpiryDate_gte: this.yesterday }
+            return bacsRequest.get(`${this.activitysApiUrl}`, { params })
+            .then(res => {
+                res.sort((a, b) => a.orders.length - b.orders.length);
+                const sliceRes = res.slice(0, 3);
+                return Promise.resolve(this.getHandleActivitys(sliceRes));
+            })
+            .catch(err => Promise.reject(false));
+        },
+        // 只取未違規且報名截止日期(orderExpiryDate)大於等於今天，更新貼文日期由新到舊
+        getAdActivitys(){
+            const params = { orderExpiryDate_gte: this.yesterday }
+            return bacsRequest.get(`${this.activitysApiUrl}`, { params })
+            .then(res => Promise.resolve(this.getHandleActivitys(res)))
+            .catch(err => Promise.reject(false));
+        },
+        // 只取未違規且結束日期大於等於今天，更新貼文日期由新到舊
+        getActivitys(search){
+            const searchKeys = Object.keys(search);
+            const params = searchKeys.reduce((accumulator, currentKey) => {
                 if(search[currentKey]){
                     if(currentKey === "startDate"){
                         accumulator[`${currentKey}_gte`] = search[currentKey];
@@ -69,27 +81,24 @@ export default defineStore("ActivityStore", {
                 return accumulator;
             }, {});
 
-            console.log(params)
-            
-            return bacsRequest.get(`activitys?_sort=${this.sort}&_order=desc&_expand=user&_expand=location&_embed=violations`, { params })
-            .then(res => {
-                console.log(res)
-                // 過濾掉有違規紀錄的活動
-                res = res.filter(item => !item.violations.length);
-                this.activitys = this.handleActivityStatus(res);
-                console.log(this.activitys)
-                return Promise.resolve(this.activitys);
-            })
+            // 過濾掉結束日期小於今天
+            if(searchKeys.indexOf("endDate")  === -1){ 
+                params.endDate_gte = this.yesterday 
+            }
+
+            return bacsRequest.get(`${this.activitysApiUrl}`, { params })
+            .then(res => Promise.resolve(this.getHandleActivitys(res)))
             .catch(err => Promise.reject(false));
         },
         getAdLocations(){
             return bacsRequest.get("locations?isAD=true")
-            .then(res => {
-                // 亂數處理
-                res =  res.sort(() => (Math.random() > 0.5 ? -1 : 1)).slice(0, 12);
-                return Promise.resolve(res);
-            })
+            .then(res => Promise.resolve(getRandom(res, 12)))
             .catch(err => Promise.reject(false));
+        },
+        // 統一處理 api Activitys 原始資料；過濾掉有違規紀錄的活動
+        getHandleActivitys(activitys) {
+            activitys = activitys.filter(item => !item.violations.length);
+            return this.handleActivityStatus(activitys);
         },
         handleActivityStatus(activitys) {
             return activitys.map(activity => {

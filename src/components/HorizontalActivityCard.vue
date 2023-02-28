@@ -1,6 +1,7 @@
 <script setup>
 import dateFormat from "../handle-formats/dateFormat.js";
 import decimalFormat from "../handle-formats/decimalFormat.js";
+import { getMainImg } from "../data/utilitieFunctions.js";
 </script>
 
 <script>
@@ -21,12 +22,6 @@ export default {
     },
     components: {
         UserMugShot
-    },
-    computed: {
-        mainImg() {
-            const findImgKey = Object.keys(this.activity.imgs).find(imgKey => this.activity.imgs[imgKey].isMain);
-            return this.activity.imgs[findImgKey];
-        }
     }
 };
 </script>
@@ -36,7 +31,7 @@ export default {
         <div class="card horizontal-card h-100">
             <div class="row g-0">
                 <div class="col-5 position-relative">
-                    <img :src="mainImg.img" class="img-fluid img-cover" :alt="activity.title">
+                    <img :src="getMainImg(this.activity.imgs).img" class="img-fluid img-cover" :alt="activity.title">
                     <div class="position-absolute top-0 end-0 p-1 bg-darkPrimary bg-opacity-80 fs-7 text-body">{{ activity.location.name }}</div>
                 </div>
                 <div class="col-7">
@@ -44,20 +39,19 @@ export default {
                         <small class="font-barlow">{{ dateFormat(activity.startDate) }} ~ {{ dateFormat(activity.endDate) }}</small>
                         <h2 class="card-title h5 mb-0 text-primary text-truncate-row-2 fw-bold">{{ activity.title }}</h2>
                         <p class="card-text text-truncate-row-2 white-space-pre-wrap opacity-75" v-if="activity.features">{{ activity.features }}</p>
-                        <span>{{ activity.tags }}</span>
                         <div class="row align-items-center fw-bold mt-auto">
                             <div class="col text-truncate d-flex align-items-center">
                                 <UserMugShot :width-size="30" :name="activity.user.name" :img="activity.user.img" />
-                                <small class="ms-1 font-barlow fw-normal">{{ `(${decimalFormat(activity.user.score, 1)})` }}</small>
+                                <small class="ms-1 font-barlow fw-normal" v-if="activity.score">{{ `(${decimalFormat(activity.score, 1)})` }}</small>
                             </div>
                             <ul class="col-auto font-barlow list-inline mb-0">
-                                <li class="list-inline-item">{{ activity.grade }}</li>
+                                <li class="list-inline-item">{{ activity.certificateLevel.name }}</li>
                                 <li class="list-inline-item" v-if="activity.isNitrox">高氧</li>
                                 <li class="list-inline-item" v-if="activity.cylinderTotal">{{ activity.cylinderTotal }}</li>
                             </ul>
                         </div>
-                        <router-link :to="`/activity/${activity.id}`" class="btn btn-custom-rectangle mt-3" role="button" :class="activity.orderStatus === '已額滿' ? 'btn-lightPrimary opacity-40' : 'btn-primary'">
-                            <template v-if="activity.orderStatus === '已額滿'">{{ activity.orderStatus }}</template>
+                        <router-link :to="`/activity/${activity.id}`" class="btn btn-custom-rectangle mt-3" role="button" :class="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止' ? 'btn-lightPrimary opacity-40' : 'btn-primary'">
+                            <template v-if="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止'">{{ activity.orderStatus }}</template>
                             <template v-else>揪團詳情</template>
                         </router-link>
                     </div>

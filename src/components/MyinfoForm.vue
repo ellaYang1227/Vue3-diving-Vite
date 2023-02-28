@@ -21,7 +21,7 @@ export default {
                 password: "",
                 name: "",
                 img: "",
-                certificateLevels: [],
+                certificateLevelId: [],
                 isNitrox: null,
                 cylinderTotal: ""
             }
@@ -61,6 +61,7 @@ export default {
         },
         onSubmit() {
             this.showLoading("btn");
+            console.log(this.form)
             if(!this.userId){
                 const { returnUrl } = this.$route.query;
                 this.signup(this.form, returnUrl);
@@ -142,17 +143,17 @@ export default {
                     >{{ formSchema.certificateLevel.label
                     }}<span class="text-danger" v-if="formSchema.certificateLevel.isRequired">*</span></label
                 >
-                <div class="form-check form-check-inline" v-for="option in certificateLevels" :key="option.value">
+                <div class="form-check form-check-inline" v-for="option in certificateLevels" :key="option.id">
                     <Field
                         :class="{ 'is-invalid': errors[formSchema.certificateLevel.label] }"
                         class="form-check-input"
-                        :id="`${formSchema.certificateLevel.name}-${option.value}`"
+                        :id="`${formSchema.certificateLevel.name}-${option.id}`"
                         :name="formSchema.certificateLevel.label"
                         :type="formSchema.certificateLevel.type"
-                        :value="option.value"
+                        :value="option.id"
                         :rules="formSchema.certificateLevel.rules"
-                        v-model="form.certificateLevels"
-                    /><label class="form-check-label" :for="`${formSchema.certificateLevel.name}-${option.value}`">{{
+                        v-model="form.certificateLevelId"
+                    /><label class="form-check-label" :for="`${formSchema.certificateLevel.name}-${option.id}`">{{
                         option.name
                     }}</label>
                 </div>

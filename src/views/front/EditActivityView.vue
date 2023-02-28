@@ -69,7 +69,7 @@ export default {
                 orderExpiryDate: "",
                 maxOrderTotal: null,
                 cost: null,
-                certificateLevel: "",
+                certificateLevelId: "",
                 cylinderTotal: "",
                 isNitrox: null,
                 tags: []
@@ -340,10 +340,10 @@ export default {
                             class="form-select"
                             :class="{ 'is-invalid': errors[formSchema.activity.certificateLevel.label] }"
                             :rules="formSchema.activity.certificateLevel.rules"
-                            v-model="form.certificateLevel"
+                            v-model="form.certificateLevelId"
                         >
                         <option value="" disabled>請選擇</option>
-                        <option v-for="option in certificateLevels" :key="option.value" :value="option.value">
+                        <option v-for="option in certificateLevels" :key="option.id" :value="option.id">
                             {{ option.name }}
                         </option>
                         </Field>

@@ -1,10 +1,11 @@
-// 日期格式化
-// value：Date - 要格式化的值
+/**
+ * 日期格式化 - 返回通過(true)或未通過(false)
+ * 
+ * @param value：Date - 要格式化的值
+ * @param contents：Array - 設定要回傳的日期格式內容，預設 "date"；date 表示只有日期，time 表示日期 + 時間
+ * @param splitStyle：日期的樣式 "/" 或 "-"，預設 "/"
+ */
 
-// contents：Array - 設定要回傳的日期格式內容，預設 "date"
-// "date"：只有日期
-// "time"：日期 + 時間
-// "splitStyle"：日期的樣式 "/" 或 "-"，預設 "/"
 export default function (value, contents = ["date"], splitStyle = "/") {
     value = new Date(value);
     let time = "";

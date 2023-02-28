@@ -33,7 +33,7 @@ const order_expiry_date = (value, [target]) => {
 
 // 小於結束日期(target)
 const search_start_date = (value, [target]) => {
-    if (!target || target >= value) {
+    if (!value || !target || target >= value) {
         return true;
     }
 

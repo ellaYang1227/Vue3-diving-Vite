@@ -5,7 +5,7 @@ import Swiper from "swiper/bundle";
 import { mapState, mapActions } from "pinia";
 import LoadingStore from "../../stores/LoadingStore.js";
 import ActivityStore from "../../stores/ActivityStore.js";
-import CommentStore from "../../stores/CommentStore.js";
+import OtherStore from "../../stores/OtherStore.js";
 import swiperParams from "../../data/swiperParams.js";
 import { divingIcon, peoplesIcon, areaIcon, licenseImg, scoreImg, commentImg } from "../../data/imagePaths.js";
 import CornerActivityCard from "../../components/CornerActivityCard.vue";
@@ -48,7 +48,8 @@ export default {
                     img: scoreImg
                 }
             ],
-            comments: [],
+            newActivitys: [],
+            hotActivitys: [],
             adLocations: []
         };
     },
@@ -60,7 +61,7 @@ export default {
         CountUp
     },
     computed: {
-        ...mapState(ActivityStore, ["newActivitys", "hotActivitys"]),
+        ...mapState(OtherStore, ["comments"]),
         activityCards() {
             let cards = [];
             switch (this.activeActivityNav) {
@@ -84,23 +85,26 @@ export default {
             duration: 1200,
             easing: "ease-in-out-back"
         });
-        //this.getActivitys();
-        //this.getLocations();
+
         Promise.all([
-            this.getAdLocations()
-            //this.getComments()
+            this.getNewActivitys(),
+            this.getHotActivitys(),
+            this.getAdLocations(),
+            this.getComments()
         ]).then(resArr => {
             console.log(resArr);
-            this.adLocations = resArr[0];
-            // this.comments = resArr[0];
-            // this.setSwiper("commentSwiper");
-            // this.setSwiper("goodRatingSwiper");
+            this.newActivitys = this.setScore(resArr[0]);
+            this.hotActivitys = this.setScore(resArr[1]);
+            this.adLocations = resArr[2];
+            console.log(this.comments)
+            this.setSwiper("commentSwiper");
+            this.setSwiper("goodRatingSwiper");
             this.hideLoading();
         });
     },
     methods: {
-        ...mapActions(ActivityStore, ["getActivitys", "getLocations", "getAdLocations"]),
-        ...mapActions(CommentStore, ["getComments"]),
+        ...mapActions(ActivityStore, ["getNewActivitys", "getHotActivitys", "getAdLocations"]),
+        ...mapActions(OtherStore, ["getComments", "setScore"]),
         ...mapActions(LoadingStore, ["showLoading", "hideLoading"]),
         toggleActiveActivityNav(nav) {
             this.activeActivityNav = nav;
@@ -119,6 +123,9 @@ export default {
                     breakpoints: {
                         768: {
                             slidesPerView: 2
+                        },
+                        1200: {
+                            slidesPerView: 3
                         }
                     }
                 };
@@ -204,7 +211,7 @@ export default {
     <div class="bg-primary bg-opacity-20 my-4 my-md-5 py-3" data-aos="fade-up">
         <div class="container-fluid waterfalls-flow-imgs">
             <router-link
-                to="#"
+                :to="{ path: '/activitys', query: { locationId: `${adLocation.id}`} }"
                 class="position-relative shadow"
                 v-for="(adLocation, index) in adLocations"
                 :key="adLocation.id"
@@ -225,7 +232,7 @@ export default {
     </div>
     <div class="container">
         <!-- 評論 -->
-        <div class="py-4 py-md-5" data-aos="zoom-out">
+        <div class="py-4 py-md-5" data-aos="zoom-out" v-if="false">
             <h5 class="fs-3 text-center text-primary mb-5">
                 <strong>聽聽其他人怎麼說</strong><small class="d-block text-body fs-5">大家參加完潛團的想法是甚麼呢</small>
             </h5>

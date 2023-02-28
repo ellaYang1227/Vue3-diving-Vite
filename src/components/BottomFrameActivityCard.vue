@@ -1,5 +1,6 @@
 <script setup>
 import dateFormat from "../handle-formats/dateFormat.js";
+import { getMainImg } from "../data/utilitieFunctions.js";
 </script>
 
 <script>
@@ -25,20 +26,20 @@ export default {
 </script>
 
 <template>
-    <router-link to="#" class="col text-decoration-none">
+    <router-link :to="`/activity/${activity.id}`" class="col text-decoration-none">
         <div class="bottom-frame-card">
             <div class="img-frame mb-3">
                 <div class="outer-border custom-rectangle border border-card-border-width"></div>
                 <div class="card custom-rectangle">
-                    <img :src="activity.imgs[0]" class="card-img custom-rectangle img-cover" :alt="`[${activity.location}]${activity.title}`" />
-                    <div class="card-img-overlay text-body w-75">
-                        <UserMugShot :name="activity.user?.name" :img="activity.user?.img" :score="activity.user?.score" :isShowRating="false" />
+                    <img :src="getMainImg(this.activity.imgs).img" class="card-img custom-rectangle img-cover" :alt="`[${activity.location.name}]${activity.title}`" />
+                    <div class="shadow py-1 card-img-overlay d-flex align-items-center text-body bg-darkPrimary bg-opacity-80">
+                        <UserMugShot :name="activity.user.name" :img="activity.user.img" :score="activity.score" :isShowRating="false" />
                     </div>
                 </div>
             </div>
             <h2 class="h5 mb-1 text-primary text-truncate-row-2 fw-bold">{{ activity.title }}</h2>
             <ul class="list-unstyled text-body lh-sm">
-                <li>{{ activity.location }}</li>
+                <li>{{ activity.location.name }}</li>
                 <li class="font-barlow">{{ dateFormat(activity.startDate) }} ~ {{ dateFormat(activity.endDate) }}</li>
             </ul>
         </div>
@@ -69,20 +70,18 @@ $img-frame-card-Spacing: 1rem;
             height: 200px;
 
             @media (min-width: 576px) and (max-width: 767px) {
-                height: 250px;
-            }
-
-            @media (min-width: 992px) {
-                height: 250px;
+                height: 150px;
             }
 
             @media (min-width: 1200px) {
-                height: 350px;
+                height: 250px;
             }
         }
     }
 
     .card-img-overlay {
+        width: 180px;
+        height: 27%;
         top: unset;
         bottom: 0;
     }

@@ -1,6 +1,7 @@
 <script setup>
 import dateFormat from "../handle-formats/dateFormat.js";
 import decimalFormat from "../handle-formats/decimalFormat.js";
+import { getMainImg } from "../data/utilitieFunctions.js";
 </script>
 
 <script>
@@ -14,7 +15,6 @@ export default {
             required: true,
             validator(value) {
                 const verifyKeys = ["id", "title", "imgs", "location", "startDate", "endDate", "isNitrox", "cylinderTotal", "user"];
-
                 return propsValidator(value, verifyKeys);
             }
         }
@@ -26,30 +26,30 @@ export default {
 </script>
 
 <template>
-    <router-link to="#" class="col text-decoration-none">
+    <router-link :to="`/activity/${activity.id}`" class="col text-decoration-none">
         <div class="corner-card">
             <div class="img-frame mb-3">
                 <div class="outer-border"></div>
                 <div class="card custom-rectangle">
-                    <img :src="activity.imgs[0]" class="card-img custom-rectangle img-cover" :alt="`[${activity.location}]${activity.title}`" />
+                    <img :src="getMainImg(this.activity.imgs).img" class="card-img custom-rectangle img-cover" :alt="`[${activity.location.name}]${activity.title}`" />
                     <div class="card-img-overlay">
                         <span
                             class="fs-6 font-barlow badge rounded-pill bg-darkPrimary bg-opacity-75 text-body border border-lightPrimary border-2"
-                            >{{ decimalFormat(activity.user?.score, 1) }}</span
+                            >{{ decimalFormat(activity.score, 1) }}</span
                         >
                     </div>
                 </div>
             </div>
             <h2 class="h5 mb-1 text-primary text-truncate-row-2 fw-bold">{{ activity.title }}</h2>
             <ul class="list-unstyled text-body lh-sm">
-                <li>{{ activity.location }}</li>
+                <li>{{ activity.location.name }}</li>
                 <li class="font-barlow">{{ dateFormat(activity.startDate) }} ~ {{ dateFormat(activity.endDate) }}</li>
-                <li class="row align-items-center fw-bold pt-3">
+                <li class="row align-items-center fw-bold pt-2">
                     <div class="col text-truncate">
-                        <UserMugShot :width-size="30" :name="activity.user?.name" :img="activity.user?.img" />
+                        <UserMugShot :width-size="30" :name="activity.user.name" :img="activity.user.img" />
                     </div>
                     <ul class="col-auto font-barlow list-inline">
-                        <li class="list-inline-item">{{ activity.grade }}</li>
+                        <li class="list-inline-item">{{ activity.certificateLevel.name }}</li>
                         <li class="list-inline-item" v-if="activity.isNitrox">高氧</li>
                         <li class="list-inline-item" v-if="activity.cylinderTotal">{{ activity.cylinderTotal }}</li>
                     </ul>

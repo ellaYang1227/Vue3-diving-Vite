@@ -89,6 +89,7 @@ export default defineStore("MemberStore", {
 
         },
         updateActivity(body){
+            console.log(user)
             body.updateDate = new Date().getTime();
             let apiMethod = 'post';
             let apiUrl = `660/users/${user.id}/activitys`;

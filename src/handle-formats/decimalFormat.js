@@ -1,8 +1,9 @@
-// 小數位數格式化
-// value：Number | String - 要格式化的值
-
-// fractionDigits：Number - 設定要回傳的小數位數，預設 0
-
+/**
+ * 小數位數格式化
+ * 
+ * @param value：Number | String - 要格式化的值
+ * @param fractionDigits：Number - 設定要回傳的小數位數，預設 0
+ */
 export default function (value, fractionDigits = 0) {
     let num = Math.round(value);
     if (fractionDigits) {

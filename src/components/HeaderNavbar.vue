@@ -80,7 +80,7 @@ export default {
                                 data-bs-display="static"
                                 aria-expanded="false"
                             >
-                                <UserMugShot :width-size="45" :is-show-name="false" :name="user.name" :img="user.img" v-if="user" class="me-2" />
+                                <UserMugShot :is-show-name="false" :name="user.name" :img="user.img" v-if="user" class="me-2" />
                                 <h5 class="fs-5 d-md-none mb-0 text-truncate text-primary">
                                     <img :src="logo" :alt="VITE_COMPANY_NAME" class="logo-img" v-if="!user" />
                                     <template v-else>{{ user.name }}</template>

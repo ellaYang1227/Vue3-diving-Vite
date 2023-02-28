@@ -97,7 +97,6 @@ export default {
 <template>
     <div class="bg-darkPrimary bg-opacity-85 py-4 sticky-top sticky-top-headerHeight shadow">
         <div class="container">
-            {{ search }} - {{ isLoadingBtn }}
             <VForm v-slot="{ errors }" @submit="onSubmit" class="pb-1">
                 <fieldset :disabled="isLoadingBtn" class="row g-2">
                     <div class="col-md col-lg-6 col-xl-5">
