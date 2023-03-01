@@ -2,7 +2,10 @@ import { defineStore } from "pinia";
 import { bacsRequest } from "../data/axiosBase.js";
 
 export default defineStore("OptionStore", {
-    state: () => ({}),
+    state: () => ({
+        locations: [],
+        tags: []
+    }),
     getters: {},
     actions: {
         getCertificateLevels() {
@@ -17,12 +20,18 @@ export default defineStore("OptionStore", {
         },
         getLocations() {
             return bacsRequest.get("locations")
-            .then(res => Promise.resolve(res))
+            .then(res => {
+                this.locations = res;
+                return Promise.resolve(res);
+            })
             .catch(err => Promise.reject(false));
         },
         getTags() {
             return bacsRequest.get("tags")
-            .then(res => Promise.resolve(res))
+            .then(res => {
+                this.tags = res;
+                return Promise.resolve(res);
+            })
             .catch(err => Promise.reject(false));
         }
     }

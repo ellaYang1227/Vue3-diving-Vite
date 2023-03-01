@@ -13,7 +13,7 @@ export default {
     watch: {
         $route() {
             //  凍結 VueLoading 滾動
-            document.body.classList.add("overflow-hidden");
+            //document.body.classList.add("overflow-hidden");
         }
     }
 };

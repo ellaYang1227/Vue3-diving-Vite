@@ -10,9 +10,9 @@ import HorizontalActivityCard from "../../components/HorizontalActivityCard.vue"
 export default {
     data() {
         return {
-            activitys: [],
-            initAdActivitys: [],
-            adActivitys: [],
+            activities: [],
+            initAdActivities: [],
+            adActivities: [],
             selectedSort: null,
             sortOptions: [{
                 label: "更新時間",
@@ -29,7 +29,6 @@ export default {
             }]
         }
     },
-    inject: ["frontLayoutData"],
     computed: {
         ...mapState(OtherStore, ["comments"]),
     },
@@ -38,7 +37,7 @@ export default {
             handler(val, oldVal) {
                 if(val) {
                     const { value } = val;
-                    this.activitys.sort((a,b) => {
+                    this.activities.sort((a,b) => {
                         if(value === 'startDate'){
                             return a[value] > b[value] ? 1 : -1;
                         }else if(value === 'orderTotal'){
@@ -48,7 +47,7 @@ export default {
                         }
                     });
 
-                    this.adActivitys = getRandom(this.initAdActivitys, 2);
+                    this.adActivities = getRandom(this.initAdActivities, 2);
                 }
             }
             
@@ -61,8 +60,9 @@ export default {
     created() {
         this.$watch(
             () => this.$route.query,
-            () => { 
-                this.fetchData();
+            () => {
+                const { path } =  this.$route;
+                if(path.indexOf('/activities') > -1){ this.fetchData() }
             },
             { immediate: true }
         );
@@ -70,22 +70,18 @@ export default {
     },
     methods: {
         ...mapActions(LoadingStore, ["showLoading", "hideLoading"]),
-        ...mapActions(ActivityStore, ["getActivitys", "getAdActivitys"]),
-        ...mapActions(OtherStore, ["getComments", "setScore"]),
+        ...mapActions(ActivityStore, ["getActivities", "getAdActivities"]),
+        ...mapActions(OtherStore, ["setScore"]),
         fetchData(){
             this.selectedSort = null;
-            const APIs = [this.getActivitys(this.$route.query)];
-
-            if(!this.initAdActivitys.length){
-                APIs.push(this.getAdActivitys());
-                APIs.push(this.getComments())
-            }
+            const APIs = [this.getActivities(this.$route.query)];
+            if(!this.initAdActivities.length){ APIs.push(this.getAdActivities()) }
 
             Promise.all(APIs).then(resArr => {
-                this.activitys = this.setScore(resArr[0]);
+                this.activities = this.setScore(resArr[0]);
 
-                if(!this.initAdActivitys.length){
-                    this.initAdActivitys = this.setScore(resArr[1]);
+                if(!this.initAdActivities.length){
+                    this.initAdActivities = this.setScore(resArr[1]);
                 }
                 
                 this.selectedSort = this.sortOptions[0];
@@ -105,11 +101,11 @@ export default {
         </div>
     </div>
     <div class="row row-cols-1 row-cols-md-2 gy-4">
-        <HorizontalActivityCard :activity="adActivity" v-for="adActivity in adActivitys" :key="adActivity.id" />
+        <HorizontalActivityCard :activity="adActivity" v-for="adActivity in adActivities" :key="adActivity.id" />
     </div>
     <div class="border-bottom border-lightPrimary opacity-25 my-4"></div>
-    <div class="row row-cols-1 row-cols-md-2 gy-4" v-if="activitys.length">
-        <HorizontalActivityCard :activity="activity" v-for="activity in activitys" :key="activity.id" />
+    <div class="row row-cols-1 row-cols-md-2 gy-4" v-if="activities.length">
+        <HorizontalActivityCard :activity="activity" v-for="activity in activities" :key="activity.id" />
         
     </div>
     <div v-else class="text-center fs-5 opacity-75">找不到符合條件的活動，試試看其他搜尋條件吧</div>

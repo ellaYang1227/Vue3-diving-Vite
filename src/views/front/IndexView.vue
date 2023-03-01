@@ -48,9 +48,9 @@ export default {
                     img: scoreImg
                 }
             ],
-            newActivitys: [],
-            hotActivitys: [],
-            goodRatingActivitys: [],
+            newActivities: [],
+            hotActivities: [],
+            goodRatingActivities: [],
             adLocations: []
         };
     },
@@ -67,10 +67,10 @@ export default {
             let cards = [];
             switch (this.activeActivityNav) {
                 case "new":
-                    cards = this.newActivitys;
+                    cards = this.newActivities;
                     break;
                 case "hot":
-                    cards = this.hotActivitys;
+                    cards = this.hotActivities;
                     break;
             }
 
@@ -85,34 +85,32 @@ export default {
         this.frontLayoutData.isMainOverflowHidden = true;
     },
     mounted() {
-        AOS.init({
-            duration: 1200,
-            easing: "ease-in-out-back"
-        });
-
         Promise.all([
-            this.getNewActivitys(),
-            this.getHotActivitys(),
-            this.getAdLocations(),
-            this.getComments()
+            this.getNewActivities(),
+            this.getHotActivities(),
+            this.getAdLocations()
         ]).then(resArr => {
             resArr[0] = this.setScore(resArr[0]);
-            this.goodRatingActivitys = this.getGoodRatingActivitys(resArr[0]);
-            this.newActivitys = resArr[0].slice(0, 3);
-            this.hotActivitys = this.setScore(resArr[1]);
+            this.goodRatingActivities = this.getGoodRatingActivities(resArr[0]);
+            this.newActivities = resArr[0].slice(0, 3);
+            this.hotActivities = this.setScore(resArr[1]);
             this.adLocations = resArr[2];
-            console.log('this.initComments-----', this.initComments)
             this.setSwiper("commentSwiper");
             this.setSwiper("goodRatingSwiper");
             this.hideLoading();
+            
+            AOS.init({
+                duration: 1200,
+                easing: "ease-in-out-back"
+            });
         });
     },
     methods: {
-        ...mapActions(ActivityStore, ["getNewActivitys", "getHotActivitys", "getAdLocations"]),
-        ...mapActions(OtherStore, ["getComments", "setScore"]),
+        ...mapActions(ActivityStore, ["getNewActivities", "getHotActivities", "getAdLocations"]),
+        ...mapActions(OtherStore, ["setScore"]),
         ...mapActions(LoadingStore, ["showLoading", "hideLoading"]),
-        getGoodRatingActivitys(activitys) {
-            return activitys.sort((a, b) => b.score - a.score).slice(0, 3);
+        getGoodRatingActivities(activities) {
+            return activities.sort((a, b) => b.score - a.score).slice(0, 3);
         },
         toggleActiveActivityNav(nav) {
             this.activeActivityNav = nav;
@@ -219,7 +217,7 @@ export default {
     <div class="bg-primary bg-opacity-20 my-4 my-md-5 py-3" data-aos="fade-up">
         <div class="container-fluid waterfalls-flow-imgs">
             <router-link
-                :to="{ path: '/activitys', query: { locationId: `${adLocation.id}`} }"
+                :to="{ path: '/activities', query: { locationId: `${adLocation.id}`} }"
                 class="position-relative shadow"
                 v-for="(adLocation, index) in adLocations"
                 :key="adLocation.id"
@@ -253,12 +251,11 @@ export default {
                         <div class="swiper-wrapper">
                             <div v-for="comment in comments" :key="comment.id" class="swiper-slide align-items-start">
                                 <div class="row align-items-end">
-                                    <div class="col-sm-5">
+                                    <div class="col-sm-5 col-md-6 col-lg-5">
                                         <UserMugShot :name="comment.user.name" :img="comment.user.img" :score="comment.score" :isShowRating="false" />
                                     </div>
-                                    <strong class="fs-5 col-sm-7 text-primary text-truncate text-sm-end mt-2 mt-sm-0">{{
-                                        comment.activity?.title
-                                    }}缺活動標題</strong>
+                                    <h2 class="col-sm-7 col-md-6 col-lg-7 fs-6 mb-0 text-primary text-truncate text-sm-end mt-2 mt-sm-0">{{
+                                        comment.activity.title }}</h2>
                                     <p class="mb-0 col-12 mt-sm-2 text-truncate-row-4">{{ comment.content }}</p>
                                 </div>
                             </div>
@@ -275,7 +272,7 @@ export default {
             </h5>
             <div ref="goodRatingSwiper" class="swiper good-rating-swiper offset-pagination">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide" v-for="goodRatingActivity in goodRatingActivitys" :key="goodRatingActivity.id">
+                    <div class="swiper-slide" v-for="goodRatingActivity in goodRatingActivities" :key="goodRatingActivity.id">
                         <BottomFrameActivityCard data-aos="flip-left" :activity="goodRatingActivity" />
                     </div>
                 </div>

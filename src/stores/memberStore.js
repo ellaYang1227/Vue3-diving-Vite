@@ -89,13 +89,12 @@ export default defineStore("MemberStore", {
 
         },
         updateActivity(body){
-            console.log(user)
             body.updateDate = new Date().getTime();
             let apiMethod = 'post';
-            let apiUrl = `660/users/${user.id}/activitys`;
+            let apiUrl = `660/users/${user.id}/activities`;
             if(body.id){
                 apiMethod = 'patch';
-                apiUrl = `600/activitys/${body.id}`;
+                apiUrl = `600/activities/${body.id}`;
             }
             
             const title = `${body.id ? '編輯': '新增'}活動`;
@@ -119,7 +118,7 @@ export default defineStore("MemberStore", {
         },
         getActivity(activityId){
             return bacsRequest
-                .get(`600/activitys/${activityId}`)
+                .get(`600/activities/${activityId}`)
                 .then(res => Promise.resolve(res))
                 .catch(err => Promise.reject(false));
         }

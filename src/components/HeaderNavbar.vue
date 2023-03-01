@@ -20,6 +20,13 @@ export default {
             hasHavbarBg: false
         };
     },
+    props: {
+        showSearchBar: {
+            type: Boolean,
+            required: true
+        }
+    },
+    inject: ["frontLayoutData"],
     components: {
         UserMugShot
     },
@@ -27,7 +34,13 @@ export default {
         ...mapState(MemberStore, ["mySignUp"]),
         ...mapState(AuthStore, ["user"])
     },
+    watch: {
+        showSearchBar() {
+            this.setShowSearchBar();
+        }
+    },
     mounted() {
+        this.setShowSearchBar();
         this.getMySignUp(3);
         window.addEventListener("scroll", this.scrollEvent);
         this.offcanvasNavbar = new bootstrap.Offcanvas(this.$refs.offcanvasNavbar, { keyboard: false });
@@ -35,8 +48,13 @@ export default {
     methods: {
         ...mapActions(MemberStore, ["getMySignUp"]),
         ...mapActions(AuthStore, ["logout"]),
+        setShowSearchBar() {
+            this.hasHavbarBg = this.showSearchBar;
+        },
         scrollEvent() {
-            this.hasHavbarBg = window.scrollY > 0 ? true : false;
+            if(!this.frontLayoutData.showSearchBar) {
+                this.hasHavbarBg = window.scrollY > 0 ? true : false;
+            }
         },
         toggleOffcanvasNavbar() {
             if (768 > document.body.clientWidth) {
@@ -121,7 +139,7 @@ export default {
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <router-link class="nav-link" to="/activitys" @click="toggleOffcanvasNavbar">找揪團</router-link>
+                            <router-link class="nav-link" to="/activities" @click="toggleOffcanvasNavbar">找揪團</router-link>
                         </li>
                         <li class="nav-item dropdown d-none d-md-block" v-if="user">
                             <a

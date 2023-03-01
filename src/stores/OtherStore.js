@@ -16,7 +16,6 @@ export default defineStore("OtherStore", {
 
             return bacsRequest.get(`comments?_expand=activity&_expand=user`, { params })
             .then(res => {
-                console.error('缺活動標題')
                 this.initComments = res;
                 this.comments = res.reduce((accumulator, currentValue) => {
                     const { userId, score } = currentValue;
@@ -50,8 +49,8 @@ export default defineStore("OtherStore", {
             .then(res => Promise.resolve(res))
             .catch(err => Promise.reject(false));
         },
-        setScore(activitys){
-            return activitys.map(activity => {
+        setScore(activities){
+            return activities.map(activity => {
                 const findComment = this.comments.find(item => item.userId == activity.userId);
                 activity.score = findComment ? findComment.averageScore : 0;
                 return activity;

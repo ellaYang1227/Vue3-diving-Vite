@@ -13,8 +13,6 @@ export default {
     data () {
         return {
             location: null,
-            locations: [],
-            tags: [],
             search: {
                 locationId: "",
                 startDate: "",
@@ -23,19 +21,13 @@ export default {
             }
         }
     },
-    props: {
-    },
     computed: {
         ...mapState(LoadingStore, ["isLoadingBtn"]),
+        ...mapState(OptionStore, ["locations", "tags"]),
         selectedTag() {
             return this.search.tag;
         }
     },
-    // watch: {
-    //     tag() {
-    //         return this.search.tag;
-    //     }
-    // },
     components: {
         VueMultiselect,
         VForm: Form,
@@ -45,29 +37,21 @@ export default {
     created() {
         this.$watch(
             () => this.$route.query,
-            () => { this.setLocation() },
+            () => {
+                const { path } =  this.$route;
+                if(path.indexOf('/activities') > -1){ this.setLocation()  }
+            },
             { immediate: true }
         );
         
     },
-    mounted() {
-        Promise.all([
-            this.getLocations(),
-            this.getTags()
-        ]).then(resArr => {
-            this.locations = resArr[0];
-            this.tags = resArr[1];
-            this.setLocation();
-        });
-    },
     methods: {
-        ...mapActions(OptionStore, ["getLocations", "getTags"]),
         ...mapActions(LoadingStore, ["showLoading"]),
         setLocation() {
-                this.search = { ...this.$route.query };
-                const { locationId } = this.search;
-                const findLocation = this.locations.find(location => location.id === locationId);
-                this.location = findLocation ? findLocation : '';
+            this.search = { ...this.$route.query };
+            const { locationId } = this.search;
+            const findLocation = this.locations.find(location => location.id === locationId);
+            this.location = findLocation ? findLocation : '';
         },
         updateSelectedTag(event){
             const { value } = event.target;
@@ -79,14 +63,13 @@ export default {
             this.search.locationId = newValue?.id;
         },
         onSubmit() {
-            console.log('onSubmit')
             this.showLoading("btn");
             const query = Object.keys(this.search).reduce((accumulator, currentKey) => {
                 if(this.search[currentKey]){ accumulator[currentKey] = this.search[currentKey] }
                 return accumulator;
             }, {});
 
-            let routerPushData = { path: '/activitys' }
+            let routerPushData = { path: '/activities' }
             if(Object.keys(this.search).length){ routerPushData.query = query }
             this.$router.push(routerPushData)
         }

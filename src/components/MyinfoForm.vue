@@ -39,7 +39,10 @@ export default {
     created() {
         this.$watch(
             () => this.$route.params,
-            () => {this.fetchData()},
+            () => {
+                const { path } =  this.$route;
+                if(path.indexOf('/signup') > -1 || path.indexOf('/myinfo') > -1){ this.fetchData() }
+            },
             { immediate: true }
         );
     },
@@ -52,7 +55,6 @@ export default {
             const APIs = [this.getCertificateLevels(), this.getCylinderTotals()];
             if(this.userId){ APIs.push(this.getMyinfo(this.userId)) }
             Promise.all(APIs).then(resArr => {
-                console.log(resArr)
                 this.certificateLevels = resArr[0];
                 this.cylinderTotals = resArr[1];
                 if(this.userId) { this.form = resArr[2] }

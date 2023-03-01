@@ -20,14 +20,13 @@ export default {
             activityId: "",
             certificateLevels: [],
             cylinderTotals: [],
-            locations: [],
-            tags: [],
             form: {}
         }
     },
     inject: ["frontLayoutData"],
     computed: {
-        ...mapState(LoadingStore, ["isLoadingBtn"])
+        ...mapState(LoadingStore, ["isLoadingBtn"]),
+        ...mapState(OptionStore, ["locations", "tags"])
     },
     components: {
         VForm: Form,
@@ -43,9 +42,26 @@ export default {
     created() {
         this.$watch(
             () => this.$route.params,
-            () => {this.fetchData()},
+            (toParams, previousParams) => {
+                const { path } = this.$route;
+                if(path.indexOf('/addActivity') > -1 || path.indexOf('/editActivity') > -1){
+                    this.frontLayoutData.showSearchBar = false;
+                }
+
+                this.showLoading();
+                this.setInitform();
+                this.activityId = toParams.activityId;
+                if(this.activityId){
+                    this.getActivity(this.activityId).then(res => this.form = res);
+                    this.hideLoading();
+                }else{
+                    this.hideLoading();
+                }
+            },
             { immediate: true }
         );
+
+        this.fetchData();
 
     },
     methods: {
@@ -76,25 +92,14 @@ export default {
             };
         },
         fetchData() {
-            this.frontLayoutData.showSearchBar = false;
-            this.setInitform();
-            this.activityId = this.$route.params.activityId;
             this.title = this.activityId ? "編輯" : "新增";
 
-            const APIs = [
+            Promise.all([
                 this.getCertificateLevels(),
-                this.getCylinderTotals(),
-                this.getLocations(),
-                this.getTags()
-            ];
-            if(this.activityId){ APIs.push(this.getActivity(this.activityId)) }
-            
-            Promise.all(APIs).then(resArr => {
+                this.getCylinderTotals()
+            ]).then(resArr => {
                 this.certificateLevels = resArr[0];
                 this.cylinderTotals = resArr[1];
-                this.locations = resArr[2];
-                this.tags = resArr[3];
-                if(this.activityId){ this.form = resArr[4] }
                 this.hideLoading();
             });
         },

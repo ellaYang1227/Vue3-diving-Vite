@@ -16,14 +16,14 @@ const routes = [
                 component: () => import("../views/front/IndexView.vue")
             },
             {
-                path: "activitys",
-                component: () => import("../views/front/ActivitysView.vue"),
-                meta: { title: "活動總覽" },
+                path: "activities",
+                component: () => import("../views/front/ActivitiesView.vue"),
+                meta: { title: "找揪團" },
             },
             {
                 path: "activity/:activityId",
                 component: () => import("../views/front/ActivityView.vue"),
-                meta: { title: "單一揪團" },
+                meta: { title: "找揪團" },
             },
             {
                 path: "addActivity",

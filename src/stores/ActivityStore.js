@@ -11,7 +11,7 @@ const { user } = AuthStore();
 export default defineStore("ActivityStore", {
     state: () => ({
         statusFormat,
-        activitysApiUrl: "activitys?_sort=updateDate&_order=desc&_expand=user&_expand=location&_expand=certificateLevel&_embed=violations&_embed=orders",
+        activitiesApiUrl: "activities?_sort=updateDate&_order=desc&_expand=user&_expand=location&_expand=certificateLevel&_embed=violations&_embed=orders",
     }),
     getters: {
         yesterday: () => {
@@ -21,32 +21,32 @@ export default defineStore("ActivityStore", {
     },
     actions: {
         // 只取未違規且報名截止日期(orderExpiryDate)大於等於今天，更新貼文日期由新到舊
-        getNewActivitys(){
+        getNewActivities(){
             const params = { orderExpiryDate_gte: this.yesterday }
-            return bacsRequest.get(`${this.activitysApiUrl}`, { params })
-            .then(res => Promise.resolve(this.getHandleActivitys(res)))
+            return bacsRequest.get(`${this.activitiesApiUrl}`, { params })
+            .then(res => Promise.resolve(this.getHandleActivities(res)))
             .catch(err => Promise.reject(false));
         },
         // 只取未違規且結束日期(endDate)大於等於今天，更新貼文日期由新到舊
-        getHotActivitys(){
+        getHotActivities(){
             const params = { endDate_gte: this.yesterday }
-            return bacsRequest.get(`${this.activitysApiUrl}`, { params })
+            return bacsRequest.get(`${this.activitiesApiUrl}`, { params })
             .then(res => {
                 res.sort((a, b) => b.orders.length - a.orders.length);
                 const sliceRes = res.slice(0, 3);
-                return Promise.resolve(this.getHandleActivitys(sliceRes));
+                return Promise.resolve(this.getHandleActivities(sliceRes));
             })
             .catch(err => Promise.reject(false));
         },
         // 只取未違規且報名截止日期(orderExpiryDate)大於等於今天，更新貼文日期由新到舊
-        getAdActivitys(){
+        getAdActivities(){
             const params = { orderExpiryDate_gte: this.yesterday }
-            return bacsRequest.get(`${this.activitysApiUrl}`, { params })
-            .then(res => Promise.resolve(this.getHandleActivitys(res)))
+            return bacsRequest.get(`${this.activitiesApiUrl}`, { params })
+            .then(res => Promise.resolve(this.getHandleActivities(res)))
             .catch(err => Promise.reject(false));
         },
         // 只取未違規且結束日期大於等於今天，更新貼文日期由新到舊
-        getActivitys(search){
+        getActivities(search){
             const searchKeys = Object.keys(search);
             const params = searchKeys.reduce((accumulator, currentKey) => {
                 if(search[currentKey]){
@@ -69,8 +69,19 @@ export default defineStore("ActivityStore", {
                 params.endDate_gte = this.yesterday 
             }
 
-            return bacsRequest.get(`${this.activitysApiUrl}`, { params })
-            .then(res => Promise.resolve(this.getHandleActivitys(res)))
+            return bacsRequest.get(`${this.activitiesApiUrl}`, { params })
+            .then(res => Promise.resolve(this.getHandleActivities(res)))
+            .catch(err => Promise.reject(false));
+        },
+        getActivity(activityId){
+            console.log(activityId)
+            //const params = { orderExpiryDate_gte: this.yesterday }
+            return bacsRequest.get(`activities/${activityId}`)
+            .then(res => {
+                console.log(res)
+                // Promise.resolve(this.getHandleActivities(res))
+                return Promise.resolve(res)
+            })
             .catch(err => Promise.reject(false));
         },
         getAdLocations(){
@@ -78,13 +89,13 @@ export default defineStore("ActivityStore", {
             .then(res => Promise.resolve(getRandom(res, 12)))
             .catch(err => Promise.reject(false));
         },
-        // 統一處理 api Activitys 原始資料；過濾掉有違規紀錄的活動
-        getHandleActivitys(activitys) {
-            activitys = activitys.filter(item => !item.violations.length);
-            return this.handleActivityStatus(activitys);
+        // 統一處理 api Activities 原始資料；過濾掉有違規紀錄的活動
+        getHandleActivities(activities) {
+            activities = activities.filter(item => !item.violations.length);
+            return this.handleActivitiesStatus(activities);
         },
-        handleActivityStatus(activitys) {
-            return activitys.map(activity => {
+        handleActivitiesStatus(activities) {
+            return activities.map(activity => {
                 return {
                     ...activity,
                     ...this.statusFormat(activity)
