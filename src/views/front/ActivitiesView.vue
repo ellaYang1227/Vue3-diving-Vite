@@ -95,7 +95,7 @@ export default {
 <template>
 <div class="container py-4 py-md-5">
     <div class="row align-items-center mb-2">
-        <h5 class="col fw-bold fs-4 mb-0 text-primary">為您精選</h5>
+        <h5 class="col fw-bold fs-4 mb-0 text-warning">為您精選</h5>
         <div class="col-auto btn-group ms-auto">
             <VueMultiselect v-model="selectedSort" :options="sortOptions" label="label" track-by="label" :searchable="false" />
         </div>

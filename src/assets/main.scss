@@ -27,7 +27,8 @@ html {
     }
 }
 
-body {
+body,
+.body-bg {
     background: url("../assets/images/bg.jpg") top center no-repeat;
     background-size: cover;
     background-color: $body-bg;

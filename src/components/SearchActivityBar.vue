@@ -78,8 +78,9 @@ export default {
 </script>
 
 <template>
-    <div class="bg-darkPrimary bg-opacity-85 py-4 sticky-top sticky-top-headerHeight shadow">
-        <div class="container">
+    <div class="body-bg sticky-top sticky-top-headerHeight shadow-lg">
+        <div class="border-top border-lightPrimary opacity-30"></div>
+        <div class="container py-4">
             <VForm v-slot="{ errors }" @submit="onSubmit" class="pb-1">
                 <fieldset :disabled="isLoadingBtn" class="row g-2">
                     <div class="col-md col-lg-6 col-xl-5">
@@ -119,7 +120,7 @@ export default {
                     </div>
                 </fieldset>
             </VForm>
-            <div class="row gx-2 gy-1">
+            <div class="row gx-2 gy-1 d-none d-md-flex">
                 <div class="col-auto" v-for="(tag, index) in tags" :key="tag">
                     <input type="radio" class="btn-check" name="tagOptions" :id="`tagOption-${index}`" autocomplete="off" :value="tag" @click="updateSelectedTag" :checked="tag === selectedTag">
                     <label class="btn btn-outline-lightPrimary btn-sm rounded-0 px-1 py-0" :for="`tagOption-${index}`">{{ tag }}</label>

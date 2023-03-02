@@ -239,8 +239,8 @@ export default {
     <div class="container">
         <!-- 評論 -->
         <div class="py-4 py-md-5" data-aos="zoom-out">
-            <h5 class="fs-3 text-center text-primary mb-5">
-                <strong>聽聽其他人怎麼說</strong><small class="d-block text-body fs-5">大家參加完潛團的想法是甚麼呢</small>
+            <h5 class="fs-4 text-center text-primary mb-5">
+                <strong>聽聽其他人怎麼說</strong><small class="d-block text-body fs-6">大家參加完潛團的想法是甚麼呢</small>
             </h5>
             <div class="row justify-content-center row-cols-1 row-cols-md-2 gy-4 gy-md-0">
                 <div class="col-10 col-md text-center align-self-center" data-aos="zoom-out">
@@ -267,8 +267,8 @@ export default {
         </div>
         <!-- 好評主揪開團 -->
         <div class="py-4 py-md-5" data-aos="fade-up">
-            <h5 class="fs-3 text-center text-primary mb-3">
-                <strong>好評主揪開團</strong><small class="d-block text-body fs-5">跟著好主揪 享受安心潛旅</small>
+            <h5 class="fs-4 text-center text-primary mb-3">
+                <strong>好評主揪開團</strong><small class="d-block text-body fs-6">跟著好主揪 享受安心潛旅</small>
             </h5>
             <div ref="goodRatingSwiper" class="swiper good-rating-swiper offset-pagination">
                 <div class="swiper-wrapper">

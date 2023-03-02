@@ -84,10 +84,16 @@ const routes = [
     }
 ];
 
+// 始终滚动到顶部
+const scrollBehavior = ((to, from, savedPosition) => {
+    return { top: 0 }
+});
+
 const router = createRouter({
     history: createWebHashHistory(),
     routes,
-    linkActiveClass: "active"
+    linkActiveClass: "active",
+    scrollBehavior
 });
 
 router.beforeEach((to, from, next) => {

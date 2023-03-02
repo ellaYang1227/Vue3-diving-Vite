@@ -74,13 +74,12 @@ export default defineStore("ActivityStore", {
             .catch(err => Promise.reject(false));
         },
         getActivity(activityId){
-            console.log(activityId)
-            //const params = { orderExpiryDate_gte: this.yesterday }
-            return bacsRequest.get(`activities/${activityId}`)
+            return bacsRequest.get(`activities/${activityId}?_expand=user&_expand=location&_expand=certificateLevel&_embed=violations&_embed=orders`)
             .then(res => {
-                console.log(res)
-                // Promise.resolve(this.getHandleActivities(res))
-                return Promise.resolve(res)
+                return Promise.resolve({
+                    ...res,
+                    ...this.statusFormat(res)
+                });
             })
             .catch(err => Promise.reject(false));
         },

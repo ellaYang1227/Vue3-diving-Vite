@@ -160,7 +160,7 @@ export default {
                                     </template>
                                 </UploadImg>
                             </div>
-                            <div class="col-auto" v-if="5 > Object.keys(form.imgs).length">
+                            <div class="col-auto" v-if="3 > Object.keys(form.imgs).length">
                                 <button type="button" class="btn opacity-50 file-img" :disabled="isLoadingBtn" @click="changeImg()"><font-awesome-icon icon="fa-solid fa-plus" size="2x" class="icon-color" /></button>
                             </div>
                         </div>

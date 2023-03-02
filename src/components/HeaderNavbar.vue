@@ -64,11 +64,10 @@ export default {
     }
 };
 </script>
-
 <template>
     <nav
         class="fixed-top navbar navbar-expand-md navbar-dark p-0"
-        :class="[hasHavbarBg ? 'bg-darkPrimary bg-opacity-95 shadow' : 'bg-transparent']"
+        :class="{ 'body-bg': hasHavbarBg, 'bg-transparent': !hasHavbarBg, 'shadow-lg': !showSearchBar && hasHavbarBg }"
     >
         <div class="container">
             <router-link class="navbar-brand" to="/index">
