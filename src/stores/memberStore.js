@@ -4,6 +4,7 @@ import { bacsRequest } from "../data/axiosBase.js";
 import { setSwalFire } from "../data/sweetalert2.js";
 import statusFormat from "../handle-formats/statusFormat.js";
 import router from "../router/index.js";
+import axios from "axios";
 const { changeCookie, getStorageUser } = AuthStore();
 const user = getStorageUser();
 
@@ -16,20 +17,20 @@ export default defineStore("MemberStore", {
     actions: {
         // startDate 由新到舊
         getMySignUp(count) {
-            // bacsRequest.get("/my-sign-up.json").then(res => {
-            //     this.mySignUp = res
-            //         .sort((a, b) => (a.startDate > b.startDate ? 1 : -1))
-            //         .map(item => {
-            //             return {
-            //                 ...item,
-            //                 ...this.statusFormat(item)
-            //             };
-            //         })
-            //         .filter(item => item.activityStatus === "未開始" || item.activityStatus === "進行中");
-            //     if (count) {
-            //         this.mySignUp = this.mySignUp.slice(0, count);
-            //     }
-            // });
+            axios.get("/jsons/my-sign-up.json").then(res => {
+                this.mySignUp = res.data;
+                //     .sort((a, b) => (a.startDate > b.startDate ? 1 : -1))
+                //     .map(item => {
+                //         return {
+                //             ...item,
+                //             ...this.statusFormat(item)
+                //         };
+                //     })
+                //     .filter(item => item.activityStatus === "未開始" || item.activityStatus === "進行中");
+                if (count) {
+                    this.mySignUp = this.mySignUp.slice(0, count);
+                }
+            });
         },
         login(user, returnUrl) {
             console.log(returnUrl)

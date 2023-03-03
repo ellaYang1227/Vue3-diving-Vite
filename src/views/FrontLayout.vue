@@ -1,11 +1,10 @@
 <script>
 import { mapActions, mapState } from "pinia";
 import OptionStore from "../stores/OptionStore.js";
-import OtherStore from "../stores/OtherStore.js";
+import CommentStore from "../stores/CommentStore.js";
 import HeaderNavbar from "../components/HeaderNavbar.vue";
 import FooterComponent from "../components/FooterComponent.vue";
 import SearchActivityBar from "../components/SearchActivityBar.vue";
-const optionStore = OptionStore();
 
 export default {
     data() {
@@ -44,16 +43,11 @@ export default {
             this.getLocations(),
             this.getTags(),
             this.getComments()
-        ]).then(resArr => {
-            optionStore.$patch(state => {
-                state.locations = resArr[0];
-                state.tags = resArr[1];
-            });
-        });
+        ]);
     },
     methods: {
         ...mapActions(OptionStore, ["getLocations", "getTags"]),
-        ...mapActions(OtherStore, ["getComments"])
+        ...mapActions(CommentStore, ["getComments"])
     }
 };
 </script>

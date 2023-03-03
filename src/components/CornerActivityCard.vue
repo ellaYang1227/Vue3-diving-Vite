@@ -32,9 +32,9 @@ export default {
                 <div class="outer-border"></div>
                 <div class="card custom-rectangle">
                     <img :src="getMainImg(this.activity.imgs).img" class="card-img custom-rectangle img-cover" :alt="`[${activity.location.name}]${activity.title}`" />
-                    <div class="card-img-overlay">
+                    <div class="card-img-overlay" v-if="activity.score">
                         <span
-                            class="fs-6 font-barlow badge rounded-pill bg-darkPrimary bg-opacity-75 text-body border border-lightPrimary border-2"
+                            class="fs-6 font-barlow badge rounded-pill bg-darkPrimary bg-opacity-75 text-body border border-2"
                             >{{ decimalFormat(activity.score, 1) }}</span
                         >
                     </div>

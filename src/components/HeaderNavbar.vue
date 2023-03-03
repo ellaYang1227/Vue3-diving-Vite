@@ -67,7 +67,7 @@ export default {
 <template>
     <nav
         class="fixed-top navbar navbar-expand-md navbar-dark p-0"
-        :class="{ 'body-bg': hasHavbarBg, 'bg-transparent': !hasHavbarBg, 'shadow-lg': !showSearchBar && hasHavbarBg }"
+        :class="{ 'show-bg body-bg': hasHavbarBg, 'shadow-lg': !showSearchBar && hasHavbarBg }"
     >
         <div class="container">
             <router-link class="navbar-brand" to="/index">
@@ -216,6 +216,12 @@ export default {
 
 .navbar {
     height: $header-height;
+    background-color: transparent;
+    transition: all 0.5s ease-out;
+
+    .show-bg {
+        transition: all 0.5s ease-in;
+    }
 
     .logo-img {
         height: 45px;
@@ -231,7 +237,7 @@ export default {
             align-items: center;
             width: 40px;
             height: 40px;
-            border-color: rgba($light-primary, 0.75);
+            border-color: rgba($light-primary, 0.25);
             background-color: $bg-primary-20;
         }
     }

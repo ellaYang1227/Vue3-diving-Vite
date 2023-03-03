@@ -3,7 +3,7 @@ import VueMultiselect from 'vue-multiselect';
 import { mapActions, mapState } from "pinia";
 import ActivityStore from "../../stores/ActivityStore.js";
 import LoadingStore from "../../stores/LoadingStore.js";
-import OtherStore from "../../stores/OtherStore.js";
+import CommentStore from "../../stores/CommentStore.js";
 import { getRandom } from "../../data/utilitieFunctions.js";
 import HorizontalActivityCard from "../../components/HorizontalActivityCard.vue";
 
@@ -30,7 +30,7 @@ export default {
         }
     },
     computed: {
-        ...mapState(OtherStore, ["comments"]),
+        ...mapState(CommentStore, ["comments"]),
     },
     watch: {
         selectedSort: {
@@ -71,7 +71,7 @@ export default {
     methods: {
         ...mapActions(LoadingStore, ["showLoading", "hideLoading"]),
         ...mapActions(ActivityStore, ["getActivities", "getAdActivities"]),
-        ...mapActions(OtherStore, ["setScore"]),
+        ...mapActions(CommentStore, ["setScore"]),
         fetchData(){
             this.selectedSort = null;
             const APIs = [this.getActivities(this.$route.query)];
@@ -103,7 +103,7 @@ export default {
     <div class="row row-cols-1 row-cols-md-2 gy-4">
         <HorizontalActivityCard :activity="adActivity" v-for="adActivity in adActivities" :key="adActivity.id" />
     </div>
-    <div class="border-bottom border-lightPrimary opacity-25 my-4"></div>
+    <div class="border-bottom opacity-30 my-4"></div>
     <div class="row row-cols-1 row-cols-md-2 gy-4" v-if="activities.length">
         <HorizontalActivityCard :activity="activity" v-for="activity in activities" :key="activity.id" />
         

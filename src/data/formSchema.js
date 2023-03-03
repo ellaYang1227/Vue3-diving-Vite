@@ -138,7 +138,7 @@ export default {
             label: "每人費用",
             type: "number",
             as: "input",
-            rules: "required|integer|min_value:1",
+            rules: "required|integer|min_value:0",
             isRequired: true
         },
         certificateLevel: {

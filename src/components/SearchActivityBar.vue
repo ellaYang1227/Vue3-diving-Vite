@@ -8,6 +8,7 @@ import { Form, Field, ErrorMessage } from "vee-validate";
 import { mapActions, mapState } from "pinia";
 import OptionStore from "../stores/OptionStore.js";
 import LoadingStore from "../stores/LoadingStore.js";
+import PageStore from "../stores/PageStore.js";
 
 export default {
     data () {
@@ -24,6 +25,7 @@ export default {
     computed: {
         ...mapState(LoadingStore, ["isLoadingBtn"]),
         ...mapState(OptionStore, ["locations", "tags"]),
+        ...mapState(PageStore, ["hasActivityHavbar"]),
         selectedTag() {
             return this.search.tag;
         }
@@ -78,8 +80,8 @@ export default {
 </script>
 
 <template>
-    <div class="body-bg sticky-top sticky-top-headerHeight shadow-lg">
-        <div class="border-top border-lightPrimary opacity-30"></div>
+    <div class="body-bg shadow-lg" :class="{ 'sticky-top sticky-top-headerHeight': !hasActivityHavbar }">
+        <div class="border-top opacity-30"></div>
         <div class="container py-4">
             <VForm v-slot="{ errors }" @submit="onSubmit" class="pb-1">
                 <fieldset :disabled="isLoadingBtn" class="row g-2">

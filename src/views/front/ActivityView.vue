@@ -4,11 +4,14 @@ import currencyFormat from "../../handle-formats/currencyFormat.js";
 </script>
 
 <script>
-import { mapActions } from "pinia";
+import { mapActions, mapState } from "pinia";
 import Swiper from "swiper/bundle";
 import LoadingStore from "../../stores/LoadingStore.js";
 import ActivityStore from "../../stores/ActivityStore.js";
+import PageStore from "../../stores/PageStore.js";
 import swiperParams from "../../data/swiperParams.js";
+import CommentList from "../../components/CommentList.vue";
+const pageStore = PageStore();
 
 export default {
     data() {
@@ -16,6 +19,7 @@ export default {
             activity: {}
         }
     },
+    inject: ["frontLayoutData"],
     created() {
         this.$watch(
             () => this.$route.params,
@@ -35,6 +39,8 @@ export default {
         
     },
     mounted() {
+        window.addEventListener("scroll", this.scrollEvent);
+    
         const thumbnailSwiper = new Swiper(this.$refs.thumbnailSwiper, { 
             ...swiperParams,
             spaceBetween: 10,
@@ -69,12 +75,12 @@ export default {
         });
     },
     computed: {
+        ...mapState(PageStore, ["hasActivityHavbar"]),
         orderImgs() {
             const imgArr = [];
             const { imgs } = this.activity;
             if(imgs){
                 const imgsKeys = Object.keys(imgs);
-                console.log(imgsKeys)
                 imgsKeys.forEach(key => {
                     imgArr.push({
                         key,
@@ -88,15 +94,52 @@ export default {
             return imgArr;
         }
     },
+    components: {
+        CommentList
+    },
     methods: {
         ...mapActions(LoadingStore, ["showLoading", "hideLoading"]),
         ...mapActions(ActivityStore, ["getActivity"]),
+        scrollEvent() {
+            let scrollTop = 0;
+            if(this.$refs.activityImgs) { 
+                const { clientHeight } = this.$refs.activityImgs;
+                scrollTop = clientHeight / 2; 
+            }
+            
+            pageStore.$patch(state => {
+                state.hasActivityHavbar = window.scrollY > scrollTop ? true : false;
+            });
+        },
+        sendOrder() {
+            console.log('報名')
+        }
     }
 };
 </script>
 
 <template>
-    <div class="container py-4 py-md-5">
+    <!-- sm 活動報名列表 -->
+    <div class="activity-havbar body-bg fixed-top sticky-top-headerHeight shadow-lg" :class="{ 'show': hasActivityHavbar }">
+        <div class="border-top opacity-30"></div>
+        <div class="container py-2">
+            <div class="row gy-2">
+                <div class="col-sm-6">
+                    <h3 class="fs-6 mb-0 text-truncate">{{ activity.location?.name }}</h3>
+                    <h1 class="fw-bold fs-4 text-primary text-truncate mb-0">{{ activity.title }}</h1>
+                </div>
+                <div class="col-sm-6 d-flex align-items-center justify-content-sm-end">
+                    <small class="me-2">每人</small><strong class="fs-4 me-3 font-barlow">{{ currencyFormat(activity.cost) }}</strong>
+                    <button type="button" class="ms-auto ms-sm-0 btn btn-custom-rectangle"  :class="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止' ? 'btn-lightPrimary opacity-40' : 'btn-danger'" @click="sendOrder">
+                        {{ activity.orderStatus }} / 
+                        <template v-if="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止'">{{ activity.orderStatus }}</template>
+                        <template v-else>立即報名</template>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container py-4 py-md-5" ref="activityImgs">
         <div class="row gy-4 align-items-center">
             <!-- 活動 swiper -->
             <div class="col-md-6">
@@ -122,36 +165,56 @@ export default {
             <!-- 活動 標題 -->
             <div class="col-md-6 py-md-3">
                 <h3 class="fs-6 mb-0 text-truncate">{{ activity.location?.name }}</h3>
-                <h1 class="col fw-bold fs-4 text-primary text-truncate">{{ activity.title }}</h1>
+                <h1 class="fw-bold fs-4 text-primary text-truncate">{{ activity.title }}</h1>
                 <ul class="list-unstyled opacity-80 mb-1">
                     <li class="font-barlow"><font-awesome-icon icon="fa-solid fa-calendar-days" fixed-width class="me-1" />{{ dateFormat(activity.startDate) }} ~ {{ dateFormat(activity.endDate) }}</li>
                     <li class="font-barlow"><font-awesome-icon icon="fa-solid fa-user" fixed-width class="me-1" /><strong>{{ activity.orders?.length }}</strong>{{ ` / ${activity.maxOrderTotal}` }}</li>
-                    <li class="mt-3">證照等級：<strong>{{ activity.certificateLevel?.name }}</strong></li>
-                    <li>需有高氧證照：<strong>
+                    <li class="mt-3">主揪人<strong class="ms-2">{{ activity.user?.name }}</strong></li>
+                    <li>證照等級<strong class="ms-2">{{ activity.certificateLevel?.name }}</strong></li>
+                    <li>需有高氧證照<strong class="ms-2">
                             <template v-if="activity.isNitrox">是</template>
                             <template v-else>否</template>
                         </strong>
                     </li>
-                    <li>潛水支數：<strong>{{ activity.cylinderTotal ? activity.cylinderTotal : '不限' }}</strong></li>
+                    <li>潛水支數<strong class="ms-2">{{ activity.cylinderTotal ? activity.cylinderTotal : '不限' }}</strong></li>
                 </ul>
                 <router-link class="text-decoration-none badge bg-lightPrimary bg-opacity-20 me-1" v-for="tag in activity.tags"  :key="tag" :to="{ path: '/activities', query: { tag: tag }}">{{ tag }}</router-link>
                 <div class="mt-3 d-flex align-items-center">
-                    <small class="me-2">每人</small><strong class="fs-4 me-3">{{ currencyFormat(activity.cost) }}</strong>
-                    <button type="button" class="btn btn-danger btn-custom-rectangle">立即報名</button>
+                    <small class="me-2">每人</small><strong class="fs-4 me-3 font-barlow">{{ currencyFormat(activity.cost) }}</strong>
+                    <button type="button" class="btn btn-custom-rectangle"  :class="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止' ? 'btn-lightPrimary opacity-40' : 'btn-danger'" @click="sendOrder">
+                        {{ activity.orderStatus }} / 
+                        <template v-if="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止'">{{ activity.orderStatus }}</template>
+                        <template v-else>立即報名</template>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+    <!-- 特點 & 內容 -->
     <div class="bg-primary bg-opacity-20 py-4 py-md-5 mb-4 mb-md-5">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-8">
                     <div class="mb-5" v-if="activity.features">
-                        <h4 class="fs-5 fw-bold mb-1 text-warning">活動特點</h4>
+                        <h4 class="fs-5 fw-bold mb-1">活動特點</h4>
                         <p class="white-space-pre-wrap">{{ activity.features }}</p>
                     </div>
-                    <h4 class="fs-5 fw-bold mb-1 text-warning">活動內容</h4>
+                    <h4 class="fs-5 fw-bold mb-1">活動內容</h4>
                     <p class="white-space-pre-wrap mb-0">{{ activity.content }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container py-4 py-md-5">
+        <div class="row gy-2 row-cols-lg-2">
+            <!-- 評論 -->
+            <div class="col-lg">
+                <CommentList :user-id="activity.userId" :user-name="activity.user.name" v-if="activity.userId" />
+            </div>
+            <!-- 留言 -->
+            <div class="col-lg">
+                <div class="card card-body">
+                    Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
                 </div>
             </div>
         </div>
@@ -160,6 +223,19 @@ export default {
 
 <style lang="scss">
 @import "../../assets/styles/bootstrap-custom-variables";
+
+.activity-havbar {
+    opacity: 0;
+    transform: translateY(-75px); 
+    transition: all 0.5s ease-out;
+    z-index: 1000;
+
+    &.show {
+        opacity: 1;
+        transform: translateY(0); 
+        transition: all 0.5s ease-in;
+    }
+}
 
 .swiper-height {
     height: 320px;

@@ -5,7 +5,7 @@ import Swiper from "swiper/bundle";
 import { mapState, mapActions } from "pinia";
 import LoadingStore from "../../stores/LoadingStore.js";
 import ActivityStore from "../../stores/ActivityStore.js";
-import OtherStore from "../../stores/OtherStore.js";
+import CommentStore from "../../stores/CommentStore.js";
 import swiperParams from "../../data/swiperParams.js";
 import { divingIcon, peoplesIcon, areaIcon, licenseImg, scoreImg, commentImg } from "../../data/imagePaths.js";
 import CornerActivityCard from "../../components/CornerActivityCard.vue";
@@ -62,7 +62,7 @@ export default {
         CountUp
     },
     computed: {
-        ...mapState(OtherStore, ["initComments"]),
+        ...mapState(CommentStore, ["initComments"]),
         activityCards() {
             let cards = [];
             switch (this.activeActivityNav) {
@@ -107,7 +107,7 @@ export default {
     },
     methods: {
         ...mapActions(ActivityStore, ["getNewActivities", "getHotActivities", "getAdLocations"]),
-        ...mapActions(OtherStore, ["setScore"]),
+        ...mapActions(CommentStore, ["setScore"]),
         ...mapActions(LoadingStore, ["showLoading", "hideLoading"]),
         getGoodRatingActivities(activities) {
             return activities.sort((a, b) => b.score - a.score).slice(0, 3);
