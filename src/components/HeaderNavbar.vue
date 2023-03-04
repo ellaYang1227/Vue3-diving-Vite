@@ -129,7 +129,7 @@ export default {
                                     <router-link class="dropdown-item" to="#" @click="toggleOffcanvasNavbar">我的報名</router-link>
                                 </li>
                                 <li>
-                                    <router-link class="dropdown-item" to="#" @click="toggleOffcanvasNavbar">評價管理</router-link>
+                                    <router-link class="dropdown-item" to="#" @click="toggleOffcanvasNavbar">評論管理</router-link>
                                 </li>
                                 <li><hr class="dropdown-divider" /></li>
                                 <li>

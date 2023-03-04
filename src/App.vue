@@ -9,12 +9,6 @@ import LoadingStore from "./stores/LoadingStore.js";
 export default {
     computed: {
         ...mapState(LoadingStore, ["isLoading"])
-    },
-    watch: {
-        $route() {
-            //  凍結 VueLoading 滾動
-            //document.body.classList.add("overflow-hidden");
-        }
     }
 };
 </script>

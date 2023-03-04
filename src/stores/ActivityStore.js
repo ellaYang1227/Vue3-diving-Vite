@@ -1,12 +1,8 @@
 import { defineStore } from "pinia";
-import AuthStore from "../stores/AuthStore.js";
 import { bacsRequest } from "../data/axiosBase.js";
-import { setSwalFire } from "../data/sweetalert2.js";
 import { getRandom, getDateParse } from "../data/utilitieFunctions.js";
-import router from "../router/index.js";
 import statusFormat from "../handle-formats/statusFormat.js";
 import dateFormat from "../handle-formats/dateFormat.js";
-const { user } = AuthStore();
 
 export default defineStore("ActivityStore", {
     state: () => ({

@@ -21,7 +21,7 @@ export default {
                 label: "出發時間",
                 value: "startDate"
             },{
-                label: "評價分數",
+                label: "評論分數",
                 value: "score"
             },{
                 label: "報名人數",
@@ -69,19 +69,23 @@ export default {
         
     },
     methods: {
-        ...mapActions(LoadingStore, ["showLoading", "hideLoading"]),
+        ...mapActions(LoadingStore, ["hideLoading"]),
         ...mapActions(ActivityStore, ["getActivities", "getAdActivities"]),
-        ...mapActions(CommentStore, ["setScore"]),
+        ...mapActions(CommentStore, ["getComments", "setScore"]),
         fetchData(){
             this.selectedSort = null;
-            const APIs = [this.getActivities(this.$route.query)];
+            const APIs = [
+                this.getActivities(this.$route.query),
+                this.getComments()
+            ];
+
             if(!this.initAdActivities.length){ APIs.push(this.getAdActivities()) }
 
             Promise.all(APIs).then(resArr => {
                 this.activities = this.setScore(resArr[0]);
 
                 if(!this.initAdActivities.length){
-                    this.initAdActivities = this.setScore(resArr[1]);
+                    this.initAdActivities = this.setScore(resArr[2]);
                 }
                 
                 this.selectedSort = this.sortOptions[0];
@@ -108,7 +112,7 @@ export default {
         <HorizontalActivityCard :activity="activity" v-for="activity in activities" :key="activity.id" />
         
     </div>
-    <div v-else class="text-center fs-5 opacity-75">找不到符合條件的活動，試試看其他搜尋條件吧</div>
+    <p v-else class="text-center opacity-75 mb-0">找不到符合條件的活動，試試看其他搜尋條件吧</p>
 </div>
 </template>
 

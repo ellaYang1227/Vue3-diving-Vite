@@ -176,6 +176,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     box-shadow: var(--bs-card-box-shadow);
 }
 
+// btn
+.btn {
+    &.btn-link {
+        border-width: 0;
+        text-decoration: none;
+    }
+}
+
 /*
 * ==========================================================================
 * vue-star-rating 評分

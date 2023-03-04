@@ -41,7 +41,17 @@ export default {
             () => this.$route.query,
             () => {
                 const { path } =  this.$route;
-                if(path.indexOf('/activities') > -1){ this.setLocation()  }
+                if(path.indexOf('/activities') > -1){ 
+                    this.setLocation()  
+                }else{
+                    this.location = null;
+                    this.search = {
+                        locationId: "",
+                        startDate: "",
+                        endDate: "",
+                        tag: ""
+                    };
+                }
             },
             { immediate: true }
         );

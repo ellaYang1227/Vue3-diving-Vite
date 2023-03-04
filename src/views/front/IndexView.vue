@@ -11,6 +11,7 @@ import { divingIcon, peoplesIcon, areaIcon, licenseImg, scoreImg, commentImg } f
 import CornerActivityCard from "../../components/CornerActivityCard.vue";
 import BottomFrameActivityCard from "../../components/BottomFrameActivityCard.vue";
 import UserMugShot from "../../components/UserMugShot.vue";
+import CommentCard from "../../components/CommentCard.vue";
 
 export default {
     data() {
@@ -59,7 +60,8 @@ export default {
         CornerActivityCard,
         BottomFrameActivityCard,
         UserMugShot,
-        CountUp
+        CountUp,
+        CommentCard
     },
     computed: {
         ...mapState(CommentStore, ["initComments"]),
@@ -88,7 +90,8 @@ export default {
         Promise.all([
             this.getNewActivities(),
             this.getHotActivities(),
-            this.getAdLocations()
+            this.getAdLocations(),
+            this.getComments()
         ]).then(resArr => {
             resArr[0] = this.setScore(resArr[0]);
             this.goodRatingActivities = this.getGoodRatingActivities(resArr[0]);
@@ -107,8 +110,8 @@ export default {
     },
     methods: {
         ...mapActions(ActivityStore, ["getNewActivities", "getHotActivities", "getAdLocations"]),
-        ...mapActions(CommentStore, ["setScore"]),
-        ...mapActions(LoadingStore, ["showLoading", "hideLoading"]),
+        ...mapActions(CommentStore, ["getComments", "setScore"]),
+        ...mapActions(LoadingStore, ["hideLoading"]),
         getGoodRatingActivities(activities) {
             return activities.sort((a, b) => b.score - a.score).slice(0, 3);
         },
@@ -250,14 +253,7 @@ export default {
                     <div ref="commentSwiper" class="swiper comment-swiper offset-pagination">
                         <div class="swiper-wrapper">
                             <div v-for="comment in comments" :key="comment.id" class="swiper-slide align-items-start">
-                                <div class="row align-items-end">
-                                    <div class="col-sm-5 col-md-6 col-lg-5">
-                                        <UserMugShot :name="comment.user.name" :img="comment.user.img" :score="comment.score" :isShowRating="false" />
-                                    </div>
-                                    <h2 class="col-sm-7 col-md-6 col-lg-7 fs-6 mb-0 text-primary text-truncate text-sm-end mt-2 mt-sm-0">{{
-                                        comment.activity.title }}</h2>
-                                    <p class="mb-0 col-12 mt-sm-2 text-truncate-row-4">{{ comment.content }}</p>
-                                </div>
+                                <CommentCard :comment="comment" :showDate="false" />
                             </div>
                         </div>
                         <div class="swiper-pagination"></div>

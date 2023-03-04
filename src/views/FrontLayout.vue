@@ -1,7 +1,6 @@
 <script>
 import { mapActions, mapState } from "pinia";
 import OptionStore from "../stores/OptionStore.js";
-import CommentStore from "../stores/CommentStore.js";
 import HeaderNavbar from "../components/HeaderNavbar.vue";
 import FooterComponent from "../components/FooterComponent.vue";
 import SearchActivityBar from "../components/SearchActivityBar.vue";
@@ -41,13 +40,11 @@ export default {
 
         Promise.all([
             this.getLocations(),
-            this.getTags(),
-            this.getComments()
+            this.getTags()
         ]);
     },
     methods: {
-        ...mapActions(OptionStore, ["getLocations", "getTags"]),
-        ...mapActions(CommentStore, ["getComments"])
+        ...mapActions(OptionStore, ["getLocations", "getTags"])
     }
 };
 </script>

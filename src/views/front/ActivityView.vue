@@ -11,12 +11,14 @@ import ActivityStore from "../../stores/ActivityStore.js";
 import PageStore from "../../stores/PageStore.js";
 import swiperParams from "../../data/swiperParams.js";
 import CommentList from "../../components/CommentList.vue";
+import MessagetList from "../../components/MessageList.vue";
 const pageStore = PageStore();
 
 export default {
     data() {
         return {
-            activity: {}
+            activity: {},
+            activityId: null
         }
     },
     inject: ["frontLayoutData"],
@@ -25,7 +27,9 @@ export default {
             () => this.$route.params,
             (toParams, previousParams) => { 
                 const { activityId } = toParams;
-                if(activityId) {
+                console.log(activityId)
+                if(activityId) { 
+                    this.activityId = activityId;
                     this.getActivity(activityId)
                     .then(res => {
                         console.log(res)
@@ -95,10 +99,11 @@ export default {
         }
     },
     components: {
-        CommentList
+        CommentList,
+        MessagetList
     },
     methods: {
-        ...mapActions(LoadingStore, ["showLoading", "hideLoading"]),
+        ...mapActions(LoadingStore, ["hideLoading"]),
         ...mapActions(ActivityStore, ["getActivity"]),
         scrollEvent() {
             let scrollTop = 0;
@@ -130,7 +135,7 @@ export default {
                 </div>
                 <div class="col-sm-6 d-flex align-items-center justify-content-sm-end">
                     <small class="me-2">每人</small><strong class="fs-4 me-3 font-barlow">{{ currencyFormat(activity.cost) }}</strong>
-                    <button type="button" class="ms-auto ms-sm-0 btn btn-custom-rectangle"  :class="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止' ? 'btn-lightPrimary opacity-40' : 'btn-danger'" @click="sendOrder">
+                    <button type="button" class="ms-auto ms-sm-0 btn btn-custom-rectangle" :disabled="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止'" :class="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止' ? 'btn-lightPrimary opacity-40' : 'btn-danger'" @click="sendOrder">
                         {{ activity.orderStatus }} / 
                         <template v-if="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止'">{{ activity.orderStatus }}</template>
                         <template v-else>立即報名</template>
@@ -181,7 +186,7 @@ export default {
                 <router-link class="text-decoration-none badge bg-lightPrimary bg-opacity-20 me-1" v-for="tag in activity.tags"  :key="tag" :to="{ path: '/activities', query: { tag: tag }}">{{ tag }}</router-link>
                 <div class="mt-3 d-flex align-items-center">
                     <small class="me-2">每人</small><strong class="fs-4 me-3 font-barlow">{{ currencyFormat(activity.cost) }}</strong>
-                    <button type="button" class="btn btn-custom-rectangle"  :class="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止' ? 'btn-lightPrimary opacity-40' : 'btn-danger'" @click="sendOrder">
+                    <button type="button" class="btn btn-custom-rectangle" :disabled="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止'" :class="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止' ? 'btn-lightPrimary opacity-40' : 'btn-danger'" @click="sendOrder">
                         {{ activity.orderStatus }} / 
                         <template v-if="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止'">{{ activity.orderStatus }}</template>
                         <template v-else>立即報名</template>
@@ -191,7 +196,7 @@ export default {
         </div>
     </div>
     <!-- 特點 & 內容 -->
-    <div class="bg-primary bg-opacity-20 py-4 py-md-5 mb-4 mb-md-5">
+    <div class="bg-primary bg-opacity-20 py-4 py-md-5">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-8">
@@ -213,9 +218,7 @@ export default {
             </div>
             <!-- 留言 -->
             <div class="col-lg">
-                <div class="card card-body">
-                    Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
-                </div>
+                <MessagetList :activity-id="activityId" v-if="activityId" />
             </div>
         </div>
     </div>
