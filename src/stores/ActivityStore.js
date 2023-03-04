@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { bacsRequest } from "../data/axiosBase.js";
-import { getRandom, getDateParse } from "../data/utilitieFunctions.js";
+import { getRandom, getTimestamp } from "../data/utilitieFunctions.js";
 import statusFormat from "../handle-formats/statusFormat.js";
 import dateFormat from "../handle-formats/dateFormat.js";
 
@@ -11,7 +11,7 @@ export default defineStore("ActivityStore", {
     }),
     getters: {
         yesterday: () => {
-            const yesterday = getDateParse(new Date()) - 24 * 60 * 60 * 1000;
+            const yesterday = getTimestamp(new Date()) - 24 * 60 * 60 * 1000;
             return dateFormat(yesterday, "date", "-");
         },
     },

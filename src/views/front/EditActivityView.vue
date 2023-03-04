@@ -2,6 +2,7 @@
 import formSchema from "../../data/formSchema.js";
 import { activityImg } from "../../data/imagePaths.js";
 import { authGuard } from "../../data/routeGuard.js";
+import { getTimestamp } from "../../data/utilitieFunctions.js";
 </script>
 
 <script>
@@ -105,7 +106,7 @@ export default {
         },
         changeImg(key){
             if(!key){
-                const newKey = `img_${new Date().getTime()}`;
+                const newKey = `img_${getTimestamp(new Date())}`;
                 this.form.imgs[newKey] = {
                     img: "",
                     isMain: false

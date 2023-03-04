@@ -171,6 +171,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     }
 }
 
+// input 唯讀
+.form-control-plaintext {
+    padding: $input-padding-y $input-padding-x;
+    border-width: $input-border-width;
+}
+
 // card
 .card {
     box-shadow: var(--bs-card-box-shadow);

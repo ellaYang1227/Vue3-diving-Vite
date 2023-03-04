@@ -1,4 +1,4 @@
-import { getDateParse } from "../data/utilitieFunctions.js";
+import { getTimestamp } from "../data/utilitieFunctions.js";
 import dateFormat from "../handle-formats/dateFormat.js";
 /**
  * 回傳活動狀態和揪團狀態
@@ -22,8 +22,8 @@ export default function (value) {
  * @param violations：Array - 該活動違規紀錄
  */
 function getActivityStatus({ startDate, endDate, violations }) {
-    startDate = getDateParse(startDate);
-    endDate = getDateParse(endDate);
+    startDate = getTimestamp(startDate);
+    endDate = getTimestamp(endDate);
     // console.log('violations-------------', violations.length)
     // console.log('startDate-------------', startDate)
     // console.log('endDate-------------', endDate)
@@ -50,7 +50,7 @@ function getActivityStatus({ startDate, endDate, violations }) {
  * @param violations：Array - 該活動違規紀錄
  */
 function getOrderStatus({ orderExpiryDate, maxOrderTotal, orders, violations }) {
-    orderExpiryDate = getDateParse(orderExpiryDate);
+    orderExpiryDate = getTimestamp(orderExpiryDate);
     let status = "";
     if (violations.length) {
         status = "系統中止";
@@ -66,5 +66,5 @@ function getOrderStatus({ orderExpiryDate, maxOrderTotal, orders, violations }) 
 }
 
 const today = (() => {
-    return getDateParse(dateFormat(new Date()));
+    return getTimestamp(dateFormat(new Date()));
 })();

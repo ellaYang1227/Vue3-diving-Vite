@@ -14,8 +14,8 @@ export function getRandom([...data], len) {
  * 
  * @param value：Date
  */
- export function getDateParse(value) {
-    return Date.parse(value);
+ export function getTimestamp(value) {
+    return new Date(value).getTime();
 }
 
 /**

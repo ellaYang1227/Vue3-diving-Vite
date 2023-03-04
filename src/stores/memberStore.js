@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import AuthStore from "./AuthStore.js";
 import { bacsRequest } from "../data/axiosBase.js";
 import { setSwalFire } from "../data/sweetalert2.js";
+import { getTimestamp } from "../data/utilitieFunctions.js";
 import statusFormat from "../handle-formats/statusFormat.js";
 import router from "../router/index.js";
 import axios from "axios";
@@ -58,7 +59,7 @@ export default defineStore("MemberStore", {
                 });
         },
         signup(user, returnUrl) {
-            user.creationDate = new Date().getTime();
+            user.creationDate = getTimestamp(new Date());
             // "0"：管理者、"1"：一般(預設)
             user.identityId = "1";
             return bacsRequest
@@ -90,7 +91,7 @@ export default defineStore("MemberStore", {
 
         },
         updateActivity(body){
-            body.updateDate = new Date().getTime();
+            body.updateDate = getTimestamp(new Date());
             let apiMethod = 'post';
             let apiUrl = `660/users/${user.id}/activities`;
             if(body.id){

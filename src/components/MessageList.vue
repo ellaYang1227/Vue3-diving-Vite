@@ -1,13 +1,14 @@
 <script>
-import { mapActions } from "pinia";
-import LoadingStore from "../stores/LoadingStore.js";
+import { mapActions, mapState } from "pinia";
 import MessageStore from "../stores/MessageStore.js";
+import LoadingStore from "../stores/LoadingStore.js";
 import MessageCard from "./MessageCard.vue";
+import MessageInput from "./MessageInput.vue";
 
 export default {
     data() {
         return {
-            messages: []
+            msgForm: ""
         }
     },
     props: {
@@ -16,39 +17,31 @@ export default {
             required: true
         }
     },
+    components: {
+        MessageCard,
+        MessageInput
+    },
+    computed: {
+        ...mapState(MessageStore, ["messages"])
+    },
     watch: {
         activityId() {
-            this.getMessagesApi();
+            this.getMessagesfullApi();
         }
     },
-    components: {
-        MessageCard
-    },
     mounted() {
-        this.getMessagesApi();
+        this.getMessagesfullApi();
     },
     methods: {
-        ...mapActions(LoadingStore, ["hideLoading"]),
-        ...mapActions(MessageStore, ["getMessages", "getMessageReplys"]),
-        getMessagesApi() {
-            this.getMessages(this.activityId).then(res => {
-                const apiIds = res.reduce((accumulator, currentValue) => {
-                    const { id } = currentValue;
-                    accumulator.push(this.getMessageReplys(id));
-                    return accumulator;
-                }, []);
-
-                Promise.all(apiIds).then(resArr => {
-                    this.messages = res.map((message, index) => {
-                        return {
-                            ...message,
-                            messageReplys: resArr[index]
-                        };
-                    });
-                });
-
-                this.hideLoading();
-            });
+        ...mapActions(MessageStore, ["updateMessages", "getMessagesfull"]),
+        ...mapActions(LoadingStore, ["showLoading"]),
+        getMessagesfullApi() {
+            this.showLoading();
+            this.getMessagesfull(this.activityId);
+        },
+        submitMsg() {
+            this.updateMessages(this.activityId, this.msgForm);
+            this.msgForm = "";
         }
     }
 };
@@ -58,7 +51,7 @@ export default {
     <div class="card">
         <div class="card-header bg-primary bg-opacity-10 py-3 border-0 d-flex align-items-center">
             <h5 class="flex-shrink-0 me-4 mb-0 fw-bold">留言</h5>
-            <input type="text" class="form-control">
+            <MessageInput v-model:msgForm="msgForm" @update:msgForm="submitMsg" />
         </div>
         <div class="card-body py-1 overflow-auto" style="max-height: 50vh">
             <ul class="list-group list-group-flush">

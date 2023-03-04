@@ -116,7 +116,7 @@ export default {
                 state.hasActivityHavbar = window.scrollY > scrollTop ? true : false;
             });
         },
-        sendOrder() {
+        submitOrder() {
             console.log('報名')
         }
     }
@@ -135,7 +135,7 @@ export default {
                 </div>
                 <div class="col-sm-6 d-flex align-items-center justify-content-sm-end">
                     <small class="me-2">每人</small><strong class="fs-4 me-3 font-barlow">{{ currencyFormat(activity.cost) }}</strong>
-                    <button type="button" class="ms-auto ms-sm-0 btn btn-custom-rectangle" :disabled="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止'" :class="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止' ? 'btn-lightPrimary opacity-40' : 'btn-danger'" @click="sendOrder">
+                    <button type="button" class="ms-auto ms-sm-0 btn btn-custom-rectangle" :disabled="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止'" :class="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止' ? 'btn-lightPrimary opacity-40' : 'btn-danger'" @click="submitOrder">
                         {{ activity.orderStatus }} / 
                         <template v-if="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止'">{{ activity.orderStatus }}</template>
                         <template v-else>立即報名</template>
@@ -186,7 +186,7 @@ export default {
                 <router-link class="text-decoration-none badge bg-lightPrimary bg-opacity-20 me-1" v-for="tag in activity.tags"  :key="tag" :to="{ path: '/activities', query: { tag: tag }}">{{ tag }}</router-link>
                 <div class="mt-3 d-flex align-items-center">
                     <small class="me-2">每人</small><strong class="fs-4 me-3 font-barlow">{{ currencyFormat(activity.cost) }}</strong>
-                    <button type="button" class="btn btn-custom-rectangle" :disabled="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止'" :class="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止' ? 'btn-lightPrimary opacity-40' : 'btn-danger'" @click="sendOrder">
+                    <button type="button" class="btn btn-custom-rectangle" :disabled="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止'" :class="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止' ? 'btn-lightPrimary opacity-40' : 'btn-danger'" @click="submitOrder">
                         {{ activity.orderStatus }} / 
                         <template v-if="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止'">{{ activity.orderStatus }}</template>
                         <template v-else>立即報名</template>

@@ -22,10 +22,10 @@ export default function (value, contents = ["date"], splitStyle = "/") {
         minute = handleLessTen(minute);
         let second = value.getSeconds();
         second = handleLessTen(second);
-        time = `${hour}:${minute}:${second}`;
+        time = ` ${hour}:${minute}:${second}`;
     }
 
-    return `${year}${splitStyle}${month}${splitStyle}${date} ${time}`;
+    return `${year}${splitStyle}${month}${splitStyle}${date}${time}`;
 }
 
 // 小於 10 的數字 前面補 0

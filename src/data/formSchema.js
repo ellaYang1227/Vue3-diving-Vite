@@ -180,6 +180,14 @@ export default {
             as: "input",
             rules: "",
             isRequired: false
-        },
+        }
+    },
+    message: {
+        name: "message",
+        label: "留言",
+        type: "text",
+        as: "input",
+        rules: "required",
+        isRequired: true
     }
 };
