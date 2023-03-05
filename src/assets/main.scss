@@ -139,7 +139,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 // dropdown
 .dropdown-menu {
     @include media-breakpoint-up(md) {
-        &:not([aria-labelledby="dropMySignUp"]) {
+        &:not([aria-labelledby="dropMyOrders"]) {
             max-width: 15rem;
         }
     }

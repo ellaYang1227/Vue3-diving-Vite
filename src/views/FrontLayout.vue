@@ -1,6 +1,8 @@
 <script>
 import { mapActions, mapState } from "pinia";
 import OptionStore from "../stores/OptionStore.js";
+import MemberStore from "../stores/MemberStore.js";
+import AuthStore from "../stores/AuthStore.js";
 import HeaderNavbar from "../components/HeaderNavbar.vue";
 import FooterComponent from "../components/FooterComponent.vue";
 import SearchActivityBar from "../components/SearchActivityBar.vue";
@@ -19,7 +21,8 @@ export default {
         };
     },
     computed: {
-        ...mapState(OptionStore, ["locations", "tags"])
+        ...mapState(OptionStore, ["locations", "tags"]),
+        ...mapState(AuthStore, ["user"])
     },
     components: {
         HeaderNavbar,
@@ -38,13 +41,17 @@ export default {
             { immediate: true }
         );
 
-        Promise.all([
+        const apis = [
             this.getLocations(),
             this.getTags()
-        ]);
+        ];
+
+        if(this.user?.id){ apis.push(this.getMyOrders(3)) }
+        Promise.all(apis);
     },
     methods: {
-        ...mapActions(OptionStore, ["getLocations", "getTags"])
+        ...mapActions(OptionStore, ["getLocations", "getTags"]),
+        ...mapActions(MemberStore, ["getMyOrders"])
     }
 };
 </script>

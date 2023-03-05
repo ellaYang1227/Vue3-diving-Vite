@@ -7,7 +7,16 @@ import dateFormat from "../handle-formats/dateFormat.js";
 export default defineStore("ActivityStore", {
     state: () => ({
         statusFormat,
-        activitiesApiUrl: "activities?_sort=updateDate&_order=desc&_expand=user&_expand=location&_expand=certificateLevel&_expand=cylinderTotal&_embed=violations&_embed=orders",
+        activitiesParamsArr: [
+            "_sort=updateDate",
+            "_order=desc",
+            "_expand=user",
+            "_expand=location",
+            "_expand=certificateLevel",
+            "_expand=cylinderTotal",
+            "_embed=violations",
+            "_embed=orders"
+        ]
     }),
     getters: {
         yesterday: () => {
@@ -15,21 +24,23 @@ export default defineStore("ActivityStore", {
             return dateFormat(yesterday, "date", "-");
         },
         today: () => {
-            const today = getTimestamp(new Date());
-            return dateFormat(today, "date", "-");
+            return dateFormat(new Date(), "date", "-");
+        },
+        activitiesApiUrl: ({activitiesParamsArr}) => {
+            return `activities?${activitiesParamsArr.join('&')}`;
         }
     },
     actions: {
         // 只取未違規且報名截止日期(orderExpiryDate)大於等於今天，更新貼文日期由新到舊
         getNewActivities(){
-            const params = { orderExpiryDate_gte: this.yesterday }
+            const params = { orderExpiryDate_gte: this.today }
             return bacsRequest.get(`${this.activitiesApiUrl}`, { params })
             .then(res => Promise.resolve(this.getHandleActivities(res)))
             .catch(err => Promise.reject(false));
         },
         // 只取未違規且結束日期(endDate)大於等於今天，更新貼文日期由新到舊
         getHotActivities(){
-            const params = { endDate_gte: this.yesterday }
+            const params = { endDate_gte: this.today }
             return bacsRequest.get(`${this.activitiesApiUrl}`, { params })
             .then(res => {
                 res.sort((a, b) => b.orders.length - a.orders.length);
@@ -40,7 +51,7 @@ export default defineStore("ActivityStore", {
         },
         // 只取未違規且報名截止日期(orderExpiryDate)大於等於今天，更新貼文日期由新到舊
         getAdActivities(){
-            const params = { orderExpiryDate_gte: this.yesterday }
+            const params = { orderExpiryDate_gte: this.today }
             return bacsRequest.get(`${this.activitiesApiUrl}`, { params })
             .then(res => Promise.resolve(this.getHandleActivities(res)))
             .catch(err => Promise.reject(false));
@@ -64,7 +75,7 @@ export default defineStore("ActivityStore", {
                 return accumulator;
             }, {});
 
-            // 過濾掉結束日期小於今天
+            // 結束日期大於等於今天(這裡)
             if(searchKeys.indexOf("endDate")  === -1){ 
                 params.endDate_gte = this.today; 
             }
@@ -74,7 +85,16 @@ export default defineStore("ActivityStore", {
             .catch(err => Promise.reject(false));
         },
         getActivity(activityId){
-            return bacsRequest.get(`activities/${activityId}?_expand=user&_expand=location&_expand=certificateLevel&_expand=cylinderTotal&_embed=violations&_embed=orders`)
+            const paramsArr = [
+                "_expand=user",
+                "_expand=location",
+                "_expand=certificateLevel",
+                "_expand=cylinderTotal",
+                "_embed=violations",
+                "_embed=orders"
+            ];
+
+            return bacsRequest.get(`activities/${activityId}?${paramsArr.join('&')}`)
             .then(res => {
                 return Promise.resolve({
                     ...res,

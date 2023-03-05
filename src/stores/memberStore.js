@@ -4,40 +4,24 @@ import { bacsRequest } from "../data/axiosBase.js";
 import { setSwalFire } from "../data/sweetalert2.js";
 import { getTimestamp } from "../data/utilitieFunctions.js";
 import statusFormat from "../handle-formats/statusFormat.js";
+import dateFormat from "../handle-formats/dateFormat.js";
 import router from "../router/index.js";
-import axios from "axios";
 const { changeCookie, getStorageUser } = AuthStore();
 
 export default defineStore("MemberStore", {
     state: () => ({
-        statusFormat,
-        mySignUp: []
+        myFirstThreeOrders: [],
+        myinfo: {}
     }),
     getters: {},
     actions: {
-        // startDate 由新到舊
-        getMySignUp(count) {
-            axios.get("/jsons/my-sign-up.json").then(res => {
-                this.mySignUp = res.data;
-                //     .sort((a, b) => (a.startDate > b.startDate ? 1 : -1))
-                //     .map(item => {
-                //         return {
-                //             ...item,
-                //             ...this.statusFormat(item)
-                //         };
-                //     })
-                //     .filter(item => item.activityStatus === "未開始" || item.activityStatus === "進行中");
-                if (count) {
-                    this.mySignUp = this.mySignUp.slice(0, count);
-                }
-            });
-        },
         login(user, returnUrl) {
             console.log(returnUrl)
             return bacsRequest
                 .post("login", user)
                 .then(({ accessToken, user }) => {
                     changeCookie("add", accessToken, user);
+                    this.getMyOrders(3);
 
                     if(!returnUrl){
                         const { identityId } = user;
@@ -64,6 +48,7 @@ export default defineStore("MemberStore", {
             return bacsRequest
                 .post("signup", user)
                 .then(({ accessToken, user }) => {
+                    console.log(accessToken, user)
                     changeCookie("add", accessToken, user);
 
                     if(!returnUrl){
@@ -82,10 +67,45 @@ export default defineStore("MemberStore", {
                     return false;
                 });
         },
-        getMyinfo(userId){
+        getMyinfo(){
+            const paramsArr = [
+                "_expand=certificateLevel",
+                "_expand=cylinderTotal",
+                "_embed=violations",
+                "_embed=orders",
+                "_embed=comments",
+                "_embed=activities"
+                //"_embed=messages"
+            ];
+
             return bacsRequest
-                .get(`600/users/${userId}`)
-                .then(res => Promise.resolve(res))
+                .get(`600/users/${getStorageUser()?.id}?${paramsArr.join('&')}`)
+                .then(res => {
+                    this.myinfo = res;
+                    return Promise.resolve(res);
+                })
+                .catch(err => Promise.reject(false));
+
+        },
+        getMyOrders(count){
+            let params = { _expand: "activity" }
+
+            if(count){ 
+                params = {
+                    ...params,
+                    count
+                }
+            }
+
+            return bacsRequest
+                .get(`400/users/${getStorageUser()?.id}/orders`, { params })
+                .then(res => {
+                    // 結束時間大於等於今天
+                    res = res.filter(item => item.activity.endDate >= dateFormat(new Date(), ["data"], "-"));
+
+                    if(count) { this.myFirstThreeOrders = res }
+                    return Promise.resolve(res)
+                })
                 .catch(err => Promise.reject(false));
 
         },

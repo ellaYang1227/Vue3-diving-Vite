@@ -159,8 +159,8 @@ export default {
                         } else {
                             this.isLoadingBtn = true;
                             this.addOrder(this.activityId)
-                            .then(res => {
-                                this.activity = res;
+                            .then(resArr => {
+                                this.activity = resArr[0];
                                 this.isLoadingBtn = false;
                             });
                         }

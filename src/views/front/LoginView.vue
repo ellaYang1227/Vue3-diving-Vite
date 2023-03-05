@@ -44,7 +44,7 @@ export default {
         onSubmit() {
             this.showLoading("btn");
             const { returnUrl } = this.$route.query;
-            this.login(this.form, returnUrl);
+            this.login(this.form, returnUrl).then(res => this.hideLoading());
         }
     }
 };

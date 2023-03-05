@@ -1,7 +1,7 @@
 <script setup>
 import dateFormat from "../handle-formats/dateFormat.js";
+import { getMainImg } from "../data/utilitieFunctions.js";
 import { logo } from "../data/imagePaths.js";
-
 const { VITE_COMPANY_NAME } = import.meta.env;
 </script>
 
@@ -31,7 +31,7 @@ export default {
         UserMugShot
     },
     computed: {
-        ...mapState(MemberStore, ["mySignUp"]),
+        ...mapState(MemberStore, ["myFirstThreeOrders"]),
         ...mapState(AuthStore, ["user"])
     },
     watch: {
@@ -41,12 +41,10 @@ export default {
     },
     mounted() {
         this.setShowSearchBar();
-        this.getMySignUp(3);
         window.addEventListener("scroll", this.scrollEvent);
         this.offcanvasNavbar = new bootstrap.Offcanvas(this.$refs.offcanvasNavbar, { keyboard: false });
     },
     methods: {
-        ...mapActions(MemberStore, ["getMySignUp"]),
         ...mapActions(AuthStore, ["logout"]),
         setShowSearchBar() {
             this.hasHavbarBg = this.showSearchBar;
@@ -116,17 +114,17 @@ export default {
                                     </h5>
                                 </li>
                                 <li>
-                                    <router-link class="dropdown-item" to="#" @click="toggleOffcanvasNavbar">編輯個人資料</router-link>
+                                    <router-link class="dropdown-item" to="/member/myinfo" @click="toggleOffcanvasNavbar">編輯個人資料</router-link>
                                 </li>
                                 <li>
-                                    <router-link class="dropdown-item" to="#" @click="toggleOffcanvasNavbar">我的潛水證照</router-link>
+                                    <router-link class="dropdown-item" to="/member/myinfo" @click="toggleOffcanvasNavbar">我的潛水證照</router-link>
                                 </li>
                                 <li><hr class="dropdown-divider" /></li>
                                 <li>
                                     <router-link class="dropdown-item" to="#" @click="toggleOffcanvasNavbar">我的揪團</router-link>
                                 </li>
                                 <li>
-                                    <router-link class="dropdown-item" to="#" @click="toggleOffcanvasNavbar">我的報名</router-link>
+                                    <router-link class="dropdown-item" to="/member/myOrders" @click="toggleOffcanvasNavbar">我的報名</router-link>
                                 </li>
                                 <li>
                                     <router-link class="dropdown-item" to="#" @click="toggleOffcanvasNavbar">評論管理</router-link>
@@ -141,41 +139,41 @@ export default {
                             <router-link class="nav-link" to="/activities" @click="toggleOffcanvasNavbar">找揪團</router-link>
                         </li>
                         <li class="nav-item dropdown d-none d-md-block" v-if="user">
-                            <a
+                            <router-link
                                 class="nav-link"
-                                :class="{ 'dropdown-toggle dropdown-hide-arrow': mySignUp.length }"
-                                href="#"
-                                id="dropMySignUp"
+                                :class="{ 'dropdown-toggle dropdown-hide-arrow': myFirstThreeOrders.length }"
+                                id="dropMyOrders"
                                 role="button"
-                                :data-bs-toggle="mySignUp.length ? 'dropdown' : ''"
+                                :data-bs-toggle="myFirstThreeOrders.length ? 'dropdown' : ''"
                                 data-bs-display="static"
                                 aria-expanded="false"
+                                to="/member/myOrders"
                             >
                                 我的報名
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-md-end" aria-labelledby="dropMySignUp">
+                            </router-link>
+                            <div class="dropdown-menu dropdown-menu-md-end" aria-labelledby="dropMyOrders">
                                 <div class="list-group list-group-flush mx-3">
-                                    <template v-for="(item, index) in mySignUp" :key="item.id">
-                                        <router-link to="#" class="list-group-item list-group-item-action bg-transparent px-0 py-3" v-if="3 > index">
-                                            <div class="row gx-2 align-items-center">
-                                                <div class="col-4" v-if="item.imgs.length">
-                                                    <img :src="item.imgs[0]" :alt="item.title" class="img-cover border rounded-3" />
-                                                </div>
-                                                <div class="col">
-                                                    <h2 class="h6 mb-0 text-primary text-truncate-row-2">
-                                                        {{ item.title }}
-                                                    </h2>
-                                                    <small class="font-barlow text-white"
-                                                        >{{ dateFormat(item.startDate) }} ~ {{ dateFormat(item.endDate) }}</small
-                                                    >
+                                    <router-link :to="`/activity/${order.activityId}`" class="list-group-item list-group-item-action bg-transparent px-0 py-3" v-for="order in myFirstThreeOrders" :key="order.id">
+                                        <div class="row gx-2 align-items-center">
+                                            <div class="col-4">
+                                                <div class="custom-rectangle border-card-border-width border">
+                                                    <img :src="getMainImg(order.activity.imgs).img" :alt="order.activity.title" class="custom-rectangle img-cover" />
                                                 </div>
                                             </div>
-                                        </router-link>
-                                    </template>
+                                            <div class="col">
+                                                <h2 class="fw-bold h6 mb-0 text-primary text-truncate-row-2">
+                                                    {{ order.activity.title }}
+                                                </h2>
+                                                <small class="font-barlow text-white"
+                                                    >{{ dateFormat(order.activity.startDate) }} ~ {{ dateFormat(order.activity.endDate) }}</small
+                                                >
+                                            </div>
+                                        </div>
+                                    </router-link>
                                 </div>
                                 <router-link
                                     class="py-2 d-block text-center text-decoration-none bg-lightPrimary bg-opacity-20 text-body border-top border-color-dropdown"
-                                    to="#"
+                                    to="/member/myOrders"
                                     >更多我的報名</router-link
                                 >
                             </div>
@@ -285,7 +283,7 @@ export default {
         }
 
         .dropdown-menu {
-            &[aria-labelledby="dropMySignUp"] {
+            &[aria-labelledby="dropMyOrders"] {
                 @media (min-width: 768px) {
                     width: 320px;
                 }

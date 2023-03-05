@@ -9,12 +9,14 @@ export default defineStore("CommentStore", {
     getters: {},
     actions: {
         getComments(){
-            const params = { 
-                _sort: "score",
-                _order: "desc"
-            };
+            const paramsArr = [
+                "_expand=activity",
+                "_expand=user",
+                "_sort=score",
+                "_order=desc"
+            ];
 
-            return bacsRequest.get(`comments?_expand=activity&_expand=user`, { params })
+            return bacsRequest.get(`comments?${paramsArr.join('&')}`)
             .then(res => {
                 this.initComments = res;
                 this.comments = res.reduce((accumulator, currentValue) => {

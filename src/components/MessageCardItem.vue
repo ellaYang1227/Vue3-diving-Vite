@@ -109,8 +109,8 @@ export default {
 <template>
     <div class="row justify-content-between align-items-end">
         <div class="col-7 d-flex align-items-center">
-            <UserMugShot :img="message.user?.img" />
-            <ul class="list-unstyled mb-0 lh-sm">
+            <UserMugShot :img="message.user?.img" :isShowName="false" />
+            <ul class="list-unstyled mb-0 lh-sm ms-1">
                 <li class="text-truncate"><span v-if="message.userId == organiserId">主辦人‧</span>{{ message.user?.name }}</li>
                 <li><small class="opacity-80 font-barlow">{{ dateFormat(message.updateDate, ["date", "time"]) }}</small></li>
             </ul>

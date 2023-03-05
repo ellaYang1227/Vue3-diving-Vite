@@ -52,7 +52,7 @@ export default {
     },
     isNitrox: {
         name: "isNitrox",
-        label: "擁有高氧證照",
+        label: "持有高氧證照",
         type: "radio",
         as: "input",
         rules: "required",

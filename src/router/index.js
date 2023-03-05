@@ -38,11 +38,18 @@ const routes = [
             {
                 path: "member",
                 component: () => import("../views/front/MemberView.vue"),
-                children: [{
-                    path: "myActivity",
-                    component: () => import("../views/front/member/MyActivityView.vue"),
-                    meta: { title: "我的揪團" }
-                }]
+                children: [
+                    {
+                        path: "myinfo",
+                        component: () => import("../views/front/member/myinfoView.vue"),
+                        meta: { title: "個人資訊" }
+                    },
+                    {
+                        path: "myActivity",
+                        component: () => import("../views/front/member/MyActivityView.vue"),
+                        meta: { title: "我的揪團" }
+                    }
+                ]
             },
             {
                 path: "login",
@@ -103,6 +110,8 @@ router.beforeEach((to, from, next) => {
     if (title) {
         if (path.indexOf("/admin") > -1) {
             title = `後台管理 - ${title}`;
+        }else if (path.indexOf("/member") > -1) {
+            title = `會員專區 - ${title}`;
         }
 
         title = `${title} - `;

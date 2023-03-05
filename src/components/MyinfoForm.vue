@@ -7,6 +7,7 @@ import { Form, Field, ErrorMessage } from "vee-validate";
 import { mapActions, mapState } from "pinia";
 import MemberStore from "../stores/MemberStore.js";
 import LoadingStore from "../stores/LoadingStore.js";
+import AuthStore from "../stores/AuthStore.js";
 import OptionStore from "../stores/OptionStore.js";
 import UploadImg from "./UploadImg.vue";
 
@@ -34,7 +35,14 @@ export default {
         UploadImg
     },
     computed: {
-        ...mapState(LoadingStore, ["isLoadingBtn"])
+        ...mapState(LoadingStore, ["isLoadingBtn"]),
+        ...mapState(AuthStore, ["user"]),
+        ...mapState(MemberStore, ["myinfo"]),
+    },
+    watch: {
+        myinfo() {
+            this.form = this.myinfo;
+        }
     },
     created() {
         this.$watch(
@@ -51,22 +59,21 @@ export default {
         ...mapActions(OptionStore, ["getCertificateLevels", "getCylinderTotals"]),
         ...mapActions(MemberStore, ["signup","getMyinfo"]),
         fetchData() {
-            this.userId = this.$route.params.userId;
-            const APIs = [this.getCertificateLevels(), this.getCylinderTotals()];
-            if(this.userId){ APIs.push(this.getMyinfo(this.userId)) }
-            Promise.all(APIs).then(resArr => {
+            Promise.all([
+                this.getCertificateLevels(),
+                this.getCylinderTotals()
+            ]).then(resArr => {
                 this.certificateLevels = resArr[0];
                 this.cylinderTotals = resArr[1];
-                if(this.userId) { this.form = resArr[2] }
                 this.hideLoading();
             });
         },
         onSubmit() {
             this.showLoading("btn");
             console.log(this.form)
-            if(!this.userId){
+            if(!this.user?.id){
                 const { returnUrl } = this.$route.query;
-                this.signup(this.form, returnUrl);
+                this.signup(this.form, returnUrl).then(success => this.hideLoading());
             }else{
                 console.log('編輯', this.form)
             }
