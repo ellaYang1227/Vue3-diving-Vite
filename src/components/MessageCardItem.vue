@@ -4,7 +4,6 @@ import propsValidator from "../data/propsValidator.js";
 </script>
 
 <script>
-import * as bootstrap from "bootstrap";
 import { mapActions, mapState } from "pinia";
 import LoadingStore from "../stores/LoadingStore.js";
 import AuthStore from "../stores/AuthStore.js";
@@ -16,8 +15,7 @@ export default {
     data() {
         return {
             msgForm: "",
-            inputAction: "",
-            collapseInput: null
+            inputAction: ""
         }
     },
     props: {
@@ -29,9 +27,21 @@ export default {
                 return propsValidator(value, verifyKeys);
             }
         },
+        activityId: {
+            type: Number,
+            required: true
+        },
         organiserId: {
             type: String,
             required: true
+        },
+        messageId: {
+            type: Number,
+            required: true
+        },
+        messageReplyId: {
+            type: Number,
+            required: false
         }
     },
     components: {
@@ -40,13 +50,17 @@ export default {
     },
     computed: {
         ...mapState(AuthStore, ["user"]),
-        ...mapState(LoadingStore, ["isLoadingBtn"])
+        ...mapState(LoadingStore, ["isLoadingBtn"]),
+        showEditBtn() {
+            return this.user?.id == this.message.userId;
+        },
+        showReplyBtn() {
+            return !this.messageReplyId && 
+            (this.user?.id == this.organiserId || this.user?.id == this.message.userId);
+        }
     },
     mounted() {
         this.setInitialMsgForm();
-        this.collapseInput = new bootstrap.Collapse(this.$refs.collapseInput, {
-            toggle: false
-        });
     },
     methods: {
         ...mapActions(LoadingStore, ["showLoading", "hideLoading"]),
@@ -56,46 +70,38 @@ export default {
         },
         setInputAction(action) {
             this.inputAction = this.inputAction !== action ? action : "";
+
             if(action === "reply") { 
-                this.collapseInput.toggle();
                 this.msgForm = "";
+            } else if(action === "edit") {
+                this.setInitialMsgForm();
             }
         },
-        // submitMsg(method) {
-        //     if(this.msgForm) {
-        //         this.showLoading("btn");
-        //         this.isMsgFormErr = false;
-
-        //         console.log(this.msgForm);
-        //         if(method === 'edit') {
-        //             console.log('修改', this.message)
-        //         }else if(method === 'reply') {
-        //             console.log('回覆', this.message)
-        //         }
-        //     }
-            
-        // },
         submitMsg() {
-            console.log(this.msgForm)
-            console.log(this.inputAction, this.message)
-            const { id, activityId } = this.message;
             if(this.inputAction === "edit") {
-                this.updateMessages(activityId, this.msgForm, id)
-                .then(success => {
-                    console.log(success)
-                    this.inputAction = "";
-                })
-                .catch(err => { 
-                    console.log(err)
-                    this.inputAction = "";
-                    this.setInitialMsgForm();
-                });
-            } else {
-
+                if(!this.messageReplyId) {
+                    this.updateMessages(this.activityId, this.msgForm, this.messageId)
+                    .then(success => this.handleRes(success))
+                    .catch(err => this.handleRes(err));
+                } else {
+                    this.updateMessageReplys(this.activityId, this.messageId, this.msgForm, this.messageReplyId)
+                    .then(success => this.handleRes(success))
+                    .catch(err => this.handleRes(err));
+                }
+                
+            } else if (this.inputAction === "reply") {
+                this.updateMessageReplys(this.activityId, this.messageId, this.msgForm)
+                .then(success => this.handleRes(success))
+                .catch(err => this.handleRes(err));
             }
-            
-            
+        },
+        handleRes(success) {
+            this.inputAction = "";
+            if(!success) {
+                this.setInitialMsgForm();
+            }
         }
+        
     }
 };
 </script>
@@ -110,16 +116,13 @@ export default {
             </ul>
         </div>
         <div class="col-auto mt-2 mt-sm-0 hstack align-self-start opacity-80">
-            <button type="button" class="btn btn-link btn-sm py-0 lh-1" @click="setInputAction('edit')" v-if="user.id == message.userId">修改</button>
-            <div class="vr" v-if="user.id == message.userId && (user.id == organiserId || user.id == message.userId)"></div>
-            <button type="button" class="btn btn-link btn-sm py-0 lh-1 pe-0" @click="setInputAction('reply')" v-if="user.id == organiserId || user.id == message.userId">回覆</button>
+            <button type="button" class="btn btn-link btn-sm py-0 lh-1" @click="setInputAction('edit')" v-if="showEditBtn">修改</button>
+            <div class="vr" v-if="showEditBtn && showReplyBtn"></div>
+            <button type="button" class="btn btn-link btn-sm py-0 lh-1" @click="setInputAction('reply')" v-if="showReplyBtn">回覆</button>
         </div>
-        <p class="mb-0 col-12 mt-2">
-            <template v-if="inputAction !== 'edit'">{{ message.content }}</template>
-            <MessageInput v-model:msgForm="msgForm" @update:msgForm="submitMsg" v-if="inputAction === 'edit'" />
-        </p>
-        <div class="col-12 mt-2 collapse" ref="collapseInput">
-            <MessageInput v-model:msgForm="msgForm" @update:msgForm="submitMsg" />
+        <div class="mb-0 col-12 mt-2">
+            <p class="mb-1" v-if="inputAction !== 'edit'">{{ message.content }}</p>
+            <MessageInput v-model:msgForm="msgForm" @update:msgForm="submitMsg" v-if="inputAction" />
         </div>
     </div>
 </template>

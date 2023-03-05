@@ -17,35 +17,11 @@ export default {
         msgForm: {
             type: String,
             required: true
-        },
-        isReadonly: {
-            type: Boolean,
-            required: false,
-            default: false
         }
     },
     emits: ["update:msgForm"],
     computed: {
         ...mapState(LoadingStore, ["isLoadingBtn"]),
-        classObj() {
-            return { 
-                'is-invalid': this.isMsgFormErr, 
-                'form-control': !this.isReadonly, 
-                'form-control-plaintext': this.isReadonly 
-            };
-        },
-        placeholder() {
-            let text = "";
-            if(this.isLoadingInput) {
-                text = "Loading...";
-            } else if (this.isReadonly) {
-                text = "";
-            } else {
-                text = `請輸入${formSchema.message.label}`;
-            }
-
-            return text;
-        }
     },
     watch: {
         isLoadingBtn() {
@@ -72,7 +48,7 @@ export default {
 </script>
 
 <template>
-    <input :type="formSchema.message.type" :readonly="isReadonly" :class="classObj" :placeholder="placeholder" :value="msgForm" @keyup.enter="emitMsgForm" @input="validateMsg" :disabled="isLoadingInput" />
+    <input :type="formSchema.message.type" class="form-control" :class="{ 'is-invalid': isMsgFormErr }" :placeholder="isLoadingInput ? 'Loading...' : '請輸入內容'" :value="msgForm" @keyup.enter="emitMsgForm" @input="validateMsg" :disabled="isLoadingInput" />
 </template>
 
 <style lang="scss"></style>

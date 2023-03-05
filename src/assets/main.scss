@@ -213,6 +213,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 // popup
 .swal2-popup {
     box-shadow: $swal2-box-shadow;
+
+    .swal2-confirm,
+    .swal2-cancel {
+        margin-left: 0.125rem;
+        margin-right: 0.125rem;
+    }
 }
 
 /*

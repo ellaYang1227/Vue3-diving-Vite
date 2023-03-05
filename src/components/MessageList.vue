@@ -2,13 +2,15 @@
 import { mapActions, mapState } from "pinia";
 import MessageStore from "../stores/MessageStore.js";
 import LoadingStore from "../stores/LoadingStore.js";
+import AuthStore from "../stores/AuthStore.js";
 import MessageCard from "./MessageCard.vue";
 import MessageInput from "./MessageInput.vue";
 
 export default {
     data() {
         return {
-            msgForm: ""
+            msgForm: "",
+            returnUrl: ""
         }
     },
     props: {
@@ -22,7 +24,8 @@ export default {
         MessageInput
     },
     computed: {
-        ...mapState(MessageStore, ["messages"])
+        ...mapState(MessageStore, ["messages"]),
+        ...mapState(AuthStore, ["user"])
     },
     watch: {
         activityId() {
@@ -30,6 +33,7 @@ export default {
         }
     },
     mounted() {
+        this.returnUrl = this.$route.path;
         this.getMessagesfullApi();
     },
     methods: {
@@ -49,11 +53,12 @@ export default {
 
 <template>
     <div class="card">
-        <div class="card-header bg-primary bg-opacity-10 py-3 border-0 d-flex align-items-center">
+        <div class="card-header bg-primary bg-opacity-10 py-3 border-0 d-flex justify-content-between align-items-center">
             <h5 class="flex-shrink-0 me-4 mb-0 fw-bold">留言</h5>
-            <MessageInput v-model:msgForm="msgForm" @update:msgForm="submitMsg" />
+            <MessageInput v-model:msgForm="msgForm" @update:msgForm="submitMsg" v-if="user" />
+            <router-link :to="{ path: '/login', query: { returnUrl } }" v-else>請先登入</router-link>
         </div>
-        <div class="card-body py-1 overflow-auto" style="max-height: 50vh">
+        <div class="card-body py-1 overflow-auto" style="max-height: 60vh">
             <ul class="list-group list-group-flush">
                 <li class="list-group-item bg-transparent px-0" v-for="message in messages" :key="message.id">
                     <MessageCard :message="message" />

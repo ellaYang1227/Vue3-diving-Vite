@@ -7,7 +7,6 @@ import statusFormat from "../handle-formats/statusFormat.js";
 import router from "../router/index.js";
 import axios from "axios";
 const { changeCookie, getStorageUser } = AuthStore();
-const user = getStorageUser();
 
 export default defineStore("MemberStore", {
     state: () => ({
@@ -93,7 +92,7 @@ export default defineStore("MemberStore", {
         updateActivity(body){
             body.updateDate = getTimestamp(new Date());
             let apiMethod = 'post';
-            let apiUrl = `660/users/${user.id}/activities`;
+            let apiUrl = `660/users/${getStorageUser()?.id}/activities`;
             if(body.id){
                 apiMethod = 'patch';
                 apiUrl = `600/activities/${body.id}`;

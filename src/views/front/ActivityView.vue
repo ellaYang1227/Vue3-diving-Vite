@@ -1,24 +1,29 @@
 <script setup>
 import dateFormat from "../../handle-formats/dateFormat.js";
 import currencyFormat from "../../handle-formats/currencyFormat.js";
+import { swalPopup, setSwalFire } from "../../data/sweetalert2.js";
 </script>
 
 <script>
-import { mapActions, mapState } from "pinia";
 import Swiper from "swiper/bundle";
+import { mapActions, mapState } from "pinia";
+import AuthStore from "../../stores/AuthStore.js";
 import LoadingStore from "../../stores/LoadingStore.js";
 import ActivityStore from "../../stores/ActivityStore.js";
+import OrderStore from "../../stores/OrderStore.js";
 import PageStore from "../../stores/PageStore.js";
 import swiperParams from "../../data/swiperParams.js";
 import CommentList from "../../components/CommentList.vue";
 import MessagetList from "../../components/MessageList.vue";
 const pageStore = PageStore();
+const { VITE_COMPANY_NAME } = import.meta.env;
 
 export default {
     data() {
         return {
             activity: {},
-            activityId: null
+            activityId: null,
+            isLoadingBtn: false
         }
     },
     inject: ["frontLayoutData"],
@@ -27,13 +32,12 @@ export default {
             () => this.$route.params,
             (toParams, previousParams) => { 
                 const { activityId } = toParams;
-                console.log(activityId)
                 if(activityId) { 
                     this.activityId = activityId;
                     this.getActivity(activityId)
                     .then(res => {
-                        console.log(res)
                         this.activity = res;
+                        console.log(this.activity)
                         this.hideLoading();
                     });
                 }
@@ -80,6 +84,7 @@ export default {
     },
     computed: {
         ...mapState(PageStore, ["hasActivityHavbar"]),
+        ...mapState(AuthStore, ["user"]),
         orderImgs() {
             const imgArr = [];
             const { imgs } = this.activity;
@@ -96,6 +101,14 @@ export default {
             }
             
             return imgArr;
+        },
+        activityBtnText() {
+            const { activityStatus, orderStatus } = this.activity;
+            return this.getActivityBtnText(activityStatus, orderStatus);
+        },
+        activityBtnDisabled() {
+            const { orderStatus } = this.activity;
+            return orderStatus === 2 ? false : true;
         }
     },
     components: {
@@ -104,7 +117,8 @@ export default {
     },
     methods: {
         ...mapActions(LoadingStore, ["hideLoading"]),
-        ...mapActions(ActivityStore, ["getActivity"]),
+        ...mapActions(ActivityStore, ["getActivity", "getActivityBtnText"]),
+        ...mapActions(OrderStore, ["addOrder"]),
         scrollEvent() {
             let scrollTop = 0;
             if(this.$refs.activityImgs) { 
@@ -117,13 +131,49 @@ export default {
             });
         },
         submitOrder() {
-            console.log('報名')
+            if(!this.user) {
+                swalPopup.fire({
+                    icon: "warning",
+                    title: "尚未登入",
+                    text: "您尚未登入，無法報名",
+                    showConfirmButton: true,
+                    confirmButtonText: "立即登入",
+                }).then(({isConfirmed}) => {
+                    if(isConfirmed) {
+                        const returnUrl = this.$route.path; 
+                        this.$router.push({ path: '/login', query: { returnUrl } }) 
+                    }
+                });
+            } else {
+                const { id, certificateLevelId, isNitrox, cylinderTotalId } = this.user;
+                const { userId } = this.activity;
+                if(id == userId) {
+                    setSwalFire("popup", "warning", "系統提醒", "您無法報名自己建立的揪團活動");
+                } else {
+                    if(this.activity) {
+                        if (this.activity.certificateLevelId > certificateLevelId ||
+                            this.activity.isNitrox > isNitrox ||
+                            this.activity.cylinderTotalId > cylinderTotalId
+                        ) {
+                            setSwalFire("popup", "warning", "報名資格不符", "您的潛水經驗未達報名標準");
+                        } else {
+                            this.isLoadingBtn = true;
+                            this.addOrder(this.activityId)
+                            .then(res => {
+                                this.activity = res;
+                                this.isLoadingBtn = false;
+                            });
+                        }
+                    }
+                }
+            }
         }
     }
 };
 </script>
 
 <template>
+    <teleport to="title">{{ activity.title }} - {{ VITE_COMPANY_NAME }}</teleport>
     <!-- sm 活動報名列表 -->
     <div class="activity-havbar body-bg fixed-top sticky-top-headerHeight shadow-lg" :class="{ 'show': hasActivityHavbar }">
         <div class="border-top opacity-30"></div>
@@ -135,11 +185,8 @@ export default {
                 </div>
                 <div class="col-sm-6 d-flex align-items-center justify-content-sm-end">
                     <small class="me-2">每人</small><strong class="fs-4 me-3 font-barlow">{{ currencyFormat(activity.cost) }}</strong>
-                    <button type="button" class="ms-auto ms-sm-0 btn btn-custom-rectangle" :disabled="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止'" :class="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止' ? 'btn-lightPrimary opacity-40' : 'btn-danger'" @click="submitOrder">
-                        {{ activity.orderStatus }} / 
-                        <template v-if="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止'">{{ activity.orderStatus }}</template>
-                        <template v-else>立即報名</template>
-                    </button>
+                    <button type="button" class="ms-auto ms-sm-0 btn btn-custom-rectangle" :disabled="isLoadingBtn || activityBtnDisabled" :class="activityBtnDisabled ? 'btn-lightPrimary opacity-40' : 'btn-danger'" @click="submitOrder"><span class="spinner-border spinner-border-sm" role="status" v-if="isLoadingBtn"></span>
+                    {{ activityBtnText }}</button>
                 </div>
             </div>
         </div>
@@ -181,16 +228,14 @@ export default {
                             <template v-else>否</template>
                         </strong>
                     </li>
-                    <li>潛水支數<strong class="ms-2">{{ activity.cylinderTotal ? activity.cylinderTotal : '不限' }}</strong></li>
+                    <li>潛水支數<strong class="ms-2">{{ activity.cylinderTotalId ? activity.cylinderTotal.name : '不限' }}</strong></li>
                 </ul>
-                <router-link class="text-decoration-none badge bg-lightPrimary bg-opacity-20 me-1" v-for="tag in activity.tags"  :key="tag" :to="{ path: '/activities', query: { tag: tag }}">{{ tag }}</router-link>
+                <router-link class="text-decoration-none badge bg-lightPrimary bg-opacity-20 me-1" v-for="tag in activity.tags"  :key="tag" :to="{ path: '/activities', query: { tag: tag } }">{{ tag }}</router-link>
                 <div class="mt-3 d-flex align-items-center">
                     <small class="me-2">每人</small><strong class="fs-4 me-3 font-barlow">{{ currencyFormat(activity.cost) }}</strong>
-                    <button type="button" class="btn btn-custom-rectangle" :disabled="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止'" :class="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止' ? 'btn-lightPrimary opacity-40' : 'btn-danger'" @click="submitOrder">
-                        {{ activity.orderStatus }} / 
-                        <template v-if="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止'">{{ activity.orderStatus }}</template>
-                        <template v-else>立即報名</template>
-                    </button>
+                    <button type="button" class="ms-auto ms-sm-0 btn btn-custom-rectangle" :disabled="isLoadingBtn || activityBtnDisabled" :class="activityBtnDisabled ? (activity.orderStatus === 4 && activity.activityStatus === 3 ? 'btn-danger' : 'btn-lightPrimary opacity-40') : 'btn-danger'" @click="submitOrder">
+                    <span class="spinner-border spinner-border-sm" role="status" v-if="isLoadingBtn"></span>
+                    {{ activityBtnText }}</button>
                 </div>
             </div>
         </div>

@@ -110,7 +110,6 @@ export default {
     <div class="border-bottom opacity-30 my-4"></div>
     <div class="row row-cols-1 row-cols-md-2 gy-4" v-if="activities.length">
         <HorizontalActivityCard :activity="activity" v-for="activity in activities" :key="activity.id" />
-        
     </div>
     <p v-else class="text-center opacity-75 mb-0">找不到符合條件的活動，試試看其他搜尋條件吧</p>
 </div>

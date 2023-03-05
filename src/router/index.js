@@ -98,9 +98,9 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     let { title } = to.meta;
+    const { path } = to;
 
     if (title) {
-        const { path } = to;
         if (path.indexOf("/admin") > -1) {
             title = `後台管理 - ${title}`;
         }
@@ -108,7 +108,7 @@ router.beforeEach((to, from, next) => {
         title = `${title} - `;
     }
 
-    document.title = `${title ? title : ""}${VITE_COMPANY_NAME}`;
+    document.title = `${title ? title : ""}${path.indexOf("/activity") === -1 ? VITE_COMPANY_NAME : ""}`;
 
     const { getStorageUser } = AuthStore();
     getStorageUser();

@@ -5,16 +5,18 @@ import { getMainImg } from "../data/utilitieFunctions.js";
 </script>
 
 <script>
+import { mapActions } from "pinia";
+import ActivityStore from "../stores/ActivityStore.js";
 import propsValidator from "../data/propsValidator.js";
 import UserMugShot from "./UserMugShot.vue";
-
+"getActivityBtnText"
 export default {
     props: {
         activity: {
             type: Object,
             required: true,
             validator(value) {
-                const verifyKeys = ["id", "title", "imgs", "location", "startDate", "endDate", "isNitrox", "cylinderTotal", "user"];
+                const verifyKeys = ["id", "title", "imgs", "location", "startDate", "endDate", "isNitrox", "cylinderTotalId", "user"];
 
                 return propsValidator(value, verifyKeys);
             }
@@ -22,6 +24,9 @@ export default {
     },
     components: {
         UserMugShot
+    },
+    methods: {
+        ...mapActions(ActivityStore, ["getActivityBtnText"]),
     }
 };
 </script>
@@ -31,7 +36,7 @@ export default {
         <div class="card horizontal-card h-100">
             <div class="row g-0">
                 <div class="col-5 position-relative">
-                    <img :src="getMainImg(this.activity.imgs).img" class="img-fluid img-cover" :alt="activity.title">
+                    <img :src="getMainImg(activity.imgs).img" class="img-fluid img-cover" :alt="activity.title">
                     <div class="position-absolute top-0 end-0 p-1 bg-darkPrimary bg-opacity-80 fs-7 text-body">{{ activity.location.name }}</div>
                 </div>
                 <div class="col-7">
@@ -47,12 +52,11 @@ export default {
                             <ul class="col-auto font-barlow list-inline mb-0">
                                 <li class="list-inline-item">{{ activity.certificateLevel.name }}</li>
                                 <li class="list-inline-item" v-if="activity.isNitrox">高氧</li>
-                                <li class="list-inline-item" v-if="activity.cylinderTotal">{{ activity.cylinderTotal }}</li>
+                                <li class="list-inline-item" v-if="activity.cylinderTotalId">{{ activity.cylinderTotal.name }}</li>
                             </ul>
                         </div>
-                        <router-link :to="`/activity/${activity.id}`" class="btn btn-custom-rectangle mt-3" role="button" :class="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止' ? 'btn-lightPrimary opacity-40' : 'btn-primary'">
-                            <template v-if="activity.orderStatus === '已額滿' || activity.orderStatus === '已截止'">{{ activity.orderStatus }}</template>
-                            <template v-else>揪團詳情</template>
+                        <router-link :to="`/activity/${activity.id}`" class="btn btn-custom-rectangle mt-3" role="button" :class="activity.orderStatus !== 2 ? 'btn-lightPrimary opacity-40' : 'btn-primary'">
+                        {{ getActivityBtnText(activity.activityStatus, activity.orderStatus).replace("立即報名", "揪團詳情") }}
                         </router-link>
                     </div>
                 </div>

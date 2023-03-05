@@ -13,7 +13,7 @@ export default {
             type: Object,
             required: true,
             validator(value) {
-                const verifyKeys = ["id", "title", "imgs", "location", "startDate", "endDate", "isNitrox", "cylinderTotal", "user"];
+                const verifyKeys = ["id", "title", "imgs", "location", "startDate", "endDate", "user"];
 
                 return propsValidator(value, verifyKeys);
             }

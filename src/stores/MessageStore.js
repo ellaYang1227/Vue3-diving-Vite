@@ -5,18 +5,19 @@ import { bacsRequest } from "../data/axiosBase.js";
 import { setSwalFire } from "../data/sweetalert2.js";
 import { getTimestamp } from "../data/utilitieFunctions.js";
 const { getStorageUser } = AuthStore();
-const user = getStorageUser();
 const { hideLoading } = LoadingStore();
 
 export default defineStore("MessageStore", {
     state: () => ({
-        basicParams: "?_sort=updateDate&_order=desc&_expand=user",
+        basicParams: "?_expand=user",
         messages: ""
     }),
     getters: {},
     actions: {
         getMessages(activityId) {
-            const params = { 
+            const params = {
+                _sort: "updateDate",
+                _order: "desc",
                 _expand: "activity",
                 activityId
             };
@@ -62,7 +63,7 @@ export default defineStore("MessageStore", {
             const body = { 
                 content,
                 updateDate: getTimestamp(new Date()),
-                userId: user.id
+                userId: getStorageUser()?.id
             };
 
             return bacsRequest[method](apiUrl, body)
@@ -79,18 +80,18 @@ export default defineStore("MessageStore", {
                 return Promise.resolve(false);
             });
         },
-        updateMessageReplys(messagesId, content, messageReplysId) {
+        updateMessageReplys(activityId, messagesId, content, messageReplysId) {
             const title = `${messageReplysId ? '修改' : '新增'}回覆`;
             const method = messageReplysId ? 'patch' : 'post';
             let apiUrl = `660/messages/${messagesId}/messageReplys`;
             if(messageReplysId){
-                apiUrl = `660/messages/${messageReplysId}`;
+                apiUrl = `660/messageReplys/${messageReplysId}`;
             }
 
             const body = { 
                 content,
                 updateDate: getTimestamp(new Date()),
-                userId: user.id
+                userId: getStorageUser()?.id
             };
 
             return bacsRequest[method](apiUrl, body)

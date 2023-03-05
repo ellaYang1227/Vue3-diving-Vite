@@ -127,7 +127,7 @@ export default {
                     </div>
                     <div class="col-sm-auto">
                         <button type="submit" class="btn btn-outline-warning rounded-0 w-100" :disabled="isLoadingBtn || Object.keys(errors).length">
-                            <span class="spinner-border spinner-border-sm text-dark-primary" role="status" v-if="isLoadingBtn"></span>
+                            <span class="spinner-border spinner-border-sm" role="status" v-if="isLoadingBtn"></span>
                             搜出好團</button>
                     </div>
                 </fieldset>

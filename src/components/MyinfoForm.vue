@@ -21,9 +21,9 @@ export default {
                 password: "",
                 name: "",
                 img: "",
-                certificateLevelId: [],
+                certificateLevelId: null,
                 isNitrox: null,
-                cylinderTotal: ""
+                cylinderTotalId: ""
             }
         };
     },
@@ -194,10 +194,10 @@ export default {
                     :name="formSchema.cylinderTotal.label"
                     :as="formSchema.cylinderTotal.as"
                     :rules="formSchema.cylinderTotal.rules"
-                    v-model="form.cylinderTotal"
+                    v-model="form.cylinderTotalId"
                 >
                     <option value="" disabled>請選擇</option>
-                    <option v-for="option in cylinderTotals" :key="option.id" :value="option.name">
+                    <option v-for="option in cylinderTotals" :key="option.id" :value="option.id">
                         {{ option.name }}
                     </option></Field
                 >
@@ -205,7 +205,7 @@ export default {
             </div>
             <div class="col-12 text-end border-top pt-3 mt-4 mt-md-5">
                 <button type="submit" class="btn btn-primary btn-custom-rectangle" :disabled="isLoadingBtn || Object.keys(errors).length">
-                    <span class="spinner-border spinner-border-sm text-dark-primary" role="status" v-if="isLoadingBtn"></span>
+                    <span class="spinner-border spinner-border-sm" role="status" v-if="isLoadingBtn"></span>
                     {{ userId ? '編輯' : '註冊' }}
                 </button>
             </div>

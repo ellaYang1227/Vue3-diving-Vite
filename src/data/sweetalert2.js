@@ -10,21 +10,22 @@ export const swalPopup = Swal.mixin({
     showCancelButton: true,
     cancelButtonText: "關閉",
     timer: 3000,
-    timerProgressBar: true
+    timerProgressBar: true,
+    reverseButtons: true
 });
 
 export const swalToast = Swal.mixin({
     toast: true,
     showConfirmButton: false,
     position: "bottom-end",
-    timer: 3000,
+    timer: 2000,
     timerProgressBar: true
 });
 
 /**
  * 設定 Swal
  * 
- * @param stype：String - Swal 樣式；toast(吐司)或(Popup)彈跳視窗
+ * @param stype：String - Swal 樣式；toast(吐司)或(popup)彈跳視窗
  * @param icon：String - Swal icon 狀態；success、error、warning、info、question
  * @param title：String - 標題
  * @param text：String ｜HTML　- 內文

@@ -109,10 +109,10 @@ export default {
                                     aria-label="Close"
                                 ></button>
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-md-end" aria-labelledby="dropUser" v-if="user">
+                            <ul class="dropdown-menu dropdown-menu-md-end" aria-labelledby="dropUser" :class="{ 'd-none': !user }">
                                 <li>
                                     <h5 class="dropdown-header fs-6 text-truncate text-primary d-none d-md-block">
-                                        {{ user.name }}
+                                        {{ user?.name }}
                                     </h5>
                                 </li>
                                 <li>

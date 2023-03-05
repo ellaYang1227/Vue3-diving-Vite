@@ -23,10 +23,10 @@ export default {
 </script>
 
 <template>
-    <MessageCardItem :message="message" :organiser-id="message.activity.userId" />
+    <MessageCardItem :message="message" :message-id="message.id" :organiser-id="message.activity.userId" :activity-id="message.activity.id" />
     <ul class="list-group list-group-flush list-group-reply border-top" v-if="message.messageReplys.length">
         <li class="list-group-item bg-transparent ps-3 pe-0" v-for="messageReply in message.messageReplys" :key="messageReply.id">
-            <MessageCardItem :message="messageReply" :organiser-id="message.activity.userId" />
+            <MessageCardItem :message="messageReply" :message-id="message.id" :messageReply-id="messageReply.id" :organiser-id="message.activity.userId" :activity-id="message.activity.id" />
         </li>
     </ul>
 </template>

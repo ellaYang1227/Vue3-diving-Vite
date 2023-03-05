@@ -7,13 +7,17 @@ import dateFormat from "../handle-formats/dateFormat.js";
 export default defineStore("ActivityStore", {
     state: () => ({
         statusFormat,
-        activitiesApiUrl: "activities?_sort=updateDate&_order=desc&_expand=user&_expand=location&_expand=certificateLevel&_embed=violations&_embed=orders",
+        activitiesApiUrl: "activities?_sort=updateDate&_order=desc&_expand=user&_expand=location&_expand=certificateLevel&_expand=cylinderTotal&_embed=violations&_embed=orders",
     }),
     getters: {
         yesterday: () => {
             const yesterday = getTimestamp(new Date()) - 24 * 60 * 60 * 1000;
             return dateFormat(yesterday, "date", "-");
         },
+        today: () => {
+            const today = getTimestamp(new Date());
+            return dateFormat(today, "date", "-");
+        }
     },
     actions: {
         // 只取未違規且報名截止日期(orderExpiryDate)大於等於今天，更新貼文日期由新到舊
@@ -62,7 +66,7 @@ export default defineStore("ActivityStore", {
 
             // 過濾掉結束日期小於今天
             if(searchKeys.indexOf("endDate")  === -1){ 
-                params.endDate_gte = this.yesterday 
+                params.endDate_gte = this.today; 
             }
 
             return bacsRequest.get(`${this.activitiesApiUrl}`, { params })
@@ -70,7 +74,7 @@ export default defineStore("ActivityStore", {
             .catch(err => Promise.reject(false));
         },
         getActivity(activityId){
-            return bacsRequest.get(`activities/${activityId}?_expand=user&_expand=location&_expand=certificateLevel&_embed=violations&_embed=orders`)
+            return bacsRequest.get(`activities/${activityId}?_expand=user&_expand=location&_expand=certificateLevel&_expand=cylinderTotal&_embed=violations&_embed=orders`)
             .then(res => {
                 return Promise.resolve({
                     ...res,
@@ -96,6 +100,31 @@ export default defineStore("ActivityStore", {
                     ...this.statusFormat(activity)
                 };
             });
+        },
+        /**
+         * 活動按鈕顯示文字
+         * 
+         * @param activityStatus：Number - 活動狀態
+         * @param orderStatus：Number - 報名狀態
+         * @returns String
+         */
+        getActivityBtnText(activityStatus, orderStatus) {
+            let text = "立即報名";
+            if(orderStatus !== 2) {
+                if(activityStatus === 0) {
+                    text = "系統中止";
+                } else {
+                    if(activityStatus === 2 || activityStatus === 3) {
+                        text = `活動${activityStatus === 2 ? "進行" : "結束"}`;
+                    } else if (orderStatus === 1 || orderStatus === 3) {
+                        text = `報名${orderStatus === 1 ? "額滿" : "截止"}`;
+                    } else if (orderStatus === 4) {
+                        text = `已報名`;
+                    }
+                }
+            }
+
+            return text;
         }
     }
 });

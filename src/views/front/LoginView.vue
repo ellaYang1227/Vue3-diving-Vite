@@ -110,7 +110,7 @@ export default {
                                                 class="btn btn-primary btn-custom-rectangle"
                                                 :disabled="isLoadingBtn || Object.keys(errors).length"
                                             >
-                                                <span class="spinner-border spinner-border-sm text-dark-primary" role="status" v-if="isLoadingBtn"></span>
+                                                <span class="spinner-border spinner-border-sm" role="status" v-if="isLoadingBtn"></span>
                                                 {{ title }}
                                             </button>
                                         </div>

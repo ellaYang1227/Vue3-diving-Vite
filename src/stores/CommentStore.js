@@ -20,7 +20,7 @@ export default defineStore("CommentStore", {
                 this.comments = res.reduce((accumulator, currentValue) => {
                     const { score } = currentValue;
                     const { userId } = currentValue.activity;
-                    const findComment = accumulator.find(item => item.userId === userId);
+                    const findComment = accumulator.find(item => item.userId == userId);
 
                     if(!findComment){
                         const data = [];

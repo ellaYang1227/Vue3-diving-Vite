@@ -14,7 +14,7 @@ export default {
             type: Object,
             required: true,
             validator(value) {
-                const verifyKeys = ["id", "title", "imgs", "location", "startDate", "endDate", "isNitrox", "cylinderTotal", "user"];
+                const verifyKeys = ["id", "title", "imgs", "location", "startDate", "endDate", "isNitrox", "cylinderTotalId", "user"];
                 return propsValidator(value, verifyKeys);
             }
         }
@@ -51,7 +51,7 @@ export default {
                     <ul class="col-auto font-barlow list-inline">
                         <li class="list-inline-item">{{ activity.certificateLevel.name }}</li>
                         <li class="list-inline-item" v-if="activity.isNitrox">高氧</li>
-                        <li class="list-inline-item" v-if="activity.cylinderTotal">{{ activity.cylinderTotal }}</li>
+                        <li class="list-inline-item" v-if="activity.cylinderTotalId">{{ activity.cylinderTotal.name }}</li>
                     </ul>
                 </li>
             </ul>
