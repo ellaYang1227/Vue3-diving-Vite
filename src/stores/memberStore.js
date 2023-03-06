@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
 import AuthStore from "./AuthStore.js";
+import CommentStore from "./CommentStore.js";
+import ActivityStore from "./ActivityStore.js";
 import { bacsRequest } from "../data/axiosBase.js";
 import { setSwalFire } from "../data/sweetalert2.js";
 import { getTimestamp } from "../data/utilitieFunctions.js";
@@ -7,11 +9,16 @@ import statusFormat from "../handle-formats/statusFormat.js";
 import dateFormat from "../handle-formats/dateFormat.js";
 import router from "../router/index.js";
 const { changeCookie, getStorageUser } = AuthStore();
+const { setScore } = CommentStore();
+const { handleActivitiesStatus } = ActivityStore();
 
 export default defineStore("MemberStore", {
     state: () => ({
         myFirstThreeOrders: [],
-        myinfo: {}
+        myOrders: [],
+        myinfo: {},
+        myComments: {},
+        myActivities: []
     }),
     getters: {},
     actions: {
@@ -72,9 +79,9 @@ export default defineStore("MemberStore", {
                 "_expand=certificateLevel",
                 "_expand=cylinderTotal",
                 "_embed=violations",
-                "_embed=orders",
+                //"_embed=orders",
                 "_embed=comments",
-                "_embed=activities"
+                //"_embed=activities"
                 //"_embed=messages"
             ];
 
@@ -90,20 +97,23 @@ export default defineStore("MemberStore", {
         getMyOrders(count){
             let params = { _expand: "activity" }
 
-            if(count){ 
-                params = {
-                    ...params,
-                    count
-                }
-            }
+            // if(count){ 
+            //     params = {
+            //         ...params,
+            //         count
+            //     }
+            // }
 
             return bacsRequest
                 .get(`400/users/${getStorageUser()?.id}/orders`, { params })
                 .then(res => {
+                    this.myOrders = res;
                     // 結束時間大於等於今天
-                    res = res.filter(item => item.activity.endDate >= dateFormat(new Date(), ["data"], "-"));
+                    if(count) { 
+                        this.myFirstThreeOrders = res.filter(item => item.activity.endDate >= dateFormat(new Date(), ["data"], "-"));
+                        this.myFirstThreeOrders = this.myFirstThreeOrders.slice(0, count);
+                    }
 
-                    if(count) { this.myFirstThreeOrders = res }
                     return Promise.resolve(res)
                 })
                 .catch(err => Promise.reject(false));
@@ -142,6 +152,42 @@ export default defineStore("MemberStore", {
                 .get(`600/activities/${activityId}`)
                 .then(res => Promise.resolve(res))
                 .catch(err => Promise.reject(false));
-        }
+        },
+        getMyActivities(){
+            const paramsArr = [
+                "_sort=updateDate",
+                "_order=desc",
+                //"_expand=user",
+                "_expand=location",
+                //"_expand=certificateLevel",
+                //"_expand=cylinderTotal",
+                "_embed=violations",
+                "_embed=orders"
+            ];
+            
+            return bacsRequest.get(`600/users/${getStorageUser()?.id}/activities?${paramsArr.join('&')}`)
+            .then(res => {
+                console.log(res)
+                
+                this.myActivities = handleActivitiesStatus(res);
+                return Promise.resolve(res);
+            })
+            .catch(err => Promise.reject(false));
+        },
+        // getMyComments(){
+        //     const paramsArr = [
+        //         "_sort=creationDate",
+        //         "_order=desc",
+        //         "_expand=activities",
+        //         "_expand=users",
+        //     ];
+            
+        //     return bacsRequest.get(`600/users/${getStorageUser()?.id}/comments?${paramsArr.join('&')}`)
+        //     .then(res => {
+        //         console.log(res)
+        //         return Promise.resolve(res);
+        //     })
+        //     .catch(err => Promise.reject(false));
+        // },
     }
 });

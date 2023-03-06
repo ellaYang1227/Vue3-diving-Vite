@@ -46,12 +46,6 @@ export default defineStore("CommentStore", {
             })
             .catch(err => Promise.reject(false));
         },
-        getSingleUserComments(userId){
-            const params = { userId }
-            return bacsRequest.get(`comments`, { params })
-            .then(res => Promise.resolve(res))
-            .catch(err => Promise.reject(false));
-        },
         setScore(activities){
             return activities.map(activity => {
                 const findComment = this.comments.find(item => item.userId == activity.userId);

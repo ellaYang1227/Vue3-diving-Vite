@@ -1,35 +1,40 @@
 <script setup>
 import { activityImg } from "../../data/imagePaths.js";
 import { authGuard } from "../../data/routeGuard.js";
+import decimalFormat from "../../handle-formats/decimalFormat.js";
 </script>
 
 <script>
 import { mapActions, mapState } from "pinia";
 import LoadingStore from "../../stores/LoadingStore.js";
+import AuthStore from "../../stores/AuthStore.js";
 import MemberStore from "../../stores/MemberStore.js";
+import CommentStore from "../../stores/CommentStore.js";
 import UserMugShot from "../../components/UserMugShot.vue";
 import StatisticsCard from "../../components/StatisticsCard.vue";
+const memberStore = MemberStore();
 
 export default {
     data() {
         return {
-            cards: [{
-                title: "未回覆留言",
-                imgName: "",
-                value: null
-            },{
-                title: "評價分數",
-                imgName: "",
-                value: null
-            },{
-                title: "累積揪團數",
-                imgName: "",
-                value: null
-            },{
-                title: "累積報名人數",
-                imgName: "",
-                value: null
-            }]
+            cards: {
+                myOrders: {
+                    title: "報名揪團次數",
+                    value: null
+                },
+                commentScore: {
+                    title: "評價分數",
+                    value: null
+                },
+                activities: {
+                    title: "累積揪團數",
+                    value: null
+                },
+                orders: {
+                    title: "累積報名人數",
+                    value: null
+                }
+            }
         }
     },
     beforeRouteEnter(to, from, next) {
@@ -37,11 +42,16 @@ export default {
         
     },
     computed: {
-        ...mapState(MemberStore, ["myinfo"]),
+        ...mapState(AuthStore, ["user"]),
+        ...mapState(MemberStore, ["myinfo", "myComments", "myActivities", "myOrders"]),
+        ...mapState(CommentStore, ["initComments", "comments"])
     },
     watch: {
-        myinfo() {
-            console.log('myinfo', this.myinfo)
+        comments() {
+            const { id } = this.user;
+            memberStore.$patch(state => {
+                state.myComments = this.comments.find(comment => comment.userId == id);
+            });
         }
     },
     components: {
@@ -49,46 +59,85 @@ export default {
         StatisticsCard
     },
     mounted() {
-        this.getMyinfo().then(res => this.hideLoading());
+        Promise.all([
+            this.getMyinfo(),
+            this.getComments(),
+            this.getMyActivities()
+        ]).then(resArr => {
+            this.setCards();
+            this.hideLoading();
+        });
     },
     methods: {
         ...mapActions(LoadingStore, ["showLoading", "hideLoading"]),
-        ...mapActions(MemberStore, ["getMyinfo"]),
+        ...mapActions(MemberStore, ["getMyinfo", "getMyActivities"]),
+        ...mapActions(CommentStore, ["getComments"]),
+        setCards() {
+            const keys = Object.keys(this.cards);  
+            keys.forEach(key => {
+                let num = 0;
+                switch (key) {
+                    case "myOrders":
+                        num = this.myOrders.length;
+                        break;
+                    case "commentScore":
+                        if(this.myComments?.averageScore) { num = decimalFormat(this.myComments.averageScore, 1) }
+                        break;
+                    case "activities":
+                        num = this.myActivities.length;
+                        break;
+                    case "orders":
+                        num = this.myActivities.reduce((accumulator, currentValue) => {
+                            return accumulator + currentValue.orders.length;
+                        }, 0);
+                        break;
+                }
+
+                this.cards[key].value = num;
+            });
+        }
     }
 };
 </script>
 
 <template>
     <div class="container py-4 py-md-5">
-        <div class="row row-cols-md-2 gy-2 align-items-stretch">
-            <div class="col">
-                <div class="card">
-                    <div class="card-body">
-                        <ul class="row list-unstyled mb-0">
-                            <li class="col-12 d-flex align-items-center mb-3">
-                                <UserMugShot :img="myinfo.img" :isShowName="false" class="flex-shrink-0 me-1" />
-                                <div class="ms-auto text-truncate flex-grow-1 lh-1">
+        <div class="row gy-2 gy-sm-4 align-items-stretch">
+            <div class="col-md-12 col-lg-5">
+                <div class="card h-100">
+                    <div class="row g-0 h-100">
+                        <div class="col-sm-5 col-lg-6 col-xl-5 text-center">
+                            <div class="bg-lightPrimary bg-opacity-5 h-100 p-3 custom-rectangle d-flex flex-sm-column justify-content-center align-items-center">
+                                <UserMugShot :img="myinfo.img" :isShowName="false" :widthSize="75" class="flex-shrink-0 me-2 me-sm-0" />
+                                <div class="text-truncate flex-grow-1 flex-sm-grow-0 text-start text-sm-center mt-sm-2">
                                     <h5 class="fw-bold h6 mb-0 text-truncate">{{ myinfo.name }}</h5>
                                     <small class="font-barlow">{{ myinfo.email }}</small>
                                 </div>
-                            </li>
-                            <li class="col-6 opacity-80">
-                                證照等級<strong class="ms-2">{{ myinfo.certificateLevel?.name }}</strong>
-                            </li>
-                            <li class="col-6 opacity-80">
-                                持有高氧證照<strong class="ms-2">{{ myinfo.isNitrox ? "是" : "否" }}</strong>
-                            </li>
-                            <li class="col-6 opacity-80">
-                                潛水支數<strong class="ms-2">{{ myinfo.cylinderTotal?.name }}</strong>
-                            </li>
-                        </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm">
+                            <ul class="card-body list-unstyled mb-0 h-100 d-flex flex-column justify-content-center">
+                                <li class="d-flex justify-content-between align-items-center">
+                                    <small class="opacity-80">證照等級</small>
+                                    <strong class="ms-2">{{ myinfo.certificateLevel?.name }}</strong>
+                                </li>
+                                <li class="d-flex justify-content-between align-items-center py-2">
+                                    <small class="opacity-80">持有高氧證照</small>
+                                    <strong class="ms-2">{{ myinfo.isNitrox ? "是" : "否" }}</strong>
+                                </li>
+                                <li class="d-flex justify-content-between align-items-center">
+                                    <small class="opacity-80">潛水支數</small>
+                                    <strong class="ms-2">{{ myinfo.cylinderTotal?.name }}</strong>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col">
-                <div class="row row-cols-md-2 gy-2 h-100">
-                    <div class="col h-50" v-for="card in cards" :key="card.title">
-                        <StatisticsCard :title="card.title" :imgName="card.imgName" :value="card.value" />
+                <div class="row row-cols-2 g-2 g-sm-4">
+                    <div class="col" v-for="(card, key) in cards" :key="key">
+                        <StatisticsCard :title="card.title" :imgName="`${key}Icon`" :value="card.value" />
                     </div>
                 </div>
             </div>
