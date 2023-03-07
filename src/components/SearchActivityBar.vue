@@ -142,7 +142,4 @@ export default {
     </div>
 </template>
 
-<style lang="scss">
-@import "../assets/styles/bootstrap-custom-variables";
-
-</style>
+<style lang="scss"></style>

@@ -15,7 +15,7 @@ export function guestGuard(to, from, next) {
         next();
     }else{
         const { identityId } = user;
-        next(identityId === "0" ? "/admin/index" : "/member/myinfo");
+        next(identityId === "0" ? "/admin/index" : "/member/editMyinfo");
     }
 };
 

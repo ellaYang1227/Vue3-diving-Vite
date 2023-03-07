@@ -9,7 +9,7 @@ import { mapActions } from "pinia";
 import ActivityStore from "../stores/ActivityStore.js";
 import propsValidator from "../data/propsValidator.js";
 import UserMugShot from "./UserMugShot.vue";
-"getActivityBtnText"
+
 export default {
     props: {
         activity: {

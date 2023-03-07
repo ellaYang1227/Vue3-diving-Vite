@@ -1,5 +1,4 @@
 <script setup>
-import { activityImg } from "../../data/imagePaths.js";
 import { authGuard } from "../../data/routeGuard.js";
 import decimalFormat from "../../handle-formats/decimalFormat.js";
 </script>
@@ -34,7 +33,20 @@ export default {
                     title: "累積報名人數",
                     value: null
                 }
-            }
+            },
+            navTabs: [{
+                name: "我的揪團",
+                url: "/myActivities"
+            },{
+                name: "我的報名",
+                url: "/myOrders"
+            },{
+                name: "評論管理",
+                url: "/myComments"
+            },{
+                name: "編輯個人檔案",
+                url: "/editMyinfo"
+            }]
         }
     },
     beforeRouteEnter(to, from, next) {
@@ -110,7 +122,7 @@ export default {
                             <div class="bg-lightPrimary bg-opacity-5 h-100 p-3 custom-rectangle d-flex flex-sm-column justify-content-center align-items-center">
                                 <UserMugShot :img="myinfo.img" :isShowName="false" :widthSize="75" class="flex-shrink-0 me-2 me-sm-0" />
                                 <div class="text-truncate flex-grow-1 flex-sm-grow-0 text-start text-sm-center mt-sm-2">
-                                    <h5 class="fw-bold h6 mb-0 text-truncate">{{ myinfo.name }}</h5>
+                                    <h5 class="fw-bold mb-0 text-truncate">{{ myinfo.name }}</h5>
                                     <small class="font-barlow">{{ myinfo.email }}</small>
                                 </div>
                             </div>
@@ -142,10 +154,29 @@ export default {
                 </div>
             </div>
         </div>
-    </div>
-    <div class="container py-4 py-md-5">
-        <router-view></router-view>
+        <div class="pt-4 pt-md-5">
+            <nav class="nav nav-tabs member-nav-tabs">
+                <router-link class="nav-link" :to="`/member${navTab.url}`" v-for="navTab in navTabs" :key="navTab.name">{{ navTab.name }}</router-link>
+            </nav>
+            <div class="card border-top-0">
+                <div class="card-body p-4 px-md-5">
+                    <router-view></router-view>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
-<style lang="scss"></style>
+<style lang="scss">
+.member-nav-tabs {
+    .nav-link {
+        @media (max-width: 575px) {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+            font-size: 0.875rem;
+        }
+    }
+    
+    
+}
+</style>

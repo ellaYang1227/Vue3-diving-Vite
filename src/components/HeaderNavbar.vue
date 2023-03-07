@@ -114,20 +114,20 @@ export default {
                                     </h5>
                                 </li>
                                 <li>
-                                    <router-link class="dropdown-item" to="/member/myinfo" @click="toggleOffcanvasNavbar">編輯個人資料</router-link>
+                                    <router-link class="dropdown-item" to="/member/editMyinfo" @click="toggleOffcanvasNavbar">編輯個人資料</router-link>
                                 </li>
                                 <li>
-                                    <router-link class="dropdown-item" to="/member/myinfo" @click="toggleOffcanvasNavbar">我的潛水證照</router-link>
+                                    <router-link class="dropdown-item" to="/member/editMyinfo" @click="toggleOffcanvasNavbar">我的潛水證照</router-link>
                                 </li>
                                 <li><hr class="dropdown-divider" /></li>
                                 <li>
-                                    <router-link class="dropdown-item" to="#" @click="toggleOffcanvasNavbar">我的揪團</router-link>
+                                    <router-link class="dropdown-item" to="/member/myActivities" @click="toggleOffcanvasNavbar">我的揪團</router-link>
                                 </li>
                                 <li>
                                     <router-link class="dropdown-item" to="/member/myOrders" @click="toggleOffcanvasNavbar">我的報名</router-link>
                                 </li>
                                 <li>
-                                    <router-link class="dropdown-item" to="#" @click="toggleOffcanvasNavbar">評論管理</router-link>
+                                    <router-link class="dropdown-item" to="/member/myComments" @click="toggleOffcanvasNavbar">評論管理</router-link>
                                 </li>
                                 <li><hr class="dropdown-divider" /></li>
                                 <li>

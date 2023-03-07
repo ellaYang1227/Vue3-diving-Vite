@@ -14,7 +14,6 @@ import UploadImg from "./UploadImg.vue";
 export default {
     data() {
         return {
-            userId: "",
             certificateLevels: [],
             cylinderTotals: [],
             form: {
@@ -25,7 +24,8 @@ export default {
                 certificateLevelId: null,
                 isNitrox: null,
                 cylinderTotalId: ""
-            }
+            },
+            isLoadingSubmit: false
         };
     },
     components: {
@@ -35,13 +35,12 @@ export default {
         UploadImg
     },
     computed: {
-        ...mapState(LoadingStore, ["isLoadingBtn"]),
         ...mapState(AuthStore, ["user"]),
         ...mapState(MemberStore, ["myinfo"]),
     },
     watch: {
         myinfo() {
-            this.form = this.myinfo;
+            this.setInitialFormData();
         }
     },
     created() {
@@ -49,15 +48,18 @@ export default {
             () => this.$route.params,
             () => {
                 const { path } =  this.$route;
-                if(path.indexOf('/signup') > -1 || path.indexOf('/myinfo') > -1){ this.fetchData() }
+                console.log(path)
+                if(path.indexOf('/signup') > -1 || path.indexOf('/editMyinfo') > -1){ 
+                    this.fetchData();
+                }
             },
             { immediate: true }
         );
     },
     methods: {
-        ...mapActions(LoadingStore, ["showLoading", "hideLoading"]),
+        ...mapActions(LoadingStore, ["hideLoading"]),
         ...mapActions(OptionStore, ["getCertificateLevels", "getCylinderTotals"]),
-        ...mapActions(MemberStore, ["signup","getMyinfo"]),
+        ...mapActions(MemberStore, ["signup","updateMyinfo"]),
         fetchData() {
             Promise.all([
                 this.getCertificateLevels(),
@@ -65,17 +67,34 @@ export default {
             ]).then(resArr => {
                 this.certificateLevels = resArr[0];
                 this.cylinderTotals = resArr[1];
+                this.setInitialFormData();
                 this.hideLoading();
             });
         },
+        setInitialFormData() {
+            this.form = {
+                email: "",
+                password: "",
+                name: "",
+                img: "",
+                certificateLevelId: null,
+                isNitrox: null,
+                cylinderTotalId: ""
+            };
+
+            if(this.user?.id && this.myinfo?.email) {
+                const formKeys = Object.keys(this.form);
+                formKeys.forEach(formKey => this.form[formKey] = this.myinfo[formKey]);
+                console.log(this.form, this.myinfo)
+            }
+        },
         onSubmit() {
-            this.showLoading("btn");
-            console.log(this.form)
+            this.isLoadingSubmit = true;
             if(!this.user?.id){
                 const { returnUrl } = this.$route.query;
-                this.signup(this.form, returnUrl).then(success => this.hideLoading());
+                this.signup(this.form, returnUrl).then(success => this.isLoadingSubmit = false);
             }else{
-                console.log('編輯', this.form)
+                this.updateMyinfo(this.form).then(success => this.isLoadingSubmit = false);
             }
             
         }
@@ -85,11 +104,11 @@ export default {
 
 <template>
     <VForm v-slot="{ errors }" @submit="onSubmit">
-        <fieldset :disabled="isLoadingBtn" class="row g-3">
+        <fieldset :disabled="isLoadingSubmit" class="row g-3">
             <div class="col-12">
                 <UploadImg :errors="errors" v-model:img="form.img" />
             </div>
-            <template v-if="!userId">
+            <template v-if="!user?.id">
                 <div class="col-md-6">
                     <label :for="formSchema.email.name" class="form-label"
                         >{{ formSchema.email.label }}<span class="text-danger" v-if="formSchema.email.isRequired">*</span></label
@@ -211,9 +230,9 @@ export default {
                 <ErrorMessage :name="formSchema.cylinderTotal.label" class="invalid-feedback"></ErrorMessage>
             </div>
             <div class="col-12 text-end border-top pt-3 mt-4 mt-md-5">
-                <button type="submit" class="btn btn-primary btn-custom-rectangle" :disabled="isLoadingBtn || Object.keys(errors).length">
-                    <span class="spinner-border spinner-border-sm" role="status" v-if="isLoadingBtn"></span>
-                    {{ userId ? '編輯' : '註冊' }}
+                <button type="submit" class="btn btn-primary btn-custom-rectangle" :disabled="isLoadingSubmit || Object.keys(errors).length">
+                    <span class="spinner-border spinner-border-sm" role="status" v-if="isLoadingSubmit"></span>
+                    {{ user?.id ? '編輯' : '註冊' }}
                 </button>
             </div>
         </fieldset>

@@ -13,7 +13,7 @@ export default {
             activities: [],
             initAdActivities: [],
             adActivities: [],
-            selectedSort: null,
+            selectedSort: "",
             sortOptions: [{
                 label: "更新時間",
                 value: "updateDate"

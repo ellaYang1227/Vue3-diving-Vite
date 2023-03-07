@@ -180,6 +180,14 @@ export default {
             as: "input",
             rules: "",
             isRequired: false
+        },
+        keyword: {
+            name: "keyword",
+            label: "搜尋",
+            type: "text",
+            as: "input",
+            rules: "",
+            isRequired: false
         }
     },
     message: {

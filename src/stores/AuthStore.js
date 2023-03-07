@@ -37,12 +37,15 @@ export default defineStore("AuthStore", {
             } else if (method === "add") {
                 const { exp } = this.handleCrypt("decrypt", "token", token);
                 cookie += `${new Date(exp)}`;
-                const encryptUser = this.handleCrypt("encrypt", "user", user);
-                localStorage.setItem("user", encryptUser);
-                this.user = user;
+                this.setStorageUser(user);
             }
 
             document.cookie = cookie;
+        },
+        setStorageUser(user) {
+            const encryptUser = this.handleCrypt("encrypt", "user", user);
+            localStorage.setItem("user", encryptUser);
+            this.user = user;
         },
         handleCrypt(type, decryptData, data) {
             if (type === "encrypt") {

@@ -9,7 +9,9 @@ export default {
 </script>
 
 <template>
-   <MyinfoForm />
+    <div class="py-4">
+        <MyinfoForm />
+    </div>
 </template>
 
 <style lang="scss"></style>

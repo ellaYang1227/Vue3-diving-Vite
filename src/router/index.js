@@ -40,15 +40,25 @@ const routes = [
                 component: () => import("../views/front/MemberView.vue"),
                 children: [
                     {
-                        path: "myinfo",
-                        component: () => import("../views/front/member/myinfoView.vue"),
-                        meta: { title: "個人資訊" }
+                        path: "myActivities",
+                        component: () => import("../views/front/member/MyActivitiesView.vue"),
+                        meta: { title: "我的揪團" }
                     },
                     {
-                        path: "myActivity",
-                        component: () => import("../views/front/member/MyActivityView.vue"),
-                        meta: { title: "我的揪團" }
-                    }
+                        path: "myOrders",
+                        component: () => import("../views/front/member/MyOrdersView.vue"),
+                        meta: { title: "我的報名" }
+                    },
+                    {
+                        path: "myComments",
+                        component: () => import("../views/front/member/MyCommentsView.vue"),
+                        meta: { title: "評論管理" }
+                    },
+                    {
+                        path: "editMyinfo",
+                        component: () => import("../views/front/member/EditMyinfoView.vue"),
+                        meta: { title: "編輯個人檔案" }
+                    },
                 ]
             },
             {

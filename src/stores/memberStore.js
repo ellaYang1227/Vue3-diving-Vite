@@ -1,15 +1,12 @@
 import { defineStore } from "pinia";
-import AuthStore from "./AuthStore.js";
-import CommentStore from "./CommentStore.js";
-import ActivityStore from "./ActivityStore.js";
 import { bacsRequest } from "../data/axiosBase.js";
 import { setSwalFire } from "../data/sweetalert2.js";
 import { getTimestamp } from "../data/utilitieFunctions.js";
-import statusFormat from "../handle-formats/statusFormat.js";
 import dateFormat from "../handle-formats/dateFormat.js";
 import router from "../router/index.js";
-const { changeCookie, getStorageUser } = AuthStore();
-const { setScore } = CommentStore();
+import ActivityStore from "./ActivityStore.js";
+import AuthStore from "./AuthStore.js";
+const { changeCookie, getStorageUser, setStorageUser } = AuthStore();
 const { handleActivitiesStatus } = ActivityStore();
 
 export default defineStore("MemberStore", {
@@ -74,7 +71,7 @@ export default defineStore("MemberStore", {
                     return false;
                 });
         },
-        getMyinfo(){
+        getMyinfo() {
             const paramsArr = [
                 "_expand=certificateLevel",
                 "_expand=cylinderTotal",
@@ -94,7 +91,25 @@ export default defineStore("MemberStore", {
                 .catch(err => Promise.reject(false));
 
         },
-        getMyOrders(count){
+        updateMyinfo(body) {
+            delete body.email;
+            delete body.password;
+            return bacsRequest
+            .patch(`600/users/${getStorageUser()?.id}`, body)
+            .then(user => {
+                setStorageUser(user);
+                this.getMyinfo().then(res => setSwalFire("toast", "success", `更新成功`));
+                return Promise.resolve(true);
+            })
+            .catch(({ status }) => {
+                if(status !== 401){
+                    setSwalFire("toast", "error", `更新失敗`);
+                }
+
+                return false;
+            });
+        },
+        getMyOrders(count) {
             let params = { _expand: "activity" }
 
             // if(count){ 
@@ -119,7 +134,7 @@ export default defineStore("MemberStore", {
                 .catch(err => Promise.reject(false));
 
         },
-        updateActivity(body){
+        updateActivity(body) {
             body.updateDate = getTimestamp(new Date());
             let apiMethod = 'post';
             let apiUrl = `660/users/${getStorageUser()?.id}/activities`;
@@ -147,13 +162,13 @@ export default defineStore("MemberStore", {
                     return false;
                 });
         },
-        getActivity(activityId){
+        getActivity(activityId) {
             return bacsRequest
                 .get(`600/activities/${activityId}`)
                 .then(res => Promise.resolve(res))
                 .catch(err => Promise.reject(false));
         },
-        getMyActivities(){
+        getMyActivities() {
             const paramsArr = [
                 "_sort=updateDate",
                 "_order=desc",
@@ -174,7 +189,7 @@ export default defineStore("MemberStore", {
             })
             .catch(err => Promise.reject(false));
         },
-        // getMyComments(){
+        // getMyComments() {
         //     const paramsArr = [
         //         "_sort=creationDate",
         //         "_order=desc",

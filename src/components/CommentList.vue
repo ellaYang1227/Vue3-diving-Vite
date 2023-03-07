@@ -4,6 +4,7 @@ import { increment, readOnly, starSize, showRating, textClass, activeColor, inac
 </script>
 
 <script>
+import VueMultiselect from 'vue-multiselect';
 import * as bootstrap from "bootstrap";
 import StarRating from "vue-star-rating";
 import { mapActions, mapState } from "pinia";
@@ -19,7 +20,15 @@ export default {
                 data: []
             },
             commentCollapse: null,
-            isShowCommentCollapse: false
+            isShowCommentCollapse: false,
+            selectedSort: "creationDate",
+            sortOptions: [{
+                label: "發文時間",
+                value: "creationDate"
+            },{
+                label: "評論分數",
+                value: "score"
+            }]
         }
     },
     props: {
@@ -30,15 +39,24 @@ export default {
         userName: {
             type: String,
             required: false
+        },
+        isMemberStyle: {
+            type: Boolean,
+            required: false,
+            default: false
         }
     },
     computed: {
         ...mapState(CommentStore, ["comments", "initComments"]),
         showCommentsData() {
-            return this.findComments.data.slice(0, this.showCount);
+            if(!this.isMemberStyle) {
+                return this.findComments.data.slice(0, this.showCount);
+            } else {
+                return this.findComments.data;
+            }
         },
         collapseCommentsData() {
-            return this.findComments.data.slice(this.showCount);
+            return !this.isMemberStyle ? this.findComments.data.slice(this.showCount) : [];
         }
     },
     watch: {
@@ -49,12 +67,22 @@ export default {
             const findComments = this.comments.find(comment => comment.userId == this.userId);
             if(findComments){
                 this.findComments = findComments;
-                this.findComments.data.sort((a, b) => b.creationDate - a.creationDate);
+                this.findComments.data.sort((a, b) => b[this.selectedSort] - a[this.selectedSort]);
+            }
+            
+        },
+        selectedSort: {
+            handler(val, oldVal) {
+                if(val) {
+                    const { value } = val;
+                    this.findComments.data.sort((a, b) => b[value] - a[value])
+                }
             }
             
         }
     },
     components: {
+        VueMultiselect,
         StarRating,
         CommentCard
     },
@@ -67,6 +95,7 @@ export default {
         ...mapActions(CommentStore, ["getComments"]),
         getCommentsApi() {
             this.getComments().then(res => {
+                this.selectedSort = this.sortOptions[0];
                 if(this.collapseCommentsData.length) {
                     this.commentCollapse = new bootstrap.Collapse(this.$refs.commentCollapse, {
                         toggle: false
@@ -88,8 +117,8 @@ export default {
     <ul class="list-group list-group-flush">
         <li class="list-group-item bg-transparent px-0">
             <div class="row gy-3">
-                <h5 class="col-md-6 mb-0 fw-bold">給「{{ userName }}」的評論</h5>
-                <div class="col d-flex flex-column align-items-center lh-sm">
+                <h5 class="col-md-6 mb-0 fw-bold" v-if="!isMemberStyle">給「{{ userName }}」的評論</h5>
+                <div class="d-flex flex-column align-items-center lh-sm" :class="[isMemberStyle ? 'col col-sm-3 col-lg-2' : 'col']">
                     <strong class="fs-2 text-lightPrimary font-barlow">{{ decimalFormat(findComments.averageScore, 1) }}</strong>
                     <star-rating
                         :text-class="textClass"
@@ -101,7 +130,7 @@ export default {
                         :active-color="activeColor"
                         :inactive-color="inactiveColor"></star-rating>
                 </div>
-                <div class="col text-center lh-sm">
+                <div class="text-center lh-sm" :class="[isMemberStyle ? 'col col-sm-3 col-lg-2' : 'col']">
                     <strong class="fs-2 text-lightPrimary font-barlow">
                         <template v-if="findComments.data.length">
                             {{ findComments.data.length }}
@@ -109,6 +138,9 @@ export default {
                         <template v-else>0</template>
                     </strong>
                     <small class="d-block">評論</small>
+                </div>
+                <div class="ms-auto btn-group col-auto align-self-end" v-if="isMemberStyle">
+                    <VueMultiselect v-model="selectedSort" :options="sortOptions" label="label" track-by="label" :searchable="false" />
                 </div>
             </div>
         </li>
