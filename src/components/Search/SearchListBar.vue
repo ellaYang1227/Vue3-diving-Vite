@@ -1,5 +1,5 @@
 <script setup>
-import formSchema from "../data/formSchema.js";
+import formSchema from "../../data/formSchema.js";
 </script>
 
 <script>
@@ -32,7 +32,7 @@ export default {
 </script>
 
 <template>
-    <VForm v-slot="{ errors }" @submit="onSubmit" class="pb-1">
+    <VForm v-slot="{ errors }" @submit="onSubmit" class="pb-3">
         <fieldset :disabled="isLoadingSearch" class="row g-2">
             <div class="col-md col-lg-6 col-xl-5">
                 <Field 

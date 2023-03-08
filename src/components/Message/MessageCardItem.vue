@@ -1,14 +1,14 @@
 <script setup>
-import dateFormat from "../handle-formats/dateFormat.js";
-import propsValidator from "../data/propsValidator.js";
+import dateFormat from "../../handle-formats/dateFormat.js";
+import propsValidator from "../../data/propsValidator.js";
 </script>
 
 <script>
 import { mapActions, mapState } from "pinia";
-import LoadingStore from "../stores/LoadingStore.js";
-import AuthStore from "../stores/AuthStore.js";
-import MessageStore from "../stores/MessageStore.js";
-import UserMugShot from "./UserMugShot.vue";
+import LoadingStore from "../../stores/LoadingStore.js";
+import AuthStore from "../../stores/AuthStore.js";
+import MessageStore from "../../stores/MessageStore.js";
+import UserMugShot from "../UserMugShot.vue";
 import MessageInput from "./MessageInput.vue";
 
 export default {

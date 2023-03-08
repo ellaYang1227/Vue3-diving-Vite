@@ -6,12 +6,16 @@ const { getStorageUser } = AuthStore();
  * 回傳活動狀態和揪團狀態
  * 
  * @param value：Object - 用來判斷的值
+ * @returns Object - activityStatus：活動狀態、orderStatus：揪團狀態、isOrderPlaced：是否已報名
  */
 export default function (value) {
     //console.log('value -------------------', value)
+    const isOrderPlaced = value.orders.some(order => order.userId == getStorageUser()?.id);
+
     return {
         activityStatus: getActivityStatus(value),
-        orderStatus: getOrderStatus(value)
+        orderStatus: getOrderStatus(value),
+        isOrderPlaced
     };
 }
 
@@ -59,11 +63,7 @@ function getOrderStatus({ orderExpiryDate, maxOrderTotal, orders, violations }) 
     if (violations.length) {
         status = 0;
     } else {
-        const isExist = orders.some(order => order.userId == getStorageUser()?.id);
-
-        if(isExist) { 
-            status = 4;
-        } else if (maxOrderTotal === orders?.length) {
+        if (maxOrderTotal === orders?.length) {
             status = 1;
         } else if (orderExpiryDate >= today) {
             status = 2;

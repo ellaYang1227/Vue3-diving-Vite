@@ -7,7 +7,7 @@ import router from "../router/index.js";
 import ActivityStore from "./ActivityStore.js";
 import AuthStore from "./AuthStore.js";
 const { changeCookie, getStorageUser, setStorageUser } = AuthStore();
-const { handleActivitiesStatus } = ActivityStore();
+const { handleActivitiesStatus, getSearchActivitiesForActivityId } = ActivityStore();
 
 export default defineStore("MemberStore", {
     state: () => ({
@@ -20,7 +20,6 @@ export default defineStore("MemberStore", {
     getters: {},
     actions: {
         login(user, returnUrl) {
-            console.log(returnUrl)
             return bacsRequest
                 .post("login", user)
                 .then(({ accessToken, user }) => {
@@ -52,7 +51,6 @@ export default defineStore("MemberStore", {
             return bacsRequest
                 .post("signup", user)
                 .then(({ accessToken, user }) => {
-                    console.log(accessToken, user)
                     changeCookie("add", accessToken, user);
 
                     if(!returnUrl){
@@ -110,26 +108,42 @@ export default defineStore("MemberStore", {
             });
         },
         getMyOrders(count) {
-            let params = { _expand: "activity" }
+            const paramsArr = [
+                "_sort=creationDate",
+                "_order=desc"
+            ];
+            
+            if(count) { 
+                paramsArr.push("_expand=activity");
+            }
 
-            // if(count){ 
-            //     params = {
-            //         ...params,
-            //         count
-            //     }
-            // }
-
-            return bacsRequest
-                .get(`400/users/${getStorageUser()?.id}/orders`, { params })
-                .then(res => {
-                    this.myOrders = res;
-                    // 結束時間大於等於今天
+            return bacsRequest.get(`400/users/${getStorageUser()?.id}/orders?${paramsArr.join('&')}`)
+                .then(orders => {
+                    // navber：我的報名，結束時間大於等於今天
                     if(count) { 
-                        this.myFirstThreeOrders = res.filter(item => item.activity.endDate >= dateFormat(new Date(), ["data"], "-"));
-                        this.myFirstThreeOrders = this.myFirstThreeOrders.slice(0, count);
-                    }
+                        const filterOrders = orders.filter(order => order.activity.endDate >= dateFormat(new Date(), ["data"], "-"));
+                        this.myFirstThreeOrders = filterOrders.slice(0, count);
+                    } 
+                    
+                    // member用：我的報名
+                    const activityIds = orders.reduce((accumulator, currentValue) => {
+                        accumulator.push(`id=${currentValue.activityId}`);
+                        return accumulator;
+                    }, []);
+                    
+                    return getSearchActivitiesForActivityId(activityIds).then(activities => {
+                        activities = handleActivitiesStatus(activities);
+                        this.myOrders = orders.map(order => {
+                            const activity = activities.find(activity => order.activityId == activity.id);
+                            return {
+                                ...order,
+                                activity
+                            };
+                        });
 
-                    return Promise.resolve(res)
+                        return Promise.resolve(this.myOrders);
+                    });
+                    
                 })
                 .catch(err => Promise.reject(false));
 
@@ -182,8 +196,6 @@ export default defineStore("MemberStore", {
             
             return bacsRequest.get(`600/users/${getStorageUser()?.id}/activities?${paramsArr.join('&')}`)
             .then(res => {
-                console.log(res)
-                
                 this.myActivities = handleActivitiesStatus(res);
                 return Promise.resolve(res);
             })

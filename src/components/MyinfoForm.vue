@@ -48,7 +48,6 @@ export default {
             () => this.$route.params,
             () => {
                 const { path } =  this.$route;
-                console.log(path)
                 if(path.indexOf('/signup') > -1 || path.indexOf('/editMyinfo') > -1){ 
                     this.fetchData();
                 }
@@ -85,7 +84,6 @@ export default {
             if(this.user?.id && this.myinfo?.email) {
                 const formKeys = Object.keys(this.form);
                 formKeys.forEach(formKey => this.form[formKey] = this.myinfo[formKey]);
-                console.log(this.form, this.myinfo)
             }
         },
         onSubmit() {

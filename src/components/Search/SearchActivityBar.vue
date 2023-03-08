@@ -1,14 +1,14 @@
 <script setup>
-import formSchema from "../data/formSchema.js";
+import formSchema from "../../data/formSchema.js";
 </script>
 
 <script>
 import VueMultiselect from 'vue-multiselect';
 import { Form, Field, ErrorMessage } from "vee-validate";
 import { mapActions, mapState } from "pinia";
-import OptionStore from "../stores/OptionStore.js";
-import LoadingStore from "../stores/LoadingStore.js";
-import PageStore from "../stores/PageStore.js";
+import OptionStore from "../../stores/OptionStore.js";
+import LoadingStore from "../../stores/LoadingStore.js";
+import PageStore from "../../stores/PageStore.js";
 
 export default {
     data () {

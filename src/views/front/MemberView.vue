@@ -10,7 +10,7 @@ import AuthStore from "../../stores/AuthStore.js";
 import MemberStore from "../../stores/MemberStore.js";
 import CommentStore from "../../stores/CommentStore.js";
 import UserMugShot from "../../components/UserMugShot.vue";
-import StatisticsCard from "../../components/StatisticsCard.vue";
+import StatisticsCard from "../../components/Card/StatisticsCard.vue";
 const memberStore = MemberStore();
 
 export default {
@@ -70,20 +70,32 @@ export default {
         UserMugShot,
         StatisticsCard
     },
-    mounted() {
-        Promise.all([
-            this.getMyinfo(),
-            this.getComments(),
-            this.getMyActivities()
-        ]).then(resArr => {
-            this.setCards();
-            this.hideLoading();
-        });
+    created() {
+        this.$watch(
+            () => this.$route.query,
+            () => {
+                const { path } =  this.$route;
+                if(path.indexOf('/member') > -1){ this.fetchData() }
+            },
+            { immediate: true }
+        );
+        
     },
     methods: {
         ...mapActions(LoadingStore, ["showLoading", "hideLoading"]),
-        ...mapActions(MemberStore, ["getMyinfo", "getMyActivities"]),
+        ...mapActions(MemberStore, ["getMyinfo", "getMyActivities", "getMyOrders"]),
         ...mapActions(CommentStore, ["getComments"]),
+        fetchData() {
+            Promise.all([
+                this.getMyinfo(),
+                this.getComments(),
+                this.getMyActivities(),
+                this.getMyOrders()
+            ]).then(resArr => {
+                this.setCards();
+                this.hideLoading();
+            });
+        },
         setCards() {
             const keys = Object.keys(this.cards);  
             keys.forEach(key => {

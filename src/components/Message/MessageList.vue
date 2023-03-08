@@ -1,8 +1,8 @@
 <script>
 import { mapActions, mapState } from "pinia";
-import MessageStore from "../stores/MessageStore.js";
-import LoadingStore from "../stores/LoadingStore.js";
-import AuthStore from "../stores/AuthStore.js";
+import MessageStore from "../../stores/MessageStore.js";
+import LoadingStore from "../../stores/LoadingStore.js";
+import AuthStore from "../../stores/AuthStore.js";
 import MessageCard from "./MessageCard.vue";
 import MessageInput from "./MessageInput.vue";
 

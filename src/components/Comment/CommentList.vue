@@ -1,6 +1,6 @@
 <script setup>
-import decimalFormat from "../handle-formats/decimalFormat.js";
-import { increment, readOnly, starSize, showRating, textClass, activeColor, inactiveColor } from "../data/starRatingParams.js";
+import decimalFormat from "../../handle-formats/decimalFormat.js";
+import { increment, readOnly, starSize, showRating, textClass, activeColor, inactiveColor } from "../../data/starRatingParams.js";
 </script>
 
 <script>
@@ -8,9 +8,9 @@ import VueMultiselect from 'vue-multiselect';
 import * as bootstrap from "bootstrap";
 import StarRating from "vue-star-rating";
 import { mapActions, mapState } from "pinia";
-import LoadingStore from "../stores/LoadingStore.js";
-import CommentStore from "../stores/CommentStore.js";
-import CommentCard from "../components/CommentCard.vue";
+import LoadingStore from "../../stores/LoadingStore.js";
+import CommentStore from "../../stores/CommentStore.js";
+import CommentCard from "./CommentCard.vue";
 
 export default {
     data() {

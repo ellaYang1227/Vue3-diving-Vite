@@ -1,10 +1,10 @@
 <script setup>
-import formSchema from "../data/formSchema.js";
+import formSchema from "../../data/formSchema.js";
 </script>
 
 <script>
 import { mapState, mapActions } from "pinia";
-import LoadingStore from "../stores/LoadingStore.js";
+import LoadingStore from "../../stores/LoadingStore.js";
 
 export default {
     data() {

@@ -103,6 +103,15 @@ const routes = [
 
 // 始终滚动到顶部
 const scrollBehavior = ((to, from, savedPosition) => {
+    const { hash } = to;
+    if (hash === "#messaget") {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+              resolve({ top: window.innerWidth >= 992 ? 1000 : 2000 })
+            }, 100)
+        });
+    } 
+    
     return { top: 0 }
 });
 

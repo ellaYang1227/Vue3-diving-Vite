@@ -14,7 +14,6 @@ export default defineStore("AuthStore", {
                 this.changeCookie("remove");
             }
             
-            console.log(this.user)
             return this.user;
         },
         logout() {

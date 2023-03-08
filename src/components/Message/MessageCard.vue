@@ -1,5 +1,5 @@
 <script setup>
-import propsValidator from "../data/propsValidator.js";
+import propsValidator from "../../data/propsValidator.js";
 </script>
 
 <script>

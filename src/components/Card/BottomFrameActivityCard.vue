@@ -1,11 +1,11 @@
 <script setup>
-import dateFormat from "../handle-formats/dateFormat.js";
-import { getMainImg } from "../data/utilitieFunctions.js";
+import dateFormat from "../../handle-formats/dateFormat.js";
+import { getMainImg } from "../../data/utilitieFunctions.js";
 </script>
 
 <script>
-import propsValidator from "../data/propsValidator.js";
-import UserMugShot from "./UserMugShot.vue";
+import propsValidator from "../../data/propsValidator.js";
+import UserMugShot from "../UserMugShot.vue";
 
 export default {
     props: {
@@ -47,7 +47,7 @@ export default {
 </template>
 
 <style lang="scss">
-@import "../assets/styles/bootstrap-custom-variables";
+@import "../../assets/styles/bootstrap-custom-variables";
 $img-frame-card-Spacing: 1rem;
 
 .bottom-frame-card {

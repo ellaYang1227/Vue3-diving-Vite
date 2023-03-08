@@ -1,12 +1,12 @@
 import { defineStore } from "pinia";
 import { bacsRequest } from "../data/axiosBase.js";
 import { getRandom, getTimestamp } from "../data/utilitieFunctions.js";
-import statusFormat from "../handle-formats/statusFormat.js";
 import dateFormat from "../handle-formats/dateFormat.js";
+import statusFormat from "../handle-formats/statusFormat.js";
 
 export default defineStore("ActivityStore", {
     state: () => ({
-        statusFormat,
+        //statusFormat,
         activitiesParamsArr: [
             "_sort=updateDate",
             "_order=desc",
@@ -84,6 +84,20 @@ export default defineStore("ActivityStore", {
             .then(res => Promise.resolve(this.getHandleActivities(res)))
             .catch(err => Promise.reject(false));
         },
+        getSearchActivitiesForActivityId(activityIds){
+            const paramsArr = [
+                "_expand=user",
+                "_expand=location",
+                "_embed=violations",
+                "_embed=orders"
+            ];
+            
+            if(activityIds.length) { paramsArr.push(activityIds.join('&')) }
+            
+            return bacsRequest.get(`440/activities?${paramsArr.join('&')}`)
+            .then(res => Promise.resolve(res))
+            .catch(err => Promise.reject(false));
+        },
         getActivity(activityId){
             const paramsArr = [
                 "_expand=user",
@@ -98,7 +112,7 @@ export default defineStore("ActivityStore", {
             .then(res => {
                 return Promise.resolve({
                     ...res,
-                    ...this.statusFormat(res)
+                    ...statusFormat(res)
                 });
             })
             .catch(err => Promise.reject(false));
@@ -117,34 +131,9 @@ export default defineStore("ActivityStore", {
             return activities.map(activity => {
                 return {
                     ...activity,
-                    ...this.statusFormat(activity)
+                    ...statusFormat(activity)
                 };
             });
-        },
-        /**
-         * 活動按鈕顯示文字
-         * 
-         * @param activityStatus：Number - 活動狀態
-         * @param orderStatus：Number - 報名狀態
-         * @returns String
-         */
-        getActivityBtnText(activityStatus, orderStatus) {
-            let text = "立即報名";
-            if(orderStatus !== 2) {
-                if(activityStatus === 0) {
-                    text = "系統中止";
-                } else {
-                    if(activityStatus === 2 || activityStatus === 3) {
-                        text = `活動${activityStatus === 2 ? "進行" : "結束"}`;
-                    } else if (orderStatus === 1 || orderStatus === 3) {
-                        text = `報名${orderStatus === 1 ? "額滿" : "截止"}`;
-                    } else if (orderStatus === 4) {
-                        text = `已報名`;
-                    }
-                }
-            }
-
-            return text;
         }
     }
 });

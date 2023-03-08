@@ -1,5 +1,5 @@
 <script>
-import { activitiesIcon, commentScoreIcon, myOrdersIcon, ordersIcon } from "../data/imagePaths.js";
+import { activitiesIcon, commentScoreIcon, myOrdersIcon, ordersIcon } from "../../data/imagePaths.js";
 
 export default {
     props: ["title", "imgName", "value"],

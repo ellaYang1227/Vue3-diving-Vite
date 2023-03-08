@@ -1,6 +1,7 @@
 <script setup>
 import dateFormat from "../../handle-formats/dateFormat.js";
 import currencyFormat from "../../handle-formats/currencyFormat.js";
+import { statusBtnTextFormat } from "../../handle-formats/statusTextFormat.js";
 import { swalPopup, setSwalFire } from "../../data/sweetalert2.js";
 </script>
 
@@ -13,8 +14,8 @@ import ActivityStore from "../../stores/ActivityStore.js";
 import OrderStore from "../../stores/OrderStore.js";
 import PageStore from "../../stores/PageStore.js";
 import swiperParams from "../../data/swiperParams.js";
-import CommentList from "../../components/CommentList.vue";
-import MessagetList from "../../components/MessageList.vue";
+import CommentList from "../../components/Comment/CommentList.vue";
+import MessagetList from "../../components/Message/MessageList.vue";
 const pageStore = PageStore();
 const { VITE_COMPANY_NAME } = import.meta.env;
 
@@ -37,7 +38,6 @@ export default {
                     this.getActivity(activityId)
                     .then(res => {
                         this.activity = res;
-                        console.log(this.activity)
                         this.hideLoading();
                     });
                 }
@@ -103,12 +103,12 @@ export default {
             return imgArr;
         },
         activityBtnText() {
-            const { activityStatus, orderStatus } = this.activity;
-            return this.getActivityBtnText(activityStatus, orderStatus);
+            const { activityStatus, orderStatus, isOrderPlaced } = this.activity;
+            return isOrderPlaced ? "已報名" : statusBtnTextFormat(activityStatus, orderStatus);
         },
         activityBtnDisabled() {
-            const { orderStatus } = this.activity;
-            return orderStatus === 2 ? false : true;
+            const { orderStatus, isOrderPlaced } = this.activity;
+            return !isOrderPlaced && orderStatus === 2 ? false : true;
         }
     },
     components: {
@@ -117,7 +117,7 @@ export default {
     },
     methods: {
         ...mapActions(LoadingStore, ["hideLoading"]),
-        ...mapActions(ActivityStore, ["getActivity", "getActivityBtnText"]),
+        ...mapActions(ActivityStore, ["getActivity"]),
         ...mapActions(OrderStore, ["addOrder"]),
         scrollEvent() {
             let scrollTop = 0;
@@ -262,7 +262,7 @@ export default {
                 <CommentList :user-id="activity.userId" :user-name="activity.user.name" v-if="activity.userId" />
             </div>
             <!-- 留言 -->
-            <div class="col-lg">
+            <div class="col-lg" id="messaget">
                 <MessagetList :activity-id="activityId" v-if="activityId" />
             </div>
         </div>

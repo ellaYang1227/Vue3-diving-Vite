@@ -5,7 +5,7 @@ import MemberStore from "../stores/MemberStore.js";
 import AuthStore from "../stores/AuthStore.js";
 import HeaderNavbar from "../components/HeaderNavbar.vue";
 import FooterComponent from "../components/FooterComponent.vue";
-import SearchActivityBar from "../components/SearchActivityBar.vue";
+import SearchActivityBar from "../components/Search/SearchActivityBar.vue";
 
 export default {
     data() {
@@ -33,7 +33,6 @@ export default {
         this.$watch(
             () => this.$route.params,
             () => {
-                console.log('front created')
                 this.isVerticalMiddle = false;
                 this.showSearchBar = true;
                 this.isMainOverflowHidden = false;

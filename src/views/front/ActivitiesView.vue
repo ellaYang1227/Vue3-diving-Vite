@@ -5,7 +5,7 @@ import ActivityStore from "../../stores/ActivityStore.js";
 import LoadingStore from "../../stores/LoadingStore.js";
 import CommentStore from "../../stores/CommentStore.js";
 import { getRandom } from "../../data/utilitieFunctions.js";
-import HorizontalActivityCard from "../../components/HorizontalActivityCard.vue";
+import HorizontalActivityCard from "../../components/Card/HorizontalActivityCard.vue";
 
 export default {
     data() {

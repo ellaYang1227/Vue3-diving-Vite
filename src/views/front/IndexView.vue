@@ -8,10 +8,10 @@ import ActivityStore from "../../stores/ActivityStore.js";
 import CommentStore from "../../stores/CommentStore.js";
 import swiperParams from "../../data/swiperParams.js";
 import { divingIcon, peoplesIcon, areaIcon, licenseImg, scoreImg, commentImg } from "../../data/imagePaths.js";
-import CornerActivityCard from "../../components/CornerActivityCard.vue";
-import BottomFrameActivityCard from "../../components/BottomFrameActivityCard.vue";
+import CornerActivityCard from "../../components/Card/CornerActivityCard.vue";
+import BottomFrameActivityCard from "../../components/Card/BottomFrameActivityCard.vue";
 import UserMugShot from "../../components/UserMugShot.vue";
-import CommentCard from "../../components/CommentCard.vue";
+import CommentCard from "../../components/Comment/CommentCard.vue";
 
 export default {
     data() {

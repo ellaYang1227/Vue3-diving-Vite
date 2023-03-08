@@ -1,14 +1,13 @@
 <script setup>
-import dateFormat from "../handle-formats/dateFormat.js";
-import decimalFormat from "../handle-formats/decimalFormat.js";
-import { getMainImg } from "../data/utilitieFunctions.js";
+import dateFormat from "../../handle-formats/dateFormat.js";
+import decimalFormat from "../../handle-formats/decimalFormat.js";
+import { statusBtnTextFormat } from "../../handle-formats/statusTextFormat.js";
+import { getMainImg } from "../../data/utilitieFunctions.js";
 </script>
 
 <script>
-import { mapActions } from "pinia";
-import ActivityStore from "../stores/ActivityStore.js";
-import propsValidator from "../data/propsValidator.js";
-import UserMugShot from "./UserMugShot.vue";
+import propsValidator from "../../data/propsValidator.js";
+import UserMugShot from "../UserMugShot.vue";
 
 export default {
     props: {
@@ -24,9 +23,6 @@ export default {
     },
     components: {
         UserMugShot
-    },
-    methods: {
-        ...mapActions(ActivityStore, ["getActivityBtnText"]),
     }
 };
 </script>
@@ -55,8 +51,9 @@ export default {
                                 <li class="list-inline-item" v-if="activity.cylinderTotalId">{{ activity.cylinderTotal.name }}</li>
                             </ul>
                         </div>
-                        <router-link :to="`/activity/${activity.id}`" class="btn btn-custom-rectangle mt-3" role="button" :class="activity.orderStatus !== 2 ? 'btn-lightPrimary opacity-40' : 'btn-primary'">
-                        {{ getActivityBtnText(activity.activityStatus, activity.orderStatus).replace("立即報名", "揪團詳情") }}
+                        <router-link :to="`/activity/${activity.id}`" class="btn btn-custom-rectangle mt-3" role="button" :class="activity.isOrderPlaced || activity.orderStatus !== 2 ? 'btn-lightPrimary opacity-40' : 'btn-primary'">
+                            <template v-if="activity.isOrderPlaced">已報名</template>
+                            <template v-else>{{ statusBtnTextFormat(activity.activityStatus, activity.orderStatus).replace("立即報名", "揪團詳情") }}</template>
                         </router-link>
                     </div>
                 </div>
@@ -66,7 +63,7 @@ export default {
 </template>
 
 <style lang="scss">
-@import "../assets/styles/bootstrap-custom-variables";
+@import "../../assets/styles/bootstrap-custom-variables";
 $img-frame-card-Spacing: 1rem;
 
 .horizontal-card {

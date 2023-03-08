@@ -1,6 +1,7 @@
 <script setup>
 import decimalFormat from "../../../handle-formats/decimalFormat.js";
 import dateFormat from "../../../handle-formats/dateFormat.js";
+import { activityStatusTextFormat } from "../../../handle-formats/statusTextFormat.js";
 import { getMainImg } from "../../../data/utilitieFunctions.js";
 </script>
 
@@ -8,56 +9,56 @@ import { getMainImg } from "../../../data/utilitieFunctions.js";
 import { mapState } from "pinia";
 import MemberStore from "../../../stores/MemberStore.js";
 import OptionStore from "../../../stores/OptionStore.js";
-import SearchListBar from "../../../components/SearchListBar.vue";
+import SearchListBar from "../../../components/Search/SearchListBar.vue";
+import CommentModal from "../../../components/Modal/CommentModal.vue";
 
 export default {
     data () {
         return {
-            filterMyOrders: []
+            filterMyOrders: [],
+            currentActivity: {}
         }
     },
     components: {
-        SearchListBar
+        SearchListBar,
+        CommentModal
     },
     computed: {
         ...mapState(MemberStore, ["myOrders"]),
-        ...mapState(OptionStore, ["locations"]),
-        toBeCommented() {
-            console.log(this.myOrders, this.filterMyOrders)
-            return 1;
-        }
+        ...mapState(OptionStore, ["locations"])
     },
     watch: {
         myOrders() {
-            console.log('myOrders')
             this.filterMyOrders = this.myOrders;
         }
     },
     mounted() {
-        console.log(this.myOrders, this.filterMyOrders)
         this.filterMyOrders = this.myOrders;
     },
     methods: {
         getLocationName(locationId) {
             return this.locations.find(location => location.id == locationId).name;
         },
+        getActivityStatusTotal(status) {
+            return this.filterMyOrders.reduce((accumulator, currentValue) => {
+                const { activity } = currentValue;
+                if(activity.activityStatus === status) {
+                    accumulator ++;
+                }
+                return accumulator;
+            }, 0);
+        },
         onSubmit(search) {
-            console.log(search)
             const { keyword, startDate, endDate } = search;
-            this.filterMyOrders = this.myOrders.filter(order => {
-                return !keyword || order.title.indexOf(keyword) > -1 && 
-                !startDate || startDate >= order.startDate && 
-                !endDate || order.startDate >= endDate
-            });
-            // this.showLoading("btn");
-            // const query = Object.keys(this.search).reduce((accumulator, currentKey) => {
-            //     if(this.search[currentKey]){ accumulator[currentKey] = this.search[currentKey] }
-            //     return accumulator;
-            // }, {});
-
-            // let routerPushData = { path: '/activities' }
-            // if(Object.keys(this.search).length){ routerPushData.query = query }
-            // this.$router.push(routerPushData)
+            this.filterMyOrders = this.myOrders.filter(order => 
+                (!keyword || order.activity.title.indexOf(keyword) > -1) && 
+                (!startDate || order.activity.startDate >= startDate) &&
+                (!endDate || endDate >= order.activity.endDate)
+            );
+        },
+        openCommentModal(activity) {
+            this.currentActivity = activity;
+            console.log('openCommentModal', activity)
         }
     }
 };
@@ -65,36 +66,62 @@ export default {
 
 <template>
     <div class="py-3">
-        <h6 class="text-danger h5" v-if="toBeCommented">等待評論：<strong>{{ toBeCommented }} 筆</strong></h6>
         <SearchListBar @onSubmit="onSubmit" />
-        <div class="row py-3" v-for="filterOrder in filterMyOrders" :key="filterOrder.id">
-            <div class="col d-flex align-items-center">
-                <div class="custom-rectangle-img custom-rectangle border-card-border-width border">
-                    <img :src="getMainImg(filterOrder.activity.imgs).img" class="custom-rectangle img-cover" :alt="filterOrder.activity.title">
+        <div class="p-3" :class="{ 'bg-lightPrimary bg-opacity-10': (index + 1 )% 2 }" v-for="(filterOrder, index) in filterMyOrders" :key="filterOrder.id">
+            <div class="row gy-3 align-items-center">
+                <div class="col-md-6 col-xl-4 col-xxl-3 d-flex align-items-center">
+                    <div class="custom-rectangle-img custom-rectangle border-card-border-width border flex-shrink-0">
+                        <img :src="getMainImg(filterOrder.activity.imgs).img" class="custom-rectangle img-cover" :alt="filterOrder.activity.title">
+                    </div>
+                    <div class="ms-2">
+                        <h2 class="fw-bold h6 mb-1 text-primary text-truncate-row-2">{{ filterOrder.activity.title }}</h2>
+                        <h3 class="fs-7 mb-0 text-truncate">{{ getLocationName(filterOrder.activity.locationId) }}</h3>
+                    </div>
                 </div>
-                <div class="ms-2">
-                    <h2 class="fw-bold h6 mb-1 text-primary text-truncate-row-2">{{ filterOrder.activity.title }}</h2>
-                    <h3 class="fs-7 mb-0 text-truncate">{{ getLocationName(filterOrder.activity.locationId) }}</h3>
+                <div class="col-md-6 col-xl-3 col-xxl d-flex flex-column justify-content-center align-items-start">
+                    <small class="order-md-last opacity-80">活動日期</small>
+                    <span class="font-barlow">{{ `${dateFormat(filterOrder.activity.startDate)} ~ ${dateFormat(filterOrder.activity.endDate)}` }}</span>
                 </div>
-            </div>
-            <div class="col d-flex flex-column justify-content-center align-items-start">
-                <small class="order-md-last opacity-80">活動日期</small>
-                <span class="font-barlow">{{ `${dateFormat(filterOrder.activity.startDate)} ~ ${dateFormat(filterOrder.activity.endDate)}` }}</span>
-            </div>
-            <div class="col d-flex flex-column justify-content-center align-items-start">
-                <small class="order-md-last opacity-80">主揪人</small>
-                <span class="font-barlow">{{ `${dateFormat(filterOrder.activity.startDate)} ~ ${dateFormat(filterOrder.activity.endDate)}` }}</span>
-            </div>
-            <div class="col d-flex flex-column justify-content-center align-items-start">
-                <small class="order-md-last opacity-80">活動狀態</small>
-                <span class="font-barlow">{{ `${dateFormat(filterOrder.activity.startDate)} ~ ${dateFormat(filterOrder.activity.endDate)}` }}</span>
-            </div>
-            <div class="col">
-                <small class="order-md-last opacity-80">活動狀態</small>
-                <span class="font-barlow">{{ `${dateFormat(filterOrder.activity.startDate)} ~ ${dateFormat(filterOrder.activity.endDate)}` }}</span>
+                <div class="col-6 col-xl col-xxl-2 d-flex flex-column justify-content-center align-items-start">
+                    <small class="order-md-last opacity-80">主揪人</small>
+                    <span class="font-barlow">{{ filterOrder.activity.user.name }}</span>
+                </div>
+                <div class="col-6 col-xl col-xxl-2 d-flex flex-column justify-content-center align-items-start">
+                    <small class="order-md-last opacity-80">活動狀態</small>
+                    <span :class="{ 'text-danger': !filterOrder.activity.activityStatus }">{{ activityStatusTextFormat(filterOrder.activity.activityStatus) }}</span>
+                </div>
+                <div class="col-xl-auto">
+                    <div class="row gx-2 align-items-center">
+                        <div class="col-auto">
+                            <router-link :to="`/activity/${filterOrder.activity.id}`" class="btn btn-link btn-sm border-0 p-0">詳情</router-link>
+                        </div>
+                        <div class="col-auto">
+                            <button type="button" class="btn btn-link btn-sm border-0 p-0">
+                                <router-link :to="`/activity/${filterOrder.activity.id}#messaget`" class="btn btn-link btn-sm border-0 p-0">留言</router-link>
+                            </button>
+                        </div>
+                        <div class="col-auto">
+                            <button type="button" class="btn btn-link btn-sm border-0 p-0" @click="openCommentModal(filterOrder.activity)">評論</button>
+                        </div>
+                        <div class="col-auto col-xl-12">
+                            <button type="button" class="btn btn-link btn-sm border-0 p-0" :disabled="filterOrder.activity.orderStatus !== 2">取消報名</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+        <div class="border-top px-3 pt-2 opacity-80">
+            <ul class="row gx-2 gx-md-3 align-items-center list-unstyled mb-0">
+                <li class="col-md">總計：<strong class="me-1 font-barlow">{{ filterMyOrders.length }}</strong>筆</li>
+                <li class="col-auto ms-md-auto" :class="{ 'text-danger': getActivityStatusTotal(0) }">系統中止：<strong class="me-1 font-barlow">{{ getActivityStatusTotal(0) }}</strong>筆</li>
+                <li class="col-auto">未開始：<strong class="me-1 font-barlow">{{ getActivityStatusTotal(1) }}</strong>筆</li>
+                <li class="col-auto">進行中：<strong class="me-1 font-barlow">{{ getActivityStatusTotal(2) }}</strong>筆</li>
+                <li class="col-auto">已結束：<strong class="me-1 font-barlow">{{ getActivityStatusTotal(3) }}</strong>筆</li>
+            </ul>
+        </div>
     </div>
+    
+    <CommentModal ref="commentModal" :activity="currentActivity" />
 </template>
 
 <style lang="scss">

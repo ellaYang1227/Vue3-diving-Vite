@@ -1,10 +1,10 @@
 <script setup>
-import dateFormat from "../handle-formats/dateFormat.js";
-import propsValidator from "../data/propsValidator.js";
+import dateFormat from "../../handle-formats/dateFormat.js";
+import propsValidator from "../../data/propsValidator.js";
 </script>
 
 <script>
-import UserMugShot from "../components/UserMugShot.vue";
+import UserMugShot from "../UserMugShot.vue";
 
 export default {
     props: {
