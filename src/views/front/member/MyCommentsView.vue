@@ -1,7 +1,7 @@
 <script>
 import { mapState } from "pinia";
 import AuthStore from "../../../stores/AuthStore.js";
-import CommentList from "../../../components/CommentList.vue";
+import CommentList from "../../../components/Comment/CommentList.vue";
 
 export default {
     computed: {

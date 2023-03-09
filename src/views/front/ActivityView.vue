@@ -216,8 +216,8 @@ export default {
             </div>
             <!-- 活動 標題 -->
             <div class="col-md-6 py-md-3">
-                <h3 class="fs-6 mb-0 text-truncate">{{ activity.location?.name }}</h3>
-                <h1 class="fw-bold fs-4 text-primary text-truncate">{{ activity.title }}</h1>
+                <h3 class="fs-6 mb-0">{{ activity.location?.name }}</h3>
+                <h1 class="fw-bold fs-4 text-primary">{{ activity.title }}</h1>
                 <ul class="list-unstyled opacity-80 mb-1">
                     <li class="font-barlow"><font-awesome-icon icon="fa-solid fa-calendar-days" fixed-width class="me-1" />{{ dateFormat(activity.startDate) }} ~ {{ dateFormat(activity.endDate) }}</li>
                     <li class="font-barlow"><font-awesome-icon icon="fa-solid fa-user" fixed-width class="me-1" /><strong>{{ activity.orders?.length }}</strong>{{ ` / ${activity.maxOrderTotal}` }}</li>
@@ -229,6 +229,7 @@ export default {
                         </strong>
                     </li>
                     <li>潛水支數<strong class="ms-2">{{ activity.cylinderTotalId ? activity.cylinderTotal.name : '不限' }}</strong></li>
+                    <li class="font-barlow">報名截止<strong class="ms-2">{{ dateFormat(activity.orderExpiryDate) }}</strong></li>
                 </ul>
                 <router-link class="text-decoration-none badge bg-lightPrimary bg-opacity-20 me-1" v-for="tag in activity.tags"  :key="tag" :to="{ path: '/activities', query: { tag: tag } }">{{ tag }}</router-link>
                 <div class="mt-3 d-flex align-items-center">

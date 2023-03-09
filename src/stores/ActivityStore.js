@@ -89,7 +89,8 @@ export default defineStore("ActivityStore", {
                 "_expand=user",
                 "_expand=location",
                 "_embed=violations",
-                "_embed=orders"
+                "_embed=orders",
+                "_embed=comments"
             ];
             
             if(activityIds.length) { paramsArr.push(activityIds.join('&')) }

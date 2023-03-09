@@ -134,7 +134,15 @@ export default defineStore("MemberStore", {
                     return getSearchActivitiesForActivityId(activityIds).then(activities => {
                         activities = handleActivitiesStatus(activities);
                         this.myOrders = orders.map(order => {
-                            const activity = activities.find(activity => order.activityId == activity.id);
+                            const activity = activities.find(activity => {
+                                if(order.activityId == activity.id) {
+                                    const comment = activity.comments.find(comment => comment.userId == getStorageUser()?.id);
+                                    activity.comment = comment;
+                                    return activity;
+                                }
+
+                            });
+                            
                             return {
                                 ...order,
                                 activity
@@ -200,6 +208,24 @@ export default defineStore("MemberStore", {
                 return Promise.resolve(res);
             })
             .catch(err => Promise.reject(false));
+        },
+        addComment(body) {
+            body.creationDate = getTimestamp(new Date());
+            const title = '新增評論';
+            return bacsRequest
+                .post(`660/users/${getStorageUser()?.id}/comments`, body)
+                .then(res => {
+                    this.getMyOrders();
+                    setSwalFire("toast", "success", `${title}成功`);
+                    return Promise.resolve(true);
+                })
+                .catch(({status}) => {
+                    if(status !== 401){
+                        setSwalFire("toast", "error", `${title}失敗`);
+                    }
+
+                    return false;
+                });
         },
         // getMyComments() {
         //     const paramsArr = [

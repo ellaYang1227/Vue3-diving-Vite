@@ -18,7 +18,8 @@ $utilities: (
         ),
         // Opacity utilities
         // scss-docs-start utils-opacity
-        "opacity": (property: opacity,
+        "opacity": (
+            property: opacity,
             values: (0: 0,
                 25: .25,
                 30: .3,
@@ -29,6 +30,7 @@ $utilities: (
                 85: .85,
                 90: 0.9,
                 100: 1,
-            )),
+            )
+        ),
         // scss-docs-end utils-opacity
 );

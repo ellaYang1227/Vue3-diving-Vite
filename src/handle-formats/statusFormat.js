@@ -55,7 +55,7 @@ function getActivityStatus({ startDate, endDate, violations }) {
  * @param maxOrderTotal：Number - 報名人數上限
  * @param orders：Array - 該活動所有報名人資訊
  * @param violations：Array - 該活動違規紀錄
- * @returns Number - 0：系統中止、1：已額滿、2：進行中、3：已截止、4：已報名
+ * @returns Number - 0：系統中止、1：已額滿、2：進行中、3：已截止
  */
 function getOrderStatus({ orderExpiryDate, maxOrderTotal, orders, violations }) {
     orderExpiryDate = getTimestamp(orderExpiryDate);

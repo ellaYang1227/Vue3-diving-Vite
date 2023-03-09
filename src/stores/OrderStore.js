@@ -2,8 +2,8 @@ import { defineStore } from "pinia";
 import { bacsRequest } from "../data/axiosBase.js";
 import { setSwalFire } from "../data/sweetalert2.js";
 import { getTimestamp } from "../data/utilitieFunctions.js";
-import AuthStore from "./AuthStore.js";
 import ActivityStore from "./ActivityStore.js";
+import AuthStore from "./AuthStore.js";
 import MemberStore from "./MemberStore.js";
 const { getStorageUser } = AuthStore();
 const { getActivity } = ActivityStore();
@@ -24,6 +24,24 @@ export default defineStore("OrderStore", {
                         getActivity(activityId),
                         getMyOrders(3)
                     ]);
+                })
+                .catch(({status}) => {
+                    if(status !== 401){
+                        setSwalFire("toast", "error", `${title}失敗`);
+                    }
+
+                    return false;
+                });
+        },
+        delOrder(orderId) {
+            const title = `取消報名`;
+            console.log(orderId)
+            return bacsRequest
+                .delete(`600/orders/${orderId}`)
+                .then(res => {
+                    setSwalFire("toast", "success", `${title}成功`);
+                    getMyOrders();
+                    return Promise.resolve(true);
                 })
                 .catch(({status}) => {
                     if(status !== 401){

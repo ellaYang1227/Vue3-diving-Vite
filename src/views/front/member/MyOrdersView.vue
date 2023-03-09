@@ -1,14 +1,13 @@
 <script setup>
-import decimalFormat from "../../../handle-formats/decimalFormat.js";
 import dateFormat from "../../../handle-formats/dateFormat.js";
 import { activityStatusTextFormat } from "../../../handle-formats/statusTextFormat.js";
 import { getMainImg } from "../../../data/utilitieFunctions.js";
 </script>
 
 <script>
-import { mapState } from "pinia";
+import { mapState, mapActions } from "pinia";
 import MemberStore from "../../../stores/MemberStore.js";
-import OptionStore from "../../../stores/OptionStore.js";
+import OrderStore from "../../../stores/OrderStore.js";
 import SearchListBar from "../../../components/Search/SearchListBar.vue";
 import CommentModal from "../../../components/Modal/CommentModal.vue";
 
@@ -24,21 +23,21 @@ export default {
         CommentModal
     },
     computed: {
-        ...mapState(MemberStore, ["myOrders"]),
-        ...mapState(OptionStore, ["locations"])
+        ...mapState(MemberStore, ["myOrders"])
     },
     watch: {
         myOrders() {
             this.filterMyOrders = this.myOrders;
+            console.log(this.filterMyOrders)
         }
     },
     mounted() {
         this.filterMyOrders = this.myOrders;
+        
+        console.log(this.filterMyOrders)
     },
     methods: {
-        getLocationName(locationId) {
-            return this.locations.find(location => location.id == locationId).name;
-        },
+        ...mapActions(OrderStore, ["delOrder"]),
         getActivityStatusTotal(status) {
             return this.filterMyOrders.reduce((accumulator, currentValue) => {
                 const { activity } = currentValue;
@@ -57,8 +56,19 @@ export default {
             );
         },
         openCommentModal(activity) {
-            this.currentActivity = activity;
-            console.log('openCommentModal', activity)
+            this.currentActivity = { ...activity };
+            console.log('openCommentModal', this.currentActivity)
+            // CommentModal 待修正
+            console.error('openCommentModal $refs', CommentModal)
+            //console.log(this.$refs.childCommentModal.isLoading)
+            //this.$refs.childCommentModal.openModal();
+           CommentModal.methods.openModal();
+        },
+        deleteOrder(orderId) {
+            console.error('刪除之後訂單資料會有問題')
+            console.log(orderId)
+            this.delOrder(orderId);
+            //cancelOrder(filterOrder.id)
         }
     }
 };
@@ -75,7 +85,7 @@ export default {
                     </div>
                     <div class="ms-2">
                         <h2 class="fw-bold h6 mb-1 text-primary text-truncate-row-2">{{ filterOrder.activity.title }}</h2>
-                        <h3 class="fs-7 mb-0 text-truncate">{{ getLocationName(filterOrder.activity.locationId) }}</h3>
+                        <h3 class="fs-7 mb-0 text-truncate">{{ filterOrder.activity.location.name }}</h3>
                     </div>
                 </div>
                 <div class="col-md-6 col-xl-3 col-xxl d-flex flex-column justify-content-center align-items-start">
@@ -88,9 +98,9 @@ export default {
                 </div>
                 <div class="col-6 col-xl col-xxl-2 d-flex flex-column justify-content-center align-items-start">
                     <small class="order-md-last opacity-80">活動狀態</small>
-                    <span :class="{ 'text-danger': !filterOrder.activity.activityStatus }">{{ activityStatusTextFormat(filterOrder.activity.activityStatus) }}</span>
+                    <span :class="{ 'text-danger': filterOrder.activity.activityStatus === 0, 'opacity-50': filterOrder.activity.activityStatus === 3 }">{{ activityStatusTextFormat(filterOrder.activity.activityStatus) }}</span>
                 </div>
-                <div class="col-xl-auto">
+                <div class="col-xl-2">
                     <div class="row gx-2 align-items-center">
                         <div class="col-auto">
                             <router-link :to="`/activity/${filterOrder.activity.id}`" class="btn btn-link btn-sm border-0 p-0">詳情</router-link>
@@ -101,10 +111,11 @@ export default {
                             </button>
                         </div>
                         <div class="col-auto">
-                            <button type="button" class="btn btn-link btn-sm border-0 p-0" @click="openCommentModal(filterOrder.activity)">評論</button>
+                            <button type="button" class="btn btn-link btn-sm border-0 p-0" @click="openCommentModal(filterOrder.activity)" :disabled="filterOrder.activity.activityStatus === 0 || filterOrder.activity.activityStatus === 1">
+                            評論<template v-if="filterOrder.activity.comment">(1)</template></button>
                         </div>
                         <div class="col-auto col-xl-12">
-                            <button type="button" class="btn btn-link btn-sm border-0 p-0" :disabled="filterOrder.activity.orderStatus !== 2">取消報名</button>
+                            <button type="button" class="btn btn-link btn-sm border-0 p-0" :disabled="filterOrder.activity.orderStatus === 3" @click="deleteOrder(filterOrder.id)">取消報名</button>
                         </div>
                     </div>
                 </div>
@@ -120,8 +131,7 @@ export default {
             </ul>
         </div>
     </div>
-    
-    <CommentModal ref="commentModal" :activity="currentActivity" />
+    <CommentModal ref="childCommentModal" :activity="currentActivity" />
 </template>
 
 <style lang="scss">
