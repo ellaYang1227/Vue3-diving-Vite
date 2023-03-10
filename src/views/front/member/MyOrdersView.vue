@@ -59,10 +59,10 @@ export default {
             this.currentActivity = { ...activity };
             console.log('openCommentModal', this.currentActivity)
             // CommentModal 待修正
-            console.error('openCommentModal $refs', CommentModal)
-            //console.log(this.$refs.childCommentModal.isLoading)
-            //this.$refs.childCommentModal.openModal();
-           CommentModal.methods.openModal();
+            console.error('openCommentModal $refs', CommentModal, this.$refs)
+            //console.error('openCommentModal $refs', this.$refs?.childCommentModal.comment)
+            this.$refs.childCommentModal.openModal();
+           //CommentModal.methods.openModal();
         },
         deleteOrder(orderId) {
             console.error('刪除之後訂單資料會有問題')

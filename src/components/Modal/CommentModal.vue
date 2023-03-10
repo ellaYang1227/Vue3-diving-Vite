@@ -39,11 +39,12 @@ export default {
     },
     mounted() {
         console.log('commentModal')
-        commentModal = new bootstrap.Modal(this.$refs.commentModal, {
+        //this.$refs.commentModal
+        commentModal = new bootstrap.Modal(document.getElementById('commentModal'), {
             keyboard: false
         });
         console.log(commentModal)
-        commentModal.show();
+        //commentModal.show();
         this.setDefaultCurrentComment();
     },
     methods: {
@@ -60,7 +61,7 @@ export default {
         openModal() {
             console.log(commentModal)
             commentModal.show();
-            console.log(method)
+            console.log('openModal')
         },
         onSubmit() {
             this.isLoading = true;
@@ -75,7 +76,7 @@ export default {
 </script>
 
 <template>
-    <div class="modal fade" ref="commentModal" aria-labelledby="commentModalLabel" :data-bs-backdrop="isLoading ? true : 'static'" aria-hidden="true">
+    <div class="modal fade" id="commentModal" aria-labelledby="commentModalLabel" :data-bs-backdrop="isLoading ? true : 'static'" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
             <div class="modal-header">
