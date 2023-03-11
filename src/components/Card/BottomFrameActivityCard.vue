@@ -15,7 +15,7 @@ export default {
             validator(value) {
                 const verifyKeys = ["id", "title", "imgs", "location", "startDate", "endDate", "user"];
 
-                return propsValidator(value, verifyKeys);
+                return propsValidator("BottomFrameActivityCard", value, verifyKeys);
             }
         }
     },

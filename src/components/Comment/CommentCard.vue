@@ -13,7 +13,7 @@ export default {
             required: true,
             validator(value) {
                 const verifyKeys = ["user", "activity", "score", "creationDate", "content"];
-                return propsValidator(value, verifyKeys);
+                return propsValidator("CommentCard", value, verifyKeys);
             }
         },
         showDate: {

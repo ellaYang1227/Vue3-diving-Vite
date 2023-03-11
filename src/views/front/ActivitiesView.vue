@@ -6,6 +6,7 @@ import LoadingStore from "../../stores/LoadingStore.js";
 import CommentStore from "../../stores/CommentStore.js";
 import { getRandom } from "../../data/utilitieFunctions.js";
 import HorizontalActivityCard from "../../components/Card/HorizontalActivityCard.vue";
+import NoData from "../../components/NoData.vue";
 
 export default {
     data() {
@@ -55,7 +56,8 @@ export default {
     },
     components: {
         VueMultiselect,
-        HorizontalActivityCard
+        HorizontalActivityCard,
+        NoData
     },
     created() {
         this.$watch(
@@ -111,7 +113,7 @@ export default {
     <div class="row row-cols-1 row-cols-md-2 gy-4" v-if="activities.length">
         <HorizontalActivityCard :activity="activity" v-for="activity in activities" :key="activity.id" />
     </div>
-    <p v-else class="text-center opacity-75 mb-0">找不到符合條件的活動，試試看其他搜尋條件吧</p>
+    <NoData v-else text="找不到符合條件的揪團活動，試試看其他搜尋條件吧" />
 </div>
 </template>
 

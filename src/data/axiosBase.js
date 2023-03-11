@@ -1,8 +1,8 @@
 import axios from "axios";
 import { setSwalFire } from "../data/sweetalert2.js";
-import LoadingStore from "../stores/LoadingStore.js";
-import AuthStore from "../stores/AuthStore.js";
 import router from "../router/index.js";
+import AuthStore from "../stores/AuthStore.js";
+import LoadingStore from "../stores/LoadingStore.js";
 const { hideLoading } = LoadingStore();
 const { getToken, logout } = AuthStore();
 
@@ -43,7 +43,6 @@ bacsRequest.interceptors.response.use(
         const { status, statusText } = error.response;
 
         if (status !== 400) {
-            console.log(status);
             let title = "系統錯誤";
             let errorMsg = "";
             let isRedirectLogin = false;
@@ -53,7 +52,6 @@ bacsRequest.interceptors.response.use(
                 errorMsg = "找不到該筆資料";
                 isBackPage = true;
             } else if (status === 401){
-                console.log(status)
                 title = "驗證失敗";
                 errorMsg = "您的身分驗證失敗，請重新登入";
                 isRedirectLogin = true;
@@ -61,11 +59,8 @@ bacsRequest.interceptors.response.use(
                 errorMsg = "發生不明錯誤，請重新操作";
             }
 
-
-            console.log(isRedirectLogin)
             setSwalFire("popup", "error", title, errorMsg).then(() => {
                 if (isRedirectLogin) {
-                    console.log(isRedirectLogin)
                     logout();
                 }else if(isBackPage){
                     router.go(-1);
@@ -82,3 +77,4 @@ bacsRequest.interceptors.response.use(
 );
 
 export { baseJsonURL, baseURL, bacsRequest };
+

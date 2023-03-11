@@ -10,7 +10,7 @@ const { getStorageUser } = AuthStore();
  */
 export default function (value) {
     //console.log('value -------------------', value)
-    const isOrderPlaced = value.orders.some(order => order.userId == getStorageUser()?.id);
+    const isOrderPlaced = value.orders.some(order => order.userId == getStorageUser()?.id && !order.isDelete);
 
     return {
         activityStatus: getActivityStatus(value),
@@ -63,13 +63,13 @@ function getOrderStatus({ orderExpiryDate, maxOrderTotal, orders, violations }) 
     if (violations.length) {
         status = 0;
     } else {
-        if (maxOrderTotal === orders?.length) {
-            status = 1;
+        if (today > orderExpiryDate) {
+            status = 3;
         } else if (orderExpiryDate >= today) {
             status = 2;
-        } else if (today > orderExpiryDate) {
-            status = 3;
-        }
+        } else if (maxOrderTotal === orders?.length) {
+            status = 1;
+        } 
     }
     
 

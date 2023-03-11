@@ -24,7 +24,7 @@ export default {
             required: true,
             validator(value) {
                 const verifyKeys = ["user", "updateDate", "content"];
-                return propsValidator(value, verifyKeys);
+                return propsValidator("MessageCardItem", value, verifyKeys);
             }
         },
         activityId: {

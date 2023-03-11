@@ -2,8 +2,8 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 
 export const swalPopup = Swal.mixin({
     customClass: {
-        confirmButton: "btn btn-primary",
-        cancelButton: "btn btn-outline-lightPrimary"
+        confirmButton: "btn btn-primary rounded-0",
+        cancelButton: "btn btn-outline-lightPrimary rounded-0"
     },
     buttonsStyling: false,
     showConfirmButton: false,
@@ -18,7 +18,7 @@ export const swalToast = Swal.mixin({
     toast: true,
     showConfirmButton: false,
     position: "bottom-end",
-    timer: 2000,
+    timer: 1500,
     timerProgressBar: true
 });
 

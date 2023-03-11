@@ -24,7 +24,6 @@ export default {
     },
     methods: {
         onSubmit() {
-            console.log(this.search)
             this.$emit('onSubmit', this.search)
         }
     }

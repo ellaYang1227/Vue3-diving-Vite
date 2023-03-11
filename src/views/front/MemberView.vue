@@ -64,6 +64,15 @@ export default {
             memberStore.$patch(state => {
                 state.myComments = this.comments.find(comment => comment.userId == id);
             });
+        },
+        myOrders() {
+            this.setCards();
+        },
+        myComments() {
+            this.setCards();
+        },
+        myActivities() {
+            this.setCards();
         }
     },
     components: {

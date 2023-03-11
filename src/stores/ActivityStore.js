@@ -111,6 +111,7 @@ export default defineStore("ActivityStore", {
 
             return bacsRequest.get(`activities/${activityId}?${paramsArr.join('&')}`)
             .then(res => {
+                res.orders = res.orders.filter(order => !order.isDelete);
                 return Promise.resolve({
                     ...res,
                     ...statusFormat(res)
@@ -129,6 +130,7 @@ export default defineStore("ActivityStore", {
             return this.handleActivitiesStatus(activities);
         },
         handleActivitiesStatus(activities) {
+            activities.forEach(item => item.orders = item.orders.filter(order => !order.isDelete));
             return activities.map(activity => {
                 return {
                     ...activity,

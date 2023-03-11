@@ -118,7 +118,7 @@ export default {
     methods: {
         ...mapActions(LoadingStore, ["hideLoading"]),
         ...mapActions(ActivityStore, ["getActivity"]),
-        ...mapActions(OrderStore, ["addOrder"]),
+        ...mapActions(OrderStore, ["updateOrder"]),
         scrollEvent() {
             let scrollTop = 0;
             if(this.$refs.activityImgs) { 
@@ -158,10 +158,13 @@ export default {
                             setSwalFire("popup", "warning", "報名資格不符", "您的潛水經驗未達報名標準");
                         } else {
                             this.isLoadingBtn = true;
-                            this.addOrder(this.activityId)
-                            .then(resArr => {
-                                this.activity = resArr[0];
-                                this.isLoadingBtn = false;
+                            // 之前是否曾經報名過
+                            const findOrder = this.activity.orders.find(order => order.userId == id);
+
+                            this.updateOrder(this.activityId, findOrder?.id)
+                                .then(resArr => {
+                                    this.activity = resArr[0];
+                                    this.isLoadingBtn = false;
                             });
                         }
                     }

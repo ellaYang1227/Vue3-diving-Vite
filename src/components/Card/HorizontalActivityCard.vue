@@ -17,7 +17,7 @@ export default {
             validator(value) {
                 const verifyKeys = ["id", "title", "imgs", "location", "startDate", "endDate", "isNitrox", "cylinderTotalId", "user"];
 
-                return propsValidator(value, verifyKeys);
+                return propsValidator("HorizontalActivityCard", value, verifyKeys);
             }
         }
     },

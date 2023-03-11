@@ -109,8 +109,9 @@ export default defineStore("MemberStore", {
         },
         getMyOrders(count) {
             const paramsArr = [
-                "_sort=creationDate",
-                "_order=desc"
+                "_sort=updateDate",
+                "_order=desc",
+                "isDelete=0"
             ];
             
             if(count) { 
@@ -156,12 +157,19 @@ export default defineStore("MemberStore", {
                 .catch(err => Promise.reject(false));
 
         },
+        getActivity(activityId) {
+            return bacsRequest
+                .get(`600/activities/${activityId}`)
+                .then(res => Promise.resolve(res))
+                .catch(err => Promise.reject(false));
+        },
+        
         updateActivity(body) {
             body.updateDate = getTimestamp(new Date());
-            let apiMethod = 'post';
+            let apiMethod = "post";
             let apiUrl = `660/users/${getStorageUser()?.id}/activities`;
             if(body.id){
-                apiMethod = 'patch';
+                apiMethod = "patch";
                 apiUrl = `600/activities/${body.id}`;
             }
             
@@ -171,7 +179,7 @@ export default defineStore("MemberStore", {
                 [apiMethod](apiUrl, body)
                 .then(res => {
                     setSwalFire("toast", "success", `${title}成功`).then(() => {
-                        router.push('/member/myActivity');
+                        router.push('/member/myActivities');
                     });
                     
                     return Promise.resolve(true);
@@ -184,11 +192,22 @@ export default defineStore("MemberStore", {
                     return false;
                 });
         },
-        getActivity(activityId) {
+        delActivity(activityId) {
+            const title = `刪除揪團`;
             return bacsRequest
-                .get(`600/activities/${activityId}`)
-                .then(res => Promise.resolve(res))
-                .catch(err => Promise.reject(false));
+                .delete(`600/activities/${activityId}`)
+                .then(res => {
+                    setSwalFire("toast", "success", `${title}成功`);
+                    this.getMyActivities();
+                    return Promise.resolve(true);
+                })
+                .catch(({status}) => {
+                    if(status !== 401){
+                        setSwalFire("toast", "error", `${title}失敗`);
+                    }
+
+                    return false;
+                });
         },
         getMyActivities() {
             const paramsArr = [
@@ -226,21 +245,6 @@ export default defineStore("MemberStore", {
 
                     return false;
                 });
-        },
-        // getMyComments() {
-        //     const paramsArr = [
-        //         "_sort=creationDate",
-        //         "_order=desc",
-        //         "_expand=activities",
-        //         "_expand=users",
-        //     ];
-            
-        //     return bacsRequest.get(`600/users/${getStorageUser()?.id}/comments?${paramsArr.join('&')}`)
-        //     .then(res => {
-        //         console.log(res)
-        //         return Promise.resolve(res);
-        //     })
-        //     .catch(err => Promise.reject(false));
-        // },
+        }
     }
 });

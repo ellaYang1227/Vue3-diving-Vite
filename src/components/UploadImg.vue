@@ -62,7 +62,7 @@ export default {
                     };
 
                     reader.onerror = err => {
-                        console.error(err);
+                        //console.error(err);
                         this.handleUploadResult();
                     };
                     // 讀取檔案

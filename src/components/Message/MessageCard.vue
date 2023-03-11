@@ -12,7 +12,7 @@ export default {
             required: true,
             validator(value) {
                 const verifyKeys = ["messageReplys", "activity"];
-                return propsValidator(value, verifyKeys);
+                return propsValidator("MessageCard", value, verifyKeys);
             }
         }
     },

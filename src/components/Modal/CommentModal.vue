@@ -1,6 +1,6 @@
 <script setup>
 import dateFormat from "../../handle-formats/dateFormat.js";
-import { increment, showRating, textClass, activeColor, inactiveColor } from "../../data/starRatingParams.js";
+import { increment, readOnly, showRating, textClass, activeColor, inactiveColor } from "../../data/starRatingParams.js";
 </script>
 
 <script>
@@ -8,11 +8,11 @@ import * as bootstrap from "bootstrap";
 import StarRating from "vue-star-rating";
 import { mapActions } from "pinia";
 import MemberStore from '../../stores/MemberStore.js';
-let commentModal = null;
 
 export default {
     data() {
         return {
+            modal: null,
             comment: {
                 score: 0,
                 content: ""
@@ -26,25 +26,21 @@ export default {
             required: false
         }
     },
+    expose: ["openModal"],
     components: {
         StarRating
     },
-    computed: {
-    },
     watch: {
         activity() {
-            console.log(this.activity)
             this.setDefaultCurrentComment();
         }
     },
     mounted() {
-        console.log('commentModal')
-        //this.$refs.commentModal
-        commentModal = new bootstrap.Modal(document.getElementById('commentModal'), {
-            keyboard: false
+        this.modal = new bootstrap.Modal(this.$refs.modal, {
+            keyboard: false,
+            backdrop:  "static"
         });
-        console.log(commentModal)
-        //commentModal.show();
+
         this.setDefaultCurrentComment();
     },
     methods: {
@@ -55,35 +51,30 @@ export default {
                 score: comment ? comment.score : 0,
                 content: comment ? comment.content : ""
             };
-
-            console.log(this.comment)
         },
         openModal() {
-            console.log(commentModal)
-            commentModal.show();
-            console.log('openModal')
+            this.modal.show();
         },
         onSubmit() {
             this.isLoading = true;
-            console.log(this.activity)
-            //const { id } = this.activity;
-            this.comment.activityId = 12;
-            console.log('updateComment', this.comment)
-            this.addComment(this.comment).then(success => commentModal.hide());
+            const activityId = this.activity.id;
+            this.addComment({ ...this.comment, activityId })
+            .then(success => {
+                this.modal.hide();
+                this.isLoading = false;
+            });
         }
     },
 };
 </script>
 
 <template>
-    <div class="modal fade" id="commentModal" aria-labelledby="commentModalLabel" :data-bs-backdrop="isLoading ? true : 'static'" aria-hidden="true">
+    <div class="modal fade" ref="modal" aria-labelledby="commentModalLabel"  aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">
-                    <template v-if="!activity.comment">新增</template>評論
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title">{{ activity.comment ? '查看' : '新增' }}評論</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" :disabled="isLoading"></button>
             </div>
             <div class="modal-body py-2">
                 <ul class="list-group list-group-flush p-0">
@@ -91,7 +82,7 @@ export default {
                         <ul class="list-unstyled lh-sm">
                             <li class="mb-2">
                                 <small class="opacity-75">活動名稱</small>
-                                <h1 class="fw-bold fs-4 text-primary">{{ activity.title }}</h1>
+                                <h1 class="fw-bold fs-5 text-primary">{{ activity.title }}</h1>
                             </li>
                             <li class="mb-2">
                                 <small class="opacity-75">活動地點</small>
@@ -112,21 +103,22 @@ export default {
                         <star-rating
                         :text-class="textClass"
                         :increment="increment"
-                        :rating="comment.score"
                         :star-size="20"
+                        :read-only="activity.comment ? readOnly : false"
                         :show-rating="showRating"
                         :active-color="activeColor"
-                        :inactive-color="inactiveColor"></star-rating>
+                        :inactive-color="inactiveColor"
+                        v-model:rating="comment.score"></star-rating>
                     </li>
-                    <div class="mb-3">
-                        <textarea class="form-control" rows="5" v-model.trim="comment.content" :class="{ 'is-invalid': !comment.content }"></textarea>
-                        <span class="invalid-feedback">必填欄位</span>
-                    </div>
                 </ul>
+                <div class="mb-3">
+                    <textarea class="form-control" rows="5" v-model.trim="comment.content" :class="{ 'is-invalid': !comment.content }" :disabled="activity.comment"></textarea>
+                    <span class="invalid-feedback">必填欄位</span>
+                </div>
             </div>
-            <div class="modal-footer" v-if="!activity.comment">
-                <button type="button" class="btn btn-outline-lightPrimary rounded-0" data-bs-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary btn-custom-rectangle" :disabled="isLoading || !comment.content" @click="onSubmit">
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-lightPrimary rounded-0" data-bs-dismiss="modal" :disabled="isLoading">{{ activity.comment ? '關閉' : '取消' }}</button>
+                <button type="button" class="btn btn-primary btn-custom-rectangle" :disabled="isLoading || !comment.content" @click="onSubmit" v-if="!activity.comment">
                     <span class="spinner-border spinner-border-sm" role="status" v-if="isLoading"></span>
                     新增
                 </button>

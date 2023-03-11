@@ -16,7 +16,7 @@ import FormUtilitieLayoutVue from "../../components/FormUtilitieLayout.vue";
 
 export default {
     data(){
-        return{
+        return {
             title: "",
             activityId: "",
             certificateLevels: [],
@@ -124,15 +124,7 @@ export default {
             return Object.keys(errs).some(errKey => errKey.indexOf('img') > -1);
         },
         onSubmit() {
-            // this.showLoading("btn");
-            // Object.keys(this.form.imgs).every(imgKey => {
-            //     if(!this.form.imgs[imgKey].img){
-            //         delete this.form.imgs[imgKey];
-            //     }
-
-            //     return true;
-            // });
-            console.log(this.form)
+            this.showLoading("btn");
             this.updateActivity(this.form);
         }
     }

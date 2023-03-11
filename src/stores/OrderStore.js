@@ -13,11 +13,37 @@ export default defineStore("OrderStore", {
     state: () => ({}),
     getters: {},
     actions: {
-        addOrder(activityId){
-            activityId = +activityId;
-            const creationDate = getTimestamp(new Date());
+        getSearchOrdersForActivityId(activityId){
+            const paramsArr = [
+                "_expand=user",
+                "_sort=updateDate",
+                "_order=desc",
+                "isDelete=0",
+                `activityId=${activityId}`
+            ];
+            
+            return bacsRequest.get(`440/orders?${paramsArr.join('&')}`)
+            .then(res => Promise.resolve(res))
+            .catch(err => Promise.reject(false));
+        },
+        updateOrder(activityId, orderId){
+            const body = {
+                updateDate: getTimestamp(new Date()),
+                isDelete: 0 // 避免之後取消報名時 會刪除掉該活動
+            };
+
+            let apiMethod = "patch";
+            let apiUrl = `600/orders/${orderId}`;
+
+            if(!orderId) {
+                body.activityId = +activityId;
+                apiMethod = "post",
+                apiUrl = `660/users/${getStorageUser()?.id}/orders`
+            }
+            
             const title = "報名";
-            return bacsRequest.post(`660/users/${getStorageUser()?.id}/orders`, { activityId, creationDate })
+            return bacsRequest
+            [apiMethod](apiUrl, body)
                 .then(res => {
                     setSwalFire("toast", "success", `${title}成功`);
                     return Promise.all([
@@ -33,11 +59,11 @@ export default defineStore("OrderStore", {
                     return false;
                 });
         },
+        // 使用 patch(非 delete) & isDelete 避免取消報名的時候 會刪除掉該活動，
         delOrder(orderId) {
             const title = `取消報名`;
-            console.log(orderId)
             return bacsRequest
-                .delete(`600/orders/${orderId}`)
+                .patch(`600/orders/${orderId}`, { isDelete: 1 })
                 .then(res => {
                     setSwalFire("toast", "success", `${title}成功`);
                     getMyOrders();
