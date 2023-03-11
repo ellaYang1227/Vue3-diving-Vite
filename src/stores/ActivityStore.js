@@ -111,7 +111,6 @@ export default defineStore("ActivityStore", {
 
             return bacsRequest.get(`activities/${activityId}?${paramsArr.join('&')}`)
             .then(res => {
-                res.orders = res.orders.filter(order => !order.isDelete);
                 return Promise.resolve({
                     ...res,
                     ...statusFormat(res)

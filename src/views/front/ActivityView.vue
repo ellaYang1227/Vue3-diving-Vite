@@ -109,6 +109,9 @@ export default {
         activityBtnDisabled() {
             const { orderStatus, isOrderPlaced } = this.activity;
             return !isOrderPlaced && orderStatus === 2 ? false : true;
+        },
+        validOrderTotal() {
+           return this.activity?.orders?.filter(order => !order.isDelete).length;
         }
     },
     components: {
@@ -160,7 +163,7 @@ export default {
                             this.isLoadingBtn = true;
                             // 之前是否曾經報名過
                             const findOrder = this.activity.orders.find(order => order.userId == id);
-
+                            console.log(this.activity)
                             this.updateOrder(this.activityId, findOrder?.id)
                                 .then(resArr => {
                                     this.activity = resArr[0];
@@ -223,7 +226,7 @@ export default {
                 <h1 class="fw-bold fs-4 text-primary">{{ activity.title }}</h1>
                 <ul class="list-unstyled opacity-80 mb-1">
                     <li class="font-barlow"><font-awesome-icon icon="fa-solid fa-calendar-days" fixed-width class="me-1" />{{ dateFormat(activity.startDate) }} ~ {{ dateFormat(activity.endDate) }}</li>
-                    <li class="font-barlow"><font-awesome-icon icon="fa-solid fa-user" fixed-width class="me-1" /><strong>{{ activity.orders?.length }}</strong>{{ ` / ${activity.maxOrderTotal}` }}</li>
+                    <li class="font-barlow"><font-awesome-icon icon="fa-solid fa-user" fixed-width class="me-1" /><strong>{{ validOrderTotal }}</strong>{{ ` / ${activity.maxOrderTotal}` }}</li>
                     <li class="mt-3">主揪人<strong class="ms-2">{{ activity.user?.name }}</strong></li>
                     <li>證照等級<strong class="ms-2">{{ activity.certificateLevel?.name }}</strong></li>
                     <li>需有高氧證照<strong class="ms-2">
