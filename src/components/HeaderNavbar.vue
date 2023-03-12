@@ -187,7 +187,7 @@ export default {
                             </li>
                         </template>
                         <template v-else>
-                            <li class="nav-item" v-if="user.identityId === '0'">
+                            <li class="nav-item" v-if="user.identityId === '0' && false">
                                 <router-link class="nav-link" to="/admin/index" @click="toggleOffcanvasNavbar">後台管理</router-link>
                             </li>
                             <li class="nav-item d-md-none border-top border-color-dropdown">

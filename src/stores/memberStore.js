@@ -19,6 +19,12 @@ export default defineStore("MemberStore", {
     }),
     getters: {},
     actions: {
+        /**
+         * 登入
+         * 
+         * @param user Object：使用者輸入的資料，Email、密碼
+         * @param returnUrl String：登入後，指定跳轉的路徑
+         */
         login(user, returnUrl) {
             return bacsRequest
                 .post("login", user)
@@ -26,11 +32,11 @@ export default defineStore("MemberStore", {
                     changeCookie("add", accessToken, user);
                     this.getMyOrders(3);
 
-                    if(!returnUrl){
-                        const { identityId } = user;
-                        returnUrl = identityId === "0" ? "/admin/index" : "/index"
-                    }
-                    router.push(returnUrl);
+                    // if(!returnUrl){
+                    //     const { identityId } = user;
+                    //     returnUrl = identityId === "0" ? "/admin/index" : "/index"
+                    // }
+                    router.push("/index");
                     return Promise.resolve(true);
                 })
                 .catch(({ data }) => {
@@ -44,6 +50,12 @@ export default defineStore("MemberStore", {
                     return false;
                 });
         },
+        /**
+         * 註冊
+         * 
+         * @param user Object：使用者輸入的資料
+         * @param returnUrl String：登入後，指定跳轉的路徑
+         */
         signup(user, returnUrl) {
             user.creationDate = getTimestamp(new Date());
             // "0"：管理者、"1"：一般(預設)
@@ -53,11 +65,11 @@ export default defineStore("MemberStore", {
                 .then(({ accessToken, user }) => {
                     changeCookie("add", accessToken, user);
 
-                    if(!returnUrl){
-                        const { identityId } = user;
-                        returnUrl = identityId === "0" ? "/admin/index" : "/index"
-                    }
-                    router.push(returnUrl);
+                    // if(!returnUrl){
+                    //     const { identityId } = user;
+                    //     returnUrl = identityId === "0" ? "/admin/index" : "/index"
+                    // }
+                    router.push("/index");
                     return Promise.resolve(true);
                 })
                 .catch(({ data }) => {
@@ -69,15 +81,16 @@ export default defineStore("MemberStore", {
                     return false;
                 });
         },
+        /**
+         * 我的個人資訊
+         * 
+         */
         getMyinfo() {
             const paramsArr = [
                 "_expand=certificateLevel",
                 "_expand=cylinderTotal",
                 "_embed=violations",
-                //"_embed=orders",
-                "_embed=comments",
-                //"_embed=activities"
-                //"_embed=messages"
+                "_embed=comments"
             ];
 
             return bacsRequest
@@ -89,6 +102,11 @@ export default defineStore("MemberStore", {
                 .catch(err => Promise.reject(false));
 
         },
+        /**
+         * 更新個人資訊
+         * 
+         * @param body Object 要更新的個人資訊
+         */
         updateMyinfo(body) {
             delete body.email;
             delete body.password;
@@ -107,19 +125,22 @@ export default defineStore("MemberStore", {
                 return false;
             });
         },
+        /**
+         * 我的訂單 更新時間降序
+         * 
+         */
         getMyOrders(count) {
             const paramsArr = [
                 "_sort=updateDate",
                 "_order=desc",
-                "isDelete=0"
+                "isDelete=0",
+                "_expand=activity"
             ];
-            
-            if(count) { 
-                paramsArr.push("_expand=activity");
-            }
 
             return bacsRequest.get(`400/users/${getStorageUser()?.id}/orders?${paramsArr.join('&')}`)
                 .then(orders => {
+                    // 過濾活動已刪除
+                    orders = orders.filter(order => !order.activity.isDelete);
                     // navber：我的報名，結束時間大於等於今天
                     if(count) { 
                         const filterOrders = orders.filter(order => order.activity.endDate >= dateFormat(new Date(), ["data"], "-"));
@@ -157,6 +178,11 @@ export default defineStore("MemberStore", {
                 .catch(err => Promise.reject(false));
 
         },
+        /**
+         * 我的單一活動
+         * 
+         * @param activityId String | Number 取得活動的活動 id
+         */
         getActivity(activityId) {
             return bacsRequest
                 .get(`600/activities/${activityId}`)
@@ -168,7 +194,10 @@ export default defineStore("MemberStore", {
             body.updateDate = getTimestamp(new Date());
             let apiMethod = "post";
             let apiUrl = `660/users/${getStorageUser()?.id}/activities`;
-            if(body.id){
+            if(!body.id) {
+                // 避免之後刪除活動時 會刪除掉該活動(json-server 刪除 bug)
+                body.isDelete = 0;
+            } else {
                 apiMethod = "patch";
                 apiUrl = `600/activities/${body.id}`;
             }
@@ -192,10 +221,16 @@ export default defineStore("MemberStore", {
                     return false;
                 });
         },
+        // 解決 json-server 刪除 bug：使用 patch(非 delete) & isDelete 避免刪除揪團時 會刪掉其他活動
+        /**
+         * 刪除單一活動
+         * 
+         * @param activityId String | Number 刪除活動的活動 id
+         */
         delActivity(activityId) {
             const title = `刪除揪團`;
             return bacsRequest
-                .delete(`600/activities/${activityId}`)
+                .patch(`600/activities/${activityId}`, { isDelete: 1 })
                 .then(res => {
                     setSwalFire("toast", "success", `${title}成功`);
                     this.getMyActivities();
@@ -209,16 +244,18 @@ export default defineStore("MemberStore", {
                     return false;
                 });
         },
+        /**
+         * 我的活動列表
+         * 
+         */
         getMyActivities() {
             const paramsArr = [
                 "_sort=updateDate",
                 "_order=desc",
-                //"_expand=user",
                 "_expand=location",
-                //"_expand=certificateLevel",
-                //"_expand=cylinderTotal",
                 "_embed=violations",
-                "_embed=orders"
+                "_embed=orders",
+                "isDelete=0"
             ];
             
             return bacsRequest.get(`600/users/${getStorageUser()?.id}/activities?${paramsArr.join('&')}`)
@@ -228,6 +265,11 @@ export default defineStore("MemberStore", {
             })
             .catch(err => Promise.reject(false));
         },
+        /**
+         * 新增評論
+         * 
+         * @param body Object 要新增的內容
+         */
         addComment(body) {
             body.creationDate = getTimestamp(new Date());
             const title = '新增評論';
@@ -245,6 +287,20 @@ export default defineStore("MemberStore", {
 
                     return false;
                 });
+        },
+        /**
+         * 取得單筆違規
+         * 
+         * @param violationId Number | String 違規 id
+         */
+         getViolation(violationId) {
+            return bacsRequest
+                .get(`440/violations/${violationId}?_expand=activity`)
+                .then(res => {
+                    this.myinfo = res;
+                    return Promise.resolve(res);
+                })
+                .catch(err => Promise.reject(false));
         }
     }
 });

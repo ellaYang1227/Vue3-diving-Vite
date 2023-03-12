@@ -78,22 +78,22 @@ const routes = [
             }
         ]
     },
-    {
-        path: "/admin",
-        component: () => import("../views/AdminLayout.vue"),
-        children: [
-            {
-                path: "index",
-                component: () => import("../views/admin/AdminIndexView.vue"),
-                meta: { title: "首頁" }
-            },
-            {
-                // 重新導向
-                path: ":pathMatch(.*)*",
-                redirect: "/admin/index"
-            }
-        ]
-    },
+    // {
+    //     path: "/admin",
+    //     component: () => import("../views/AdminLayout.vue"),
+    //     children: [
+    //         {
+    //             path: "index",
+    //             component: () => import("../views/admin/AdminIndexView.vue"),
+    //             meta: { title: "首頁" }
+    //         },
+    //         {
+    //             // 重新導向
+    //             path: ":pathMatch(.*)*",
+    //             redirect: "/admin/index"
+    //         }
+    //     ]
+    // },
     {
         // 重新導向
         path: "/:pathMatch(.*)*",

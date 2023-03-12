@@ -1,9 +1,9 @@
 import { defineStore } from "pinia";
-import AuthStore from "./AuthStore.js";
-import LoadingStore from "./LoadingStore.js";
 import { bacsRequest } from "../data/axiosBase.js";
 import { setSwalFire } from "../data/sweetalert2.js";
 import { getTimestamp } from "../data/utilitieFunctions.js";
+import AuthStore from "./AuthStore.js";
+import LoadingStore from "./LoadingStore.js";
 const { getStorageUser } = AuthStore();
 const { hideLoading } = LoadingStore();
 
@@ -14,6 +14,11 @@ export default defineStore("MessageStore", {
     }),
     getters: {},
     actions: {
+        /**
+         * 取得指定活動的留言
+         * 
+         * @param activityId Number | String 活動 id
+         */
         getMessages(activityId) {
             const params = {
                 _sort: "updateDate",
@@ -26,12 +31,22 @@ export default defineStore("MessageStore", {
             .then(res => Promise.resolve(res))
             .catch(err => Promise.reject(false));
         },
+        /**
+         * 取得指定留言的回覆
+         * 
+         * @param messageId Number | String 留言 id
+         */
         getMessageReplys(messageId) {
             const params = { messageId };
             return bacsRequest.get(`MessageReplys${this.basicParams}`, { params })
             .then(res => Promise.resolve(res))
             .catch(err => Promise.reject(false));
         },
+        /**
+         * 取得指定活動的完整留言(含回覆)
+         * 
+         * @param activityId Number | String 活動 id
+         */
         getMessagesfull(activityId) {
             this.getMessages(activityId).then(res => {
                 const apiIds = res.reduce((accumulator, currentValue) => {

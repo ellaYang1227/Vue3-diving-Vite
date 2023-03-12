@@ -9,7 +9,6 @@ const { getStorageUser } = AuthStore();
  * @returns Object - activityStatus：活動狀態、orderStatus：揪團狀態、isOrderPlaced：是否已報名
  */
 export default function (value) {
-    //console.log('value -------------------', value)
     const isOrderPlaced = value.orders.some(order => order.userId == getStorageUser()?.id && !order.isDelete);
 
     return {
@@ -30,10 +29,7 @@ export default function (value) {
 function getActivityStatus({ startDate, endDate, violations }) {
     startDate = getTimestamp(startDate);
     endDate = getTimestamp(endDate);
-    // console.log('violations-------------', violations.length)
-    // console.log('today-------------', today)
-    // console.log('startDate-------------', startDate)
-    // console.log('endDate-------------', endDate)
+
     let status = "";
     if (violations.length) {
         status = 0;
@@ -63,12 +59,12 @@ function getOrderStatus({ orderExpiryDate, maxOrderTotal, orders, violations }) 
     if (violations.length) {
         status = 0;
     } else {
-        if (today > orderExpiryDate) {
-            status = 3;
+        if (maxOrderTotal === orders?.length) {
+            status = today > orderExpiryDate ? 3 : 1;
         } else if (orderExpiryDate >= today) {
             status = 2;
-        } else if (maxOrderTotal === orders?.length) {
-            status = 1;
+        } else if (today > orderExpiryDate) {
+            status = 3;
         } 
     }
     

@@ -9,6 +9,7 @@ import { mapState } from "pinia";
 import MemberStore from "../../../stores/MemberStore.js";
 import SearchListBar from "../../../components/Search/SearchListBar.vue";
 import DeleteActivityModal from "../../../components/Modal/DeleteActivityModal.vue";
+import ViolationModal from "../../../components/Modal/ViolationModal.vue";
 import OrderModal from "../../../components/Modal/OrderModal.vue";
 import NoData from "../../../components/NoData.vue";
 
@@ -17,12 +18,14 @@ export default {
         return {
             filterMyActivities: [],
             currentActivity: {},
-            currentActivityId: null
+            currentActivityId: null,
+            currentViolationId: null
         }
     },
     components: {
         SearchListBar,
         DeleteActivityModal,
+        ViolationModal,
         OrderModal,
         NoData
     },
@@ -63,6 +66,10 @@ export default {
                 (!endDate || endDate >= activity.endDate)
             );
         },
+        openViolationModal(violationId) {
+            this.currentViolationId = violationId;
+            this.$refs.childViolationModal.openModal();
+        },
         openOrderModal(activityId) {
             this.currentActivityId = activityId;
             this.$refs.childOrderModal.openModal();
@@ -87,7 +94,7 @@ export default {
         </div>
         <template v-if="filterMyActivities.length">
             <div class="p-3" :class="{ 'bg-lightPrimary bg-opacity-10': (index + 1 )% 2 }" v-for="(filterActivity, index) in filterMyActivities" :key="filterActivity.id">
-                <div class="row gy-3 align-items-center">
+                <div class="row g-3 align-items-center">
                     <div class="col-md-6 col-xl-4 col-xxl-3 d-flex align-items-center">
                         <div class="custom-rectangle-img custom-rectangle border-card-border-width border flex-shrink-0">
                             <img :src="getMainImg(filterActivity.imgs).img" class="custom-rectangle img-cover" :alt="filterActivity.title">
@@ -118,7 +125,7 @@ export default {
                         <span class="font-barlow">{{ dateFormat(filterActivity.updateDate, ["date", "time"]) }}</span>
                     </div>
                     <div class="col-xxl-2">
-                        <div class="row gx-2 align-items-center">
+                        <div class="row gx-2 align-items-center" v-if="filterActivity.activityStatus !== 0">
                             <div class="col-auto">
                                 <router-link :to="`/editActivity/${filterActivity.id}`" class="btn btn-link btn-sm border-0 p-0" :class="{ 'disabled': filterActivity.orders.length }">編輯</router-link>
                             </div>
@@ -129,14 +136,13 @@ export default {
                                 <button type="button" class="btn btn-link btn-sm border-0 p-0" :disabled="!filterActivity.orders.length" @click="openOrderModal(filterActivity.id)">報名總覽</button>
                             </div>
                             <div class="col-auto">
-                                <button type="button" class="btn btn-link btn-sm border-0 p-0">
-                                    <router-link :to="`/activity/${filterActivity.id}#messaget`" class="btn btn-link btn-sm border-0 p-0">留言</router-link>
-                                </button>
+                                <router-link :to="`/activity/${filterActivity.id}#messaget`" class="btn btn-link btn-sm border-0 p-0">留言</router-link>
                             </div>
                             <div class="col-auto">
                                 <button type="button" class="btn btn-link btn-sm border-0 p-0" :disabled="filterActivity.orderStatus === 3" @click="openDelActivityModal(filterActivity)">刪除</button>
                             </div>
                         </div>
+                        <button type="button" class="btn btn-link btn-sm border-0 p-0" v-else @click="openViolationModal(filterActivity.violations[0]?.id)">違規原因</button>
                     </div>
                 </div>
             </div>
@@ -152,6 +158,7 @@ export default {
             </ul>
         </div>
     </div>
+    <ViolationModal ref="childViolationModal" :violationId="currentViolationId" />
     <OrderModal ref="childOrderModal" :activityId="currentActivityId" />
     <DeleteActivityModal ref="childDeleteActivityModal" :activity="currentActivity" />
 </template>

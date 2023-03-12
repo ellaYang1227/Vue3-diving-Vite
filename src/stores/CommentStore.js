@@ -8,6 +8,10 @@ export default defineStore("CommentStore", {
     }),
     getters: {},
     actions: {
+        /**
+         * 取得所有評論
+         * 
+         */
         getComments(){
             const paramsArr = [
                 "_expand=activity",
@@ -46,6 +50,11 @@ export default defineStore("CommentStore", {
             })
             .catch(err => Promise.reject(false));
         },
+        /**
+         * 每筆活動加入評論分數
+         * 
+         * @param activities Array：要處理的活動列表
+         */
         setScore(activities){
             return activities.map(activity => {
                 const findComment = this.comments.find(item => item.userId == activity.userId);

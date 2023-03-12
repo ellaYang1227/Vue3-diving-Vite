@@ -104,6 +104,7 @@ export default {
         },
         activityBtnText() {
             const { activityStatus, orderStatus, isOrderPlaced } = this.activity;
+            console.log(this.activity)
             return isOrderPlaced ? "已報名" : statusBtnTextFormat(activityStatus, orderStatus);
         },
         activityBtnDisabled() {
@@ -163,7 +164,6 @@ export default {
                             this.isLoadingBtn = true;
                             // 之前是否曾經報名過
                             const findOrder = this.activity.orders.find(order => order.userId == id);
-                            console.log(this.activity)
                             this.updateOrder(this.activityId, findOrder?.id)
                                 .then(resArr => {
                                     this.activity = resArr[0];

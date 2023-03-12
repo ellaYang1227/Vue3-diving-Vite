@@ -23,7 +23,7 @@ bacsRequest.interceptors.request.use(
         return request;
     },
     error => {
-        console.dir(error);
+        //console.dir(error);
         setSwalFire("popup", "error", "系統錯誤", error.request);
         return Promise.reject({
             success: false,
@@ -38,9 +38,9 @@ bacsRequest.interceptors.response.use(
         return Promise.resolve(response.data);
     },
     error => {
-        console.dir(error);
+        //console.dir(error);
         hideLoading();
-        const { status, statusText } = error.response;
+        const { status } = error.response;
 
         if (status !== 400) {
             let title = "系統錯誤";
@@ -68,7 +68,7 @@ bacsRequest.interceptors.response.use(
             });
         }
 
-        console.error(status);
+        //console.error(status);
         return Promise.reject({
             success: false,
             ...error.response

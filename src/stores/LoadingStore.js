@@ -6,6 +6,11 @@ export default defineStore("LoadingStore", {
         isLoadingBtn: false
     }),
     actions: {
+        /**
+         * 顯示 Loading
+         * 
+         * @param stype String：Loading 類型，如果是按鈕類型，需傳入 "btn"
+         */
         showLoading(stype) {
             this.isLoadingBtn = true;
 
@@ -14,6 +19,11 @@ export default defineStore("LoadingStore", {
                 document.body.classList.add("overflow-hidden");
             }
         },
+        /**
+         * 隱藏 Loading
+         * 
+         * @param stype String：Loading 類型，如果是按鈕類型，需傳入 "btn"
+         */
         hideLoading(stype) {
             this.isLoadingBtn = false;
 

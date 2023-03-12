@@ -72,7 +72,7 @@ export default {
         <SearchListBar @onSubmit="onSubmit" />
         <template v-if="filterMyOrders.length">
             <div class="p-3" :class="{ 'bg-lightPrimary bg-opacity-10': (index + 1 ) % 2 }" v-for="(filterOrder, index) in filterMyOrders" :key="filterOrder.id">
-                <div class="row gy-3 align-items-center">
+                <div class="row g-3 align-items-center">
                     <div class="col-md-6 col-xl-4 col-xxl-3 d-flex align-items-center">
                         <div class="custom-rectangle-img custom-rectangle border-card-border-width border flex-shrink-0">
                             <img :src="getMainImg(filterOrder.activity.imgs).img" class="custom-rectangle img-cover" :alt="filterOrder.activity.title">
@@ -100,16 +100,14 @@ export default {
                                 <router-link :to="`/activity/${filterOrder.activity.id}`" class="btn btn-link btn-sm border-0 p-0">詳情</router-link>
                             </div>
                             <div class="col-auto">
-                                <button type="button" class="btn btn-link btn-sm border-0 p-0">
-                                    <router-link :to="`/activity/${filterOrder.activity.id}#messaget`" class="btn btn-link btn-sm border-0 p-0">留言</router-link>
-                                </button>
+                                <router-link :to="`/activity/${filterOrder.activity.id}#messaget`" class="btn btn-link btn-sm border-0 p-0">留言</router-link>
                             </div>
                             <div class="col-auto">
                                 <button type="button" class="btn btn-link btn-sm border-0 p-0" @click="openCommentModal(filterOrder.activity)" :disabled="filterOrder.activity.activityStatus === 0 || filterOrder.activity.activityStatus === 1">
                                 評論<template v-if="filterOrder.activity.comment">(1)</template></button>
                             </div>
                             <div class="col-auto col-xl-12">
-                                <button type="button" class="btn btn-link btn-sm border-0 p-0" :disabled="filterOrder.activity.orderStatus === 3" @click="openDeleteOrderModal(filterOrder)">刪除報名</button>
+                                <button type="button" class="btn btn-link btn-sm border-0 p-0" :disabled="filterOrder.activity.orderStatus === 3 || filterOrder.activity.orderStatus === 0" @click="openDeleteOrderModal(filterOrder)">刪除報名</button>
                             </div>
                         </div>
                     </div>
