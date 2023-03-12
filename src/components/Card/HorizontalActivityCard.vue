@@ -31,11 +31,11 @@ export default {
     <router-link :to="`/activity/${activity.id}`" class="col text-decoration-none shadow-sm">
         <div class="card horizontal-card h-100">
             <div class="row g-0">
-                <div class="col-5 position-relative">
+                <div class="col-sm-5 position-relative">
                     <img :src="getMainImg(activity.imgs).img" class="img-fluid img-cover" :alt="activity.title">
                     <div class="position-absolute top-0 end-0 p-1 bg-darkPrimary bg-opacity-80 fs-7 text-body">{{ activity.location.name }}</div>
                 </div>
-                <div class="col-7">
+                <div class="col-sm-7">
                     <div class="card-body h-100 d-flex flex-column">
                         <small class="font-barlow">{{ dateFormat(activity.startDate) }} ~ {{ dateFormat(activity.endDate) }}</small>
                         <h2 class="card-title h5 mb-0 text-primary text-truncate-row-2 fw-bold">{{ activity.title }}</h2>
@@ -68,7 +68,11 @@ $img-frame-card-Spacing: 1rem;
 
 .horizontal-card {
     .img-fluid {
-        height: 250px;
+        height: 180px;
+
+        @media (min-width: 576px) {
+            height: 250px;
+        }
 
         @media (min-width: 992px) {
             height: 280px;

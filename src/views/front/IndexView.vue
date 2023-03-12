@@ -497,7 +497,7 @@ $comment-height: 420px;
 
         img {
             height: 100%;
-            filter: brightness(0.75) blur(0.5px);
+            filter: brightness(0.75) blur(0.3px);
             transition: all 0.5s ease-in-out;
 
             &:hover {

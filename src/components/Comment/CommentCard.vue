@@ -30,7 +30,7 @@ export default {
 
 <template>
     <div class="row justify-content-between align-items-end">
-        <div :class="[showDate ? 'col-7' : 'col-sm-5 col-md-6 col-lg-5']">
+        <div :class="[showDate ? 'col-sm-7' : 'col-sm-5 col-md-6 col-lg-5']">
             <UserMugShot :name="comment.user?.name" :img="comment.user?.img" :score="comment.score" :isShowRating="showDate" />
         </div>
         <small class="col-auto opacity-80 font-barlow mt-2 mt-sm-0" v-if="showDate">{{ dateFormat(comment.creationDate, ["date", "time"]) }}</small>

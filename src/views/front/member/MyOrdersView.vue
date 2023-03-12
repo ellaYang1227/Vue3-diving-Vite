@@ -69,10 +69,10 @@ export default {
 
 <template>
     <div class="py-3">
-        <SearchListBar @onSubmit="onSubmit" />
+        <SearchListBar @onSubmit="onSubmit" class="pb-3" />
         <template v-if="filterMyOrders.length">
             <div class="p-3" :class="{ 'bg-lightPrimary bg-opacity-10': (index + 1 ) % 2 }" v-for="(filterOrder, index) in filterMyOrders" :key="filterOrder.id">
-                <div class="row g-3 align-items-center">
+                <div class="row g-3 align-items-sm-center">
                     <div class="col-md-6 col-xl-4 col-xxl-3 d-flex align-items-center">
                         <div class="custom-rectangle-img custom-rectangle border-card-border-width border flex-shrink-0">
                             <img :src="getMainImg(filterOrder.activity.imgs).img" class="custom-rectangle img-cover" :alt="filterOrder.activity.title">
@@ -82,15 +82,15 @@ export default {
                             <h3 class="fs-7 mb-0 text-truncate">{{ filterOrder.activity.location.name }}</h3>
                         </div>
                     </div>
-                    <div class="col-md-6 col-xl-3 col-xxl d-flex flex-column justify-content-center align-items-start">
+                    <div class="col-md-6 col-xl-3 col-xxl d-flex flex-column justify-content-sm-center align-items-start">
                         <small class="order-md-last opacity-80">活動日期</small>
                         <span class="font-barlow">{{ `${dateFormat(filterOrder.activity.startDate)} ~ ${dateFormat(filterOrder.activity.endDate)}` }}</span>
                     </div>
-                    <div class="col-6 col-xl col-xxl-2 d-flex flex-column justify-content-center align-items-start">
+                    <div class="col-6 col-xl col-xxl-2 d-flex flex-column justify-content-sm-center align-items-start">
                         <small class="order-md-last opacity-80">主揪人</small>
                         <span class="font-barlow">{{ filterOrder.activity.user.name }}</span>
                     </div>
-                    <div class="col-6 col-xl col-xxl-2 d-flex flex-column justify-content-center align-items-start">
+                    <div class="col-6 col-xl col-xxl-2 d-flex flex-column justify-content-sm-center align-items-start">
                         <small class="order-md-last opacity-80">活動狀態</small>
                         <span :class="{ 'text-danger': filterOrder.activity.activityStatus === 0, 'opacity-50': filterOrder.activity.activityStatus === 3 }">{{ activityStatusTextFormat(filterOrder.activity.activityStatus) }}</span>
                     </div>

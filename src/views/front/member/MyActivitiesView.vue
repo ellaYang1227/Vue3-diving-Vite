@@ -84,7 +84,7 @@ export default {
 
 <template>
     <div class="py-3">
-        <div class="row g-2">
+        <div class="row g-2 pb-3">
             <div class="col-md">
                 <SearchListBar @onSubmit="onSubmit" />
             </div>
@@ -94,7 +94,7 @@ export default {
         </div>
         <template v-if="filterMyActivities.length">
             <div class="p-3" :class="{ 'bg-lightPrimary bg-opacity-10': (index + 1 )% 2 }" v-for="(filterActivity, index) in filterMyActivities" :key="filterActivity.id">
-                <div class="row g-3 align-items-center">
+                <div class="row g-3 align-items-sm-center">
                     <div class="col-md-6 col-xl-4 col-xxl-3 d-flex align-items-center">
                         <div class="custom-rectangle-img custom-rectangle border-card-border-width border flex-shrink-0">
                             <img :src="getMainImg(filterActivity.imgs).img" class="custom-rectangle img-cover" :alt="filterActivity.title">
@@ -104,23 +104,23 @@ export default {
                             <h3 class="fs-7 mb-0 text-truncate">{{ filterActivity.location.name }}</h3>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-xl-3 d-flex flex-column justify-content-center align-items-start">
+                    <div class="col-sm-6 col-xl-3 d-flex flex-column justify-content-sm-center align-items-start">
                         <small class="order-md-last opacity-80">活動日期</small>
                         <span class="font-barlow">{{ `${dateFormat(filterActivity.startDate)} ~ ${dateFormat(filterActivity.endDate)}` }}</span>
                     </div>
-                    <div class="col-6 col-xl d-flex flex-column justify-content-center align-items-start">
+                    <div class="col-6 col-xl d-flex flex-column justify-content-sm-center align-items-start">
                         <small class="order-md-last opacity-80">報名人數</small>
                         <span class="font-barlow"><strong>{{ filterActivity.orders.length }}</strong>/{{ filterActivity.maxOrderTotal }}</span>
                     </div>
-                    <div class="col-6 col-xl d-flex flex-column justify-content-center align-items-start">
+                    <div class="col-6 col-xl d-flex flex-column justify-content-sm-center align-items-start">
                         <small class="order-md-last opacity-80">揪團狀態</small>
                         <span :class="{ 'text-danger': filterActivity.orderStatus === 0, 'opacity-50': filterActivity.orderStatus === 2 }">{{ orderStatusTextFormat(filterActivity.orderStatus) }}</span>
                     </div>
-                    <div class="col-6 col-xl d-flex flex-column justify-content-center align-items-start">
+                    <div class="col-6 col-xl d-flex flex-column justify-content-sm-center align-items-start">
                         <small class="order-md-last opacity-80">活動狀態</small>
                         <span :class="{ 'text-danger': filterActivity.activityStatus === 0, 'opacity-50': filterActivity.activityStatus === 3 }">{{ activityStatusTextFormat(filterActivity.activityStatus) }}</span>
                     </div>
-                    <div class="col-6 col-xl d-flex flex-column justify-content-center align-items-start">
+                    <div class="col-6 col-xl d-flex flex-column justify-content-sm-center align-items-start">
                         <small class="order-md-last opacity-80">更新時間</small>
                         <span class="font-barlow">{{ dateFormat(filterActivity.updateDate, ["date", "time"]) }}</span>
                     </div>

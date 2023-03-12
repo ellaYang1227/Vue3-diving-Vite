@@ -397,7 +397,7 @@ export default {
                             >{{ formSchema.activity.tags.label
                             }}<span class="text-danger" v-if="formSchema.activity.tags.isRequired">*</span></label
                         >
-                        <div class="row gx-1">
+                        <div class="row g-1">
                             <div class="col-auto" v-for="tag in tags" :key="tag">
                                 <Field 
                                 :id="`${formSchema.activity.tags.name}-${tag}`"

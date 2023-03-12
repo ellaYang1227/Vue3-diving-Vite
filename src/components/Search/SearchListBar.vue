@@ -31,7 +31,7 @@ export default {
 </script>
 
 <template>
-    <VForm v-slot="{ errors }" @submit="onSubmit" class="pb-3">
+    <VForm v-slot="{ errors }" @submit="onSubmit">
         <fieldset :disabled="isLoadingSearch" class="row g-2">
             <div class="col-md col-lg-6 col-xl-5">
                 <Field 
