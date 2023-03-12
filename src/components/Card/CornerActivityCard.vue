@@ -31,7 +31,7 @@ export default {
             <div class="img-frame mb-3">
                 <div class="outer-border"></div>
                 <div class="card custom-rectangle">
-                    <img :src="getMainImg(this.activity.imgs).img" class="card-img custom-rectangle img-cover" :alt="`[${activity.location.name}]${activity.title}`" />
+                    <img :src="getMainImg(activity.imgs).img" class="card-img custom-rectangle img-cover" :alt="`[${activity.location.name}]${activity.title}`" />
                     <div class="card-img-overlay" v-if="activity.score">
                         <span
                             class="fs-6 font-barlow badge rounded-pill bg-darkPrimary bg-opacity-75 text-body border border-2"
