@@ -1,6 +1,6 @@
 # vue3-diving
 
-###### 網站：[氣瓶海人 水費潛水揪團](https://ellayang1227.github.io/Vue3-diving-Vite/#/)
+###### 網站：[氣瓶海人 水肺潛水揪團](https://ellayang1227.github.io/Vue3-diving-Vite/#/)
 
 This template should help get you started developing with Vue 3 in Vite.
 
