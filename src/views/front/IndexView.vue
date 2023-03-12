@@ -6,6 +6,8 @@ import { mapState, mapActions } from "pinia";
 import LoadingStore from "../../stores/LoadingStore.js";
 import ActivityStore from "../../stores/ActivityStore.js";
 import CommentStore from "../../stores/CommentStore.js";
+import OrderStore from "../../stores/OrderStore.js";
+import OptionStore from "../../stores/OptionStore.js";
 import swiperParams from "../../data/swiperParams.js";
 import { divingIcon, peoplesIcon, areaIcon, licenseImg, scoreImg, commentImg } from "../../data/imagePaths.js";
 import CornerActivityCard from "../../components/Card/CornerActivityCard.vue";
@@ -21,17 +23,17 @@ export default {
                 {
                     title: "揪團潛水",
                     img: divingIcon,
-                    total: 1005
+                    total: null
                 },
                 {
                     title: "報名人數",
                     img: peoplesIcon,
-                    total: 14186
+                    total: null
                 },
                 {
                     title: "潛水地區",
                     img: areaIcon,
-                    total: 84
+                    total: null
                 }
             ],
             activityNavs: {
@@ -65,6 +67,7 @@ export default {
     },
     computed: {
         ...mapState(CommentStore, ["initComments"]),
+        ...mapState(OptionStore, ["locations"]),
         activityCards() {
             let cards = [];
             switch (this.activeActivityNav) {
@@ -82,6 +85,11 @@ export default {
             return this.initComments.slice(0, 6);
         }
     },
+    watch: {
+        locations() {
+            this.setBannerIconsTotal(2, this.locations.length);
+        }
+    },
     created() {
         this.frontLayoutData.showSearchBar = false;
         this.frontLayoutData.isMainOverflowHidden = true;
@@ -91,13 +99,18 @@ export default {
             this.getNewActivities(),
             this.getHotActivities(),
             this.getAdLocations(),
-            this.getComments()
+            this.getComments(),
+            this.getFilterIsDeleteActivities(),
+            this.getFilterIsDeleteOrders()
         ]).then(resArr => {
             resArr[0] = this.setScore(resArr[0]);
             this.goodRatingActivities = this.getGoodRatingActivities(resArr[0]);
             this.newActivities = resArr[0].slice(0, 3);
             this.hotActivities = this.setScore(resArr[1]);
             this.adLocations = resArr[2];
+            this.setBannerIconsTotal(0, resArr[4].length);
+            this.setBannerIconsTotal(1, resArr[5].length);
+            this.setBannerIconsTotal(2, this.locations.length);
             this.setSwiper("commentSwiper");
             this.setSwiper("goodRatingSwiper");
             this.hideLoading();
@@ -109,10 +122,15 @@ export default {
         });
     },
     methods: {
-        ...mapActions(ActivityStore, ["getNewActivities", "getHotActivities", "getAdLocations"]),
+        ...mapActions(ActivityStore, ["getNewActivities", "getHotActivities", "getAdLocations", "getFilterIsDeleteActivities"]),
         ...mapActions(CommentStore, ["getComments", "setScore"]),
         ...mapActions(LoadingStore, ["hideLoading"]),
-        getGoodRatingActivities(activities) {
+        ...mapActions(OrderStore, ["getFilterIsDeleteOrders"]),
+        setBannerIconsTotal(idnex, length) {
+            // 亂數處理
+            this.bannerIcons[idnex].total = Math.floor(Math.random() * length * 50);
+        },
+        getGoodRatingActivities([...activities]) {
             return activities.sort((a, b) => b.score - a.score).slice(0, 3);
         },
         toggleActiveActivityNav(nav) {

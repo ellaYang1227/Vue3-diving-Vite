@@ -30,6 +30,15 @@ export default defineStore("ActivityStore", {
     },
     actions: {
         /**
+         * 取得所有報名(不包含刪除活動)
+         * 
+         */
+         getFilterIsDeleteActivities(){
+            return bacsRequest.get(`activities?isDelete=0`)
+            .then(res => Promise.resolve(res))
+            .catch(err => Promise.reject(false));
+        },
+        /**
          * 最新活動：只取未違規且報名截止日期(orderExpiryDate)大於等於今天，更新貼文日期由新到舊
          * 
          */

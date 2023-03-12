@@ -14,6 +14,15 @@ export default defineStore("OrderStore", {
     getters: {},
     actions: {
         /**
+         * 取得所有報名(不包含取消報名)
+         * 
+         */
+         getFilterIsDeleteOrders(){
+            return bacsRequest.get(`orders?isDelete=0`)
+            .then(res => Promise.resolve(res))
+            .catch(err => Promise.reject(false));
+        },
+        /**
          * 取得指定活動 id 的所有報名
          * 
          * @param activityId Number | string 指定活動 id
