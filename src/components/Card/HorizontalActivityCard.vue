@@ -39,8 +39,8 @@ export default {
                     <div class="card-body h-100 d-flex flex-column">
                         <small class="font-barlow">{{ dateFormat(activity.startDate) }} ~ {{ dateFormat(activity.endDate) }}</small>
                         <h2 class="card-title h5 mb-0 text-primary text-truncate-row-2 fw-bold">{{ activity.title }}</h2>
-                        <p class="card-text text-truncate-row-2 white-space-pre-wrap opacity-75" v-if="activity.features">{{ activity.features }}</p>
-                        <div class="row align-items-center fw-bold mt-auto">
+                        <p class="card-text text-truncate-row-2 white-space-pre-wrap opacity-75 mb-0" v-if="activity.features">{{ activity.features }}</p>
+                        <div class="row align-items-center fw-bold mt-2 mt-sm-auto">
                             <div class="col text-truncate d-flex align-items-center">
                                 <UserMugShot :width-size="30" :name="activity.user.name" :img="activity.user.img" />
                                 <small class="ms-1 font-barlow fw-normal" v-if="activity.score">{{ `(${decimalFormat(activity.score, 1)})` }}</small>
