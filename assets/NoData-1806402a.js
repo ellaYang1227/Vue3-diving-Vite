@@ -1,0 +1,1 @@
+import{_ as e}from"./_plugin-vue_export-helper-c27b6911.js";import{o,c as r,bd as s}from"./dateFormat-6c69c48f.js";const a={props:{text:{type:String,required:!1,default:"找不到符合條件的資料"}}},c={class:"text-center opacity-75 mb-0"};function n(p,i,t,_,f,d){return o(),r("p",c,s(t.text),1)}const x=e(a,[["render",n]]);export{x as N};
