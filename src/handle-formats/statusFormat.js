@@ -55,6 +55,8 @@ function getActivityStatus({ startDate, endDate, violations }) {
  */
 function getOrderStatus({ orderExpiryDate, maxOrderTotal, orders, violations }) {
     orderExpiryDate = getTimestamp(orderExpiryDate);
+    orders = orders.filter(order => !order.isDelete);
+    
     let status = "";
     if (violations.length) {
         status = 0;

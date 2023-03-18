@@ -104,7 +104,6 @@ export default {
         },
         activityBtnText() {
             const { activityStatus, orderStatus, isOrderPlaced } = this.activity;
-            console.log(this.activity)
             return isOrderPlaced ? "已報名" : statusBtnTextFormat(activityStatus, orderStatus);
         },
         activityBtnDisabled() {
