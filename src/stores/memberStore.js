@@ -32,11 +32,13 @@ export default defineStore("MemberStore", {
                     changeCookie("add", accessToken, user);
                     this.getMyOrders(3);
 
-                    // if(!returnUrl){
-                    //     const { identityId } = user;
-                    //     returnUrl = identityId === "0" ? "/admin/index" : "/index"
-                    // }
-                    router.push("/index");
+                    if(!returnUrl){
+                        //const { identityId } = user;
+                        //returnUrl = identityId === "0" ? "/admin/index" : "/index";
+                        returnUrl = "/index";
+                    }
+
+                    router.push(returnUrl);
                     return Promise.resolve(true);
                 })
                 .catch(({ data }) => {
@@ -65,11 +67,13 @@ export default defineStore("MemberStore", {
                 .then(({ accessToken, user }) => {
                     changeCookie("add", accessToken, user);
 
-                    // if(!returnUrl){
-                    //     const { identityId } = user;
-                    //     returnUrl = identityId === "0" ? "/admin/index" : "/index"
-                    // }
-                    router.push("/index");
+                    if(!returnUrl){
+                        //const { identityId } = user;
+                        //returnUrl = identityId === "0" ? "/admin/index" : "/index";
+                        returnUrl = "/index";
+                    }
+
+                    router.push(returnUrl);
                     return Promise.resolve(true);
                 })
                 .catch(({ data }) => {
