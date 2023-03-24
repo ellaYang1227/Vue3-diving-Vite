@@ -1,46 +1,46 @@
 // 文字顯示行數 2 行以上
 %text-truncate-row {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    white-space: normal;
-    overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+  overflow: hidden;
 }
 
 .text-truncate-row- {
-    @for $index from 1 through 10 {
-        &#{$index} {
-            @extend %text-truncate-row;
-            -webkit-line-clamp: #{$index + " !important"};
-        }
+  @for $index from 1 through 10 {
+    &#{$index} {
+      @extend %text-truncate-row;
+      -webkit-line-clamp: #{$index + " !important"};
     }
+  }
 }
 
 // 強制段行
 $wordBreaks: "break-all", "normal", "keep-all";
 .word-break- {
-    @each $wordBreak in $wordBreaks {
-        &#{$wordBreak} {
-            word-break: #{$wordBreak + " !important"};
-        }
+  @each $wordBreak in $wordBreaks {
+    &#{$wordBreak} {
+      word-break: #{$wordBreak + " !important"};
     }
+  }
 }
 
 // 自動換行
 $whiteSpaces: "pre-wrap";
 .white-space- {
-    @each $whiteSpace in $whiteSpaces {
-        &#{$whiteSpace} {
-            white-space: #{$whiteSpace + " !important"};
-        }
+  @each $whiteSpace in $whiteSpaces {
+    &#{$whiteSpace} {
+      white-space: #{$whiteSpace + " !important"};
     }
+  }
 }
 
 // 滑鼠樣式
 $cursorStyles: "default", "pointer";
 .cursor- {
-    @each $cursorStyle in $cursorStyles {
-        &#{$cursorStyle} {
-            cursor: #{$cursorStyle + " !important"};
-        }
+  @each $cursorStyle in $cursorStyles {
+    &#{$cursorStyle} {
+      cursor: #{$cursorStyle + " !important"};
     }
+  }
 }

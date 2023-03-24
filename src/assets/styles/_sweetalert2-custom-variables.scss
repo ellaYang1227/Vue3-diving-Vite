@@ -9,7 +9,7 @@ $swal2-container-padding: 0.625em !default;
 $swal2-width: 32em !default;
 $swal2-padding: 0 0 1.25em !default;
 $swal2-border: $card-border-width $border-style $card-border-color !default;
-$swal2-color: $body-color !default; 
+$swal2-color: $body-color !default;
 $swal2-border-radius: $card-border-radius !default;
 $swal2-box-shadow: $box-shadow-lg !default;
 
@@ -38,7 +38,7 @@ $swal2-icon-border-color: #000 !default;
 $swal2-icon-zoom: null !default;
 $swal2-success: $success !default;
 $swal2-success-border: rgba($swal2-success, 0.5) !default;
-$swal2-error: $danger!default;
+$swal2-error: $danger !default;
 $swal2-warning: $warning !default;
 $swal2-info: $info !default;
 $swal2-question: $swal2-error !default;
@@ -226,8 +226,8 @@ $swal2-loader-border-color: #2778c4 transparent #2778c4 transparent !default;
 $swal2-toast-show-animation: swal2-toast-show 0.5s !default;
 $swal2-toast-hide-animation: swal2-toast-hide 0.1s forwards !default;
 $swal2-toast-border: $swal2-border !default;
-$swal2-toast-box-shadow: 0 0 1px hsl(0deg 0% 0% / 0.075), 0 1px 2px hsl(0deg 0% 0% / 0.075),
-  1px 2px 4px hsl(0deg 0% 0% / 0.075), 1px 3px 8px hsl(0deg 0% 0% / 0.075), 2px 4px 16px hsl(0deg 0% 0% / 0.075) !default;
+$swal2-toast-box-shadow: 0 0 1px hsl(0deg 0% 0% / 0.075), 0 1px 2px hsl(0deg 0% 0% / 0.075), 1px 2px 4px hsl(0deg 0% 0% / 0.075),
+  1px 3px 8px hsl(0deg 0% 0% / 0.075), 2px 4px 16px hsl(0deg 0% 0% / 0.075) !default;
 $swal2-toast-background: $swal2-background !default;
 $swal2-toast-close-button-width: 0.8em !default;
 $swal2-toast-close-button-height: 0.8em !default;

@@ -10,7 +10,7 @@
 @import "vue-multiselect/dist/vue-multiselect";
 
 .font-barlow {
-    font-family: $font-barlow !important;
+  font-family: $font-barlow !important;
 }
 
 /*
@@ -20,61 +20,61 @@
 */
 
 html {
-    font-size: $font-size-base;
+  font-size: $font-size-base;
 
-    @include media-breakpoint-up(lg) {
-        font-size: $font-size-base * 1.125;
-    }
+  @include media-breakpoint-up(lg) {
+    font-size: $font-size-base * 1.125;
+  }
 }
 
 body,
 .body-bg {
-    background: url("../assets/images/bg.jpg") top center no-repeat;
-    background-size: cover;
-    background-color: $body-bg;
+  background: url("../assets/images/bg.jpg") top center no-repeat;
+  background-size: cover;
+  background-color: $body-bg;
 }
 
 // 置頂高度(距離 header 高度)
-.fixed-margin-top-headerHeight{
-    margin-top: $header-height;
+.fixed-margin-top-headerHeight {
+  margin-top: $header-height;
 }
 
 .sticky-top-headerHeight {
-    top: $header-height;
+  top: $header-height;
 }
 
 // 邊框顏色同下拉下單選單
 .border-color-dropdown {
-    border-color: $dropdown-border-color !important;
+  border-color: $dropdown-border-color !important;
 }
 
 // 圖片依容器大小 自適應圖片尺寸
 .img-cover {
-    object-fit: cover;
-    object-position: 50% 50%;
-    width: 100%;
-    height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+  width: 100%;
+  height: 100%;
 }
 
 // 按鈕自訂矩形圓角
 .btn.btn-custom-rectangle {
-    border-radius: 0;
-    clip-path: polygon(100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 0, 100% 0);
-    -webkit-clip-path: polygon(100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 0, 100% 0);
+  border-radius: 0;
+  clip-path: polygon(100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 0, 100% 0);
+  -webkit-clip-path: polygon(100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 0, 100% 0);
 }
 
 .custom-rectangle {
-    background-color: $border-color;
-    -webkit-clip-path: polygon(0% 0%, 100% 0, 100% 70%, 75% 100%, 0% 100%);
-    clip-path: polygon(0% 0%, 100% 0, 100% 70%, 75% 100%, 0% 100%);
+  background-color: $border-color;
+  -webkit-clip-path: polygon(0% 0%, 100% 0, 100% 70%, 75% 100%, 0% 100%);
+  clip-path: polygon(0% 0%, 100% 0, 100% 70%, 75% 100%, 0% 100%);
 }
 
 .border-style-dashed {
-    border-style: dashed !important;
+  border-style: dashed !important;
 }
 
 .border-card-border-width {
-    border-width: $card-border-width !important;
+  border-width: $card-border-width !important;
 }
 
 // 修改 input 預設樣式
@@ -87,47 +87,47 @@ textarea:-webkit-autofill:focus,
 select:-webkit-autofill,
 select:-webkit-autofill:hover,
 select:-webkit-autofill:focus {
-    -webkit-text-fill-color: $input-color; // 改變字體顏色
-    -webkit-box-shadow: 0 0 0px 1000px $input-bg inset; // 改變背景色
-    box-shadow: 0 0 0px 1000px $input-bg inset;
-    transition: background-color 5000s ease-in-out 0s;
+  -webkit-text-fill-color: $input-color; // 改變字體顏色
+  -webkit-box-shadow: 0 0 0px 1000px $input-bg inset; // 改變背景色
+  box-shadow: 0 0 0px 1000px $input-bg inset;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 // 修改 input date 預設 icon 樣式
 input[type="date"]::-webkit-calendar-picker-indicator {
-    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'><path fill='#{$form-select-indicator-color}' d='M96 32V64H48C21.5 64 0 85.5 0 112v48H448V112c0-26.5-21.5-48-48-48H352V32c0-17.7-14.3-32-32-32s-32 14.3-32 32V64H160V32c0-17.7-14.3-32-32-32S96 14.3 96 32zM448 192H0V464c0 26.5 21.5 48 48 48H400c26.5 0 48-21.5 48-48V192z'/></svg>")
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'><path fill='#{$form-select-indicator-color}' d='M96 32V64H48C21.5 64 0 85.5 0 112v48H448V112c0-26.5-21.5-48-48-48H352V32c0-17.7-14.3-32-32-32s-32 14.3-32 32V64H160V32c0-17.7-14.3-32-32-32S96 14.3 96 32zM448 192H0V464c0 26.5 21.5 48 48 48H400c26.5 0 48-21.5 48-48V192z'/></svg>");
 }
 
 // form help
-.form-help{
-    opacity: 0.8;
-    color: $body-color;
-    display: block;
+.form-help {
+  opacity: 0.8;
+  color: $body-color;
+  display: block;
 }
 
 // form file
 .file-img {
-    width: 120px;
-    height: 120px;
-    background-color: $input-bg;
-    border: 1px dashed $input-border-color;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 0;
+  width: 120px;
+  height: 120px;
+  background-color: $input-bg;
+  border: 1px dashed $input-border-color;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0;
 
-    &:hover {
-        border-color: $input-focus-border-color;
-    }
+  &:hover {
+    border-color: $input-focus-border-color;
+  }
 
-    .icon-color {
-        color: $form-select-indicator-color;
-    }
+  .icon-color {
+    color: $form-select-indicator-color;
+  }
 }
 
 .text-shadow {
-    text-shadow: 5px 5px 5px rgba($black, 35%);
+  text-shadow: 5px 5px 5px rgba($black, 35%);
 }
 
 /*
@@ -138,56 +138,56 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 // dropdown
 .dropdown-menu {
-    @include media-breakpoint-up(md) {
-        &:not([aria-labelledby="dropMyOrders"]) {
-            max-width: 15rem;
-        }
+  @include media-breakpoint-up(md) {
+    &:not([aria-labelledby="dropMyOrders"]) {
+      max-width: 15rem;
     }
+  }
 }
 
 .dropdown-toggle {
-    &.dropdown-hide-arrow:after {
-        display: none;
-    }
+  &.dropdown-hide-arrow:after {
+    display: none;
+  }
 }
 
 // nav
 .nav-link {
-    &.disabled {
-        font-weight: 500;
-    }
+  &.disabled {
+    font-weight: 500;
+  }
 }
 
 // form
 // checkbox & radios
 .form-check-input,
 .form-check-label {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .form-select {
-    option:disabled {
-        color: $input-placeholder-color;
-    }
+  option:disabled {
+    color: $input-placeholder-color;
+  }
 }
 
 // input 唯讀
 .form-control-plaintext {
-    padding: $input-padding-y $input-padding-x;
-    border-width: $input-border-width;
+  padding: $input-padding-y $input-padding-x;
+  border-width: $input-border-width;
 }
 
 // card
 .card {
-    box-shadow: var(--bs-card-box-shadow);
+  box-shadow: var(--bs-card-box-shadow);
 }
 
 // btn
 .btn {
-    &.btn-link {
-        border-width: 0;
-        text-decoration: none;
-    }
+  &.btn-link {
+    border-width: 0;
+    text-decoration: none;
+  }
 }
 
 /*
@@ -197,11 +197,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 */
 
 .vue-star-rating-star {
-    line-height: 1px;
+  line-height: 1px;
 }
 
 .vue-star-rating-rating-text {
-    margin-top: 1px;
+  margin-top: 1px;
 }
 
 /*
@@ -212,13 +212,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 // popup
 .swal2-popup {
-    box-shadow: $swal2-box-shadow;
+  box-shadow: $swal2-box-shadow;
 
-    .swal2-confirm,
-    .swal2-cancel {
-        margin-left: 0.125rem;
-        margin-right: 0.125rem;
-    }
+  .swal2-confirm,
+  .swal2-cancel {
+    margin-left: 0.125rem;
+    margin-right: 0.125rem;
+  }
 }
 
 /*
@@ -228,88 +228,88 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 */
 
 .multiselect {
-    color: $dropdown-link-color;
+  color: $dropdown-link-color;
+  font-size: $form-select-font-size;
+
+  .multiselect__tags {
+    min-height: 0;
     font-size: $form-select-font-size;
+    border-color: $form-select-border-color;
+    border-width: $form-select-border-width;
+    background: $form-select-bg;
+    border-radius: $form-select-border-radius;
+    padding: $form-select-padding-y 2.25rem $form-select-padding-y $form-select-padding-x;
+  }
+
+  .multiselect__input,
+  .multiselect__single {
+    color: $form-select-color;
+    line-height: $form-select-line-height;
+    font-size: $form-select-font-size;
+    background: transparent;
+    border-radius: $form-select-border-radius;
+    margin-bottom: 0;
+    padding: 0;
+  }
+
+  // 下拉三角形
+  .multiselect__select {
+    //left: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+    background: $form-select-indicator no-repeat no-repeat;
+    background-size: $form-select-bg-size;
+    background-position: $form-select-bg-position;
+    transition: none;
+
+    // 下拉三角形 icon
+    &::before {
+      display: none;
+    }
+  }
+
+  // 下拉選單區塊
+  .multiselect__content-wrapper {
+    border-color: $dropdown-border-color;
+    border-radius: $dropdown-border-radius;
+    background: $dropdown-bg;
+    box-shadow: $dropdown-box-shadow;
+  }
+
+  // 下拉選單區塊 option hover
+  .multiselect__option--highlight {
+    background: $dropdown-link-hover-bg;
+
+    &::after {
+      display: none;
+    }
+  }
+
+  // 選取中 option
+  .multiselect__option--selected {
+    background: $dropdown-link-active-bg;
+    color: $form-select-color;
+    font-weight: $form-select-font-weight;
+
+    &::after {
+      display: none;
+    }
+  }
+
+  .multiselect__placeholder {
+    margin-bottom: 0;
+    padding-top: 0;
+    color: $input-placeholder-color;
+  }
+
+  // 停用
+  &.multiselect--disabled {
+    background-color: transparent;
+    opacity: 1;
 
     .multiselect__tags {
-        min-height: 0;
-        font-size: $form-select-font-size;
-        border-color: $form-select-border-color;
-        border-width: $form-select-border-width;
-        background: $form-select-bg;
-        border-radius: $form-select-border-radius;
-        padding: $form-select-padding-y 2.25rem $form-select-padding-y $form-select-padding-x;
+      border-color: $form-select-disabled-border-color;
+      background-color: $form-select-disabled-bg;
     }
-
-    .multiselect__input,
-    .multiselect__single {
-        color: $form-select-color;
-        line-height: $form-select-line-height;
-        font-size: $form-select-font-size;
-        background: transparent;
-        border-radius: $form-select-border-radius;
-        margin-bottom: 0;
-        padding: 0;
-    }
-
-    // 下拉三角形
-    .multiselect__select {
-        //left: 50%;
-        top: 50%;
-        transform: translateY(-50%);
-        background: $form-select-indicator no-repeat no-repeat;
-        background-size: $form-select-bg-size;
-        background-position: $form-select-bg-position;
-        transition: none;
-
-        // 下拉三角形 icon
-        &::before {
-            display: none;
-        }
-    }
-
-    // 下拉選單區塊
-    .multiselect__content-wrapper {
-        border-color: $dropdown-border-color;
-        border-radius: $dropdown-border-radius;
-        background: $dropdown-bg;
-        box-shadow: $dropdown-box-shadow;
-    }
-
-    // 下拉選單區塊 option hover
-    .multiselect__option--highlight {
-        background: $dropdown-link-hover-bg;
-
-        &::after {
-            display: none;
-        }
-    }
-
-    // 選取中 option
-    .multiselect__option--selected {
-        background: $dropdown-link-active-bg;
-        color: $form-select-color;
-        font-weight: $form-select-font-weight;
-
-        &::after {
-            display: none;
-        }
-    }
-
-    .multiselect__placeholder {
-        margin-bottom: 0;
-        padding-top: 0;
-        color: $input-placeholder-color;
-    }
-
-    // 停用
-    &.multiselect--disabled {
-        background-color: transparent;
-        opacity: 1;
-
-        .multiselect__tags{
-            border-color: $form-select-disabled-border-color;
-            background-color: $form-select-disabled-bg;
-        }
-    }
+  }
 }

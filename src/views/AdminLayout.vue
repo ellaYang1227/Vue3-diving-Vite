@@ -1,15 +1,15 @@
 <script>
-import { adminGuard } from "../data/routeGuard.js";
+import { adminGuard } from "@/data/routeGuard.js";
 
 export default {
-    beforeRouteEnter(to, from, next) {
-        adminGuard(to, from, next);
-    },
+  beforeRouteEnter(to, from, next) {
+    adminGuard(to, from, next);
+  }
 };
 </script>
 
 <template>
-    <router-view></router-view>
+  <RouterView />
 </template>
 
 <style lang="scss"></style>

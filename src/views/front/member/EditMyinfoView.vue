@@ -1,17 +1,17 @@
 <script>
-import MyinfoForm from "../../../components/MyinfoForm.vue";
+import MyInfoForm from "@/components/MyInfoForm.vue";
 
 export default {
-    components: {
-        MyinfoForm
-    }
+  components: {
+    MyInfoForm
+  }
 };
 </script>
 
 <template>
-    <div class="py-4">
-        <MyinfoForm />
-    </div>
+  <div class="py-4">
+    <MyInfoForm />
+  </div>
 </template>
 
 <style lang="scss"></style>

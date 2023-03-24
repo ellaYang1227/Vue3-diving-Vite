@@ -26,12 +26,12 @@ import { localize, loadLocaleFromURL } from "@vee-validate/i18n";
 
 /* VeeValidate 定義規則 */
 Object.keys(AllRules).forEach(rule => {
-    defineRule(rule, AllRules[rule]);
+  defineRule(rule, AllRules[rule]);
 });
 
 /* 自訂 VeeValidate 規則 */
 Object.keys(customDefineRule).forEach(rule => {
-    defineRule(rule, customDefineRule[rule]);
+  defineRule(rule, customDefineRule[rule]);
 });
 
 /* 加入多國語系 */
@@ -40,8 +40,8 @@ loadLocaleFromURL("./jsons/vee_validate_zh_TW.json");
 
 // Activate the locale
 configure({
-    generateMessage: localize("zh_TW"),
-    validateOnInput: true // 調整為：輸入文字時，就立即進行驗證
+  generateMessage: localize("zh_TW"),
+  validateOnInput: true // 調整為：輸入文字時，就立即進行驗證
 });
 
 import VueLoading from "vue-loading-overlay";
