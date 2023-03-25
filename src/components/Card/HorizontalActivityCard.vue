@@ -33,11 +33,12 @@ export default {
 </script>
 
 <template>
-  <RouterLink :to="`/activity/${activity.id}`" class="col text-decoration-none shadow-sm">
+  <RouterLink :to="`/activity/${activity.id}`" class="col text-decoration-none shadow-sm card-hover">
     <div class="card horizontal-card h-100">
       <div class="row g-0">
-        <div class="col-sm-5 position-relative">
+        <div class="col-sm-5 position-relative overflow-hidden">
           <img :src="getMainImg(activity.imgs).img" class="img-fluid img-cover" :alt="activity.title" />
+          <div class="img-mask"></div>
           <div class="position-absolute top-0 end-0 p-1 bg-darkPrimary bg-opacity-80 fs-7 text-body">{{ activity.location.name }}</div>
         </div>
         <div class="col-sm-7">

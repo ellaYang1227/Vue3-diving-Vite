@@ -11,7 +11,13 @@ import NoData from "@/components/NoData.vue";
 export default {
   data() {
     return {
-      activities: [],
+      activities: {
+        all: [],
+        paging: [],
+        totalPage: 0,
+        currentPage: 1,
+        perPage: 10
+      },
       initAdActivities: [],
       adActivities: [],
       selectedSort: "",
@@ -36,14 +42,20 @@ export default {
     };
   },
   computed: {
-    ...mapState(CommentStore, ["comments"])
+    ...mapState(CommentStore, ["comments"]),
+    pagingActivities() {
+      const { all, currentPage, perPage } = this.activities;
+      const begin = (currentPage - 1) * perPage;
+      const end = currentPage * perPage;
+      return all.slice(begin, end);
+    }
   },
   watch: {
     selectedSort: {
       handler(val, oldVal) {
         if (val) {
           const { value } = val;
-          this.activities.sort((a, b) => {
+          this.activities.all.sort((a, b) => {
             if (value === "startDate") {
               return a[value] > b[value] ? 1 : -1;
             } else if (value === "orderTotal") {
@@ -53,6 +65,7 @@ export default {
             }
           });
 
+          this.activities.currentPage = 1;
           this.adActivities = getRandom(this.initAdActivities, 2);
         }
       }
@@ -88,7 +101,12 @@ export default {
       }
 
       Promise.all(APIs).then(resArr => {
-        this.activities = this.setScore(resArr[0]);
+        this.activities = {
+          ...this.activities,
+          currentPage: 1,
+          totalPage: Math.ceil(resArr[0].length / this.activities.perPage),
+          all: this.setScore(resArr[0])
+        };
 
         if (!this.initAdActivities.length) {
           this.initAdActivities = this.setScore(resArr[2]);
@@ -97,6 +115,18 @@ export default {
         this.selectedSort = this.sortOptions[0];
         this.hideLoading();
       });
+    },
+    updatePage(action) {
+      let { currentPage } = this.activities;
+      if (action === "prev") {
+        currentPage -= 1;
+      } else if (action === "next") {
+        currentPage += 1;
+      } else {
+        currentPage = action;
+      }
+
+      this.activities.currentPage = currentPage;
     }
   }
 };
@@ -114,9 +144,28 @@ export default {
       <HorizontalActivityCard :activity="adActivity" v-for="adActivity in adActivities" :key="adActivity.id" />
     </div>
     <div class="border-bottom opacity-30 my-4"></div>
-    <div class="row row-cols-1 row-cols-md-2 gy-4" v-if="activities.length">
-      <HorizontalActivityCard :activity="activity" v-for="activity in activities" :key="activity.id" />
-    </div>
+    <template v-if="activities.all.length">
+      <div class="row row-cols-1 row-cols-md-2 gy-4">
+        <HorizontalActivityCard :activity="activity" v-for="activity in pagingActivities" :key="activity.id" />
+      </div>
+      <nav aria-label="Page navigation example" class="mt-4 mb-0">
+        <ul class="pagination pagination-sm justify-content-center">
+          <li class="page-item" :class="{ disabled: activities.currentPage === 1 }">
+            <a class="page-link" href="#" aria-label="Previous" @click.prevent="updatePage('prev')">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          <li class="page-item" v-for="page in activities.totalPage" :key="page" :class="{ active: activities.currentPage === page }">
+            <a class="page-link" href="#" @click.prevent="updatePage(page)">{{ page }}</a>
+          </li>
+          <li class="page-item" :class="{ disabled: activities.currentPage === activities.totalPage }">
+            <a class="page-link" href="#" aria-label="Next" @click.prevent="updatePage('next')">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </template>
     <NoData v-else text="找不到符合條件的揪團活動，試試看其他搜尋條件吧" />
   </div>
 </template>

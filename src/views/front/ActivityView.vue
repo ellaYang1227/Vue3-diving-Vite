@@ -6,13 +6,16 @@ import LoadingStore from "@/stores/LoadingStore.js";
 import ActivityStore from "@/stores/ActivityStore.js";
 import OrderStore from "@/stores/OrderStore.js";
 import PageStore from "@/stores/PageStore.js";
+import CommentStore from "@/stores/CommentStore.js";
 import swiperParams from "@/data/swiperParams.js";
 import { swalPopup, setSwalFire } from "@/data/sweetalert2.js";
+import { getRandom } from "@/data/utilitieFunctions.js";
 import dateFormat from "@/handle-formats/dateFormat.js";
 import currencyFormat from "@/handle-formats/currencyFormat.js";
 import { statusBtnTextFormat } from "@/handle-formats/statusTextFormat.js";
 import CommentList from "@/components/Comment/CommentList.vue";
 import MessagetList from "@/components/Message/MessageList.vue";
+import CornerActivityCard from "@/components/Card/CornerActivityCard.vue";
 const pageStore = PageStore();
 const { VITE_COMPANY_NAME } = import.meta.env;
 
@@ -24,7 +27,9 @@ export default {
       VITE_COMPANY_NAME,
       activity: {},
       activityId: null,
-      isLoadingBtn: false
+      isLoadingBtn: false,
+      initAdActivities: [],
+      adActivities: []
     };
   },
   inject: ["frontLayoutData"],
@@ -33,10 +38,25 @@ export default {
       () => this.$route.params,
       (toParams, previousParams) => {
         const { activityId } = toParams;
+
         if (activityId) {
           this.activityId = activityId;
-          this.getActivity(activityId).then(res => {
-            this.activity = res;
+          const APIs = [this.getActivity(activityId)];
+          if (!this.initAdActivities.length) {
+            APIs.push(this.getAdActivities());
+            APIs.push(this.getComments());
+          } else {
+            this.getRandomAdActivities();
+          }
+
+          Promise.all(APIs).then(resArr => {
+            this.activity = resArr[0];
+            if (!this.initAdActivities.length) {
+              resArr[1] = resArr[1].filter(item => item.id != this.activityId);
+              this.initAdActivities = this.setScore(resArr[1]);
+              this.getRandomAdActivities();
+            }
+
             this.hideLoading();
           });
         }
@@ -113,12 +133,14 @@ export default {
   },
   components: {
     CommentList,
-    MessagetList
+    MessagetList,
+    CornerActivityCard
   },
   methods: {
     ...mapActions(LoadingStore, ["hideLoading"]),
-    ...mapActions(ActivityStore, ["getActivity"]),
+    ...mapActions(ActivityStore, ["getActivity", "getAdActivities"]),
     ...mapActions(OrderStore, ["updateOrder"]),
+    ...mapActions(CommentStore, ["getComments", "setScore"]),
     scrollEvent() {
       let scrollTop = 0;
       if (this.$refs.activityImgs) {
@@ -129,6 +151,9 @@ export default {
       pageStore.$patch(state => {
         state.hasActivityHavbar = window.scrollY > scrollTop ? true : false;
       });
+    },
+    getRandomAdActivities() {
+      this.adActivities = getRandom(this.initAdActivities, 3);
     },
     submitOrder() {
       if (!this.user) {
@@ -311,6 +336,18 @@ export default {
       <div class="col-lg" id="messaget">
         <MessagetList :activity-id="activityId" v-if="activityId" />
       </div>
+    </div>
+  </div>
+  <!-- 熱門精選 -->
+  <div class="container pb-4 pb-md-5">
+    <h5 class="fw-bold fs-4 mb-2 text-warning">熱門精選</h5>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+      <CornerActivityCard
+        :activity="adActivitie"
+        :class="{ 'd-block d-sm-none d-lg-block': index >= 2 }"
+        v-for="(adActivitie, index) in adActivities"
+        :key="adActivitie.id"
+      />
     </div>
   </div>
 </template>

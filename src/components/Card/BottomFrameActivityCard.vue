@@ -29,7 +29,7 @@ export default {
 </script>
 
 <template>
-  <RouterLink :to="`/activity/${activity.id}`" class="col text-decoration-none">
+  <RouterLink :to="`/activity/${activity.id}`" class="col text-decoration-none card-hover">
     <div class="bottom-frame-card">
       <div class="img-frame mb-3">
         <div class="outer-border custom-rectangle border border-card-border-width"></div>
@@ -39,6 +39,7 @@ export default {
             class="card-img custom-rectangle img-cover"
             :alt="`[${activity.location.name}]${activity.title}`"
           />
+          <div class="img-mask"></div>
           <div class="shadow py-1 card-img-overlay d-flex align-items-center text-body bg-darkPrimary bg-opacity-80">
             <UserMugShot :name="activity.user.name" :img="activity.user.img" :score="activity.score" :isShowRating="false" />
           </div>

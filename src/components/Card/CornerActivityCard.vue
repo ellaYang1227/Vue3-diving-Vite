@@ -30,7 +30,7 @@ export default {
 </script>
 
 <template>
-  <RouterLink :to="`/activity/${activity.id}`" class="col text-decoration-none">
+  <RouterLink :to="`/activity/${activity.id}`" class="col text-decoration-none card-hover">
     <div class="corner-card">
       <div class="img-frame mb-3">
         <div class="outer-border"></div>
@@ -40,6 +40,7 @@ export default {
             class="card-img custom-rectangle img-cover"
             :alt="`[${activity.location.name}]${activity.title}`"
           />
+          <div class="img-mask"></div>
           <div class="card-img-overlay" v-if="activity.score">
             <span class="fs-6 font-barlow badge rounded-pill bg-darkPrimary bg-opacity-75 text-body border border-lightPrimary border-2">{{
               decimalFormat(activity.score, 1)
