@@ -116,17 +116,8 @@ export default {
         this.hideLoading();
       });
     },
-    updatePage(action) {
-      let { currentPage } = this.activities;
-      if (action === "prev") {
-        currentPage -= 1;
-      } else if (action === "next") {
-        currentPage += 1;
-      } else {
-        currentPage = action;
-      }
-
-      this.activities.currentPage = currentPage;
+    goToPage(page) {
+      this.activities.currentPage = page;
     }
   }
 };
@@ -151,15 +142,15 @@ export default {
       <nav aria-label="Page navigation example" class="mt-4 mb-0">
         <ul class="pagination pagination-sm justify-content-center">
           <li class="page-item" :class="{ disabled: activities.currentPage === 1 }">
-            <a class="page-link" href="#" aria-label="Previous" @click.prevent="updatePage('prev')">
+            <a class="page-link" href="#" aria-label="Previous" @click.prevent="goToPage(activities.currentPage - 1)">
               <span aria-hidden="true">&laquo;</span>
             </a>
           </li>
           <li class="page-item" v-for="page in activities.totalPage" :key="page" :class="{ active: activities.currentPage === page }">
-            <a class="page-link" href="#" @click.prevent="updatePage(page)">{{ page }}</a>
+            <a class="page-link" href="#" @click.prevent="goToPage(page)">{{ page }}</a>
           </li>
           <li class="page-item" :class="{ disabled: activities.currentPage === activities.totalPage }">
-            <a class="page-link" href="#" aria-label="Next" @click.prevent="updatePage('next')">
+            <a class="page-link" href="#" aria-label="Next" @click.prevent="goToPage(activities.currentPage + 1)">
               <span aria-hidden="true">&raquo;</span>
             </a>
           </li>
