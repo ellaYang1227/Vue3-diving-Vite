@@ -101,9 +101,9 @@ Store actions 的 Promise 回傳慣例：
 ## 計畫歸檔流程
 
 1. **計畫檔案命名格式**：`YYYY-MM-DD-<feature-name>.md`
-   - 例：`2026-04-18-ai-integration.md`
+   - 例：`2026-04-18-ai-integration.md`、`2026-04-18-fix-corneractivitycard-x-axis-overflow.md`
 
-2. **計畫文件結構**：
+2. **計畫文件結構（新功能）**：
    ```markdown
    # [功能名稱]
    
@@ -118,12 +118,31 @@ Store actions 的 Promise 回傳慣例：
    - [ ] Task 2
    ```
 
-3. **開發中**：計畫檔案放在 `docs/plans/`
+3. **計畫文件結構（Bug Fix）**：
+   ```markdown
+   # fix: [元件 / 模組名稱] 修復 [問題簡述]
+   
+   ## 問題描述
+   [頁面路徑、觸發條件、現象描述]
+   
+   ## 根本原因
+   [程式碼層級的分析，說明為何產生此問題]
+   
+   ## 修復方式
+   **修改檔案**：`路徑/檔名`
+   [diff 或說明修改內容與預期效果]
+   
+   ## 驗證方式
+   1. [步驟一]
+   2. [步驟二]
+   ```
 
-4. **功能完成後**：
+4. **開發中**：計畫檔案放在 `docs/plans/`
+
+5. **完成後**：
    - 將計畫檔案移至 `docs/plans/archive/`
-   - 更新 `docs/FEATURES.md`（標記功能為完成）
    - 更新 `docs/CHANGELOG.md`（記錄版本變更）
+   - 若為新功能，另需更新 `docs/FEATURES.md`（標記功能為完成）
 
 ## 程式碼規範
 
