@@ -132,6 +132,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 // card hover 共用效果
 a.card-hover {
+  .card {
+    overflow: hidden;
+  }
+
   &:hover {
     .img-mask {
       opacity: 0.25;

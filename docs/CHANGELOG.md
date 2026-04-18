@@ -9,6 +9,9 @@
 ### 開發中
 - feat/integrate-ai-claude 分支：整合 Claude AI 功能
 
+### Fixed
+- **CornerActivityCard X 軸卷軸**：`a.card-hover .img-mask` 的 `right: -150px` 使元素右邊界延伸至卡片外 150px，即使 `width: 0` 仍計入瀏覽器捲動寬度，導致 `/activity/:id` 頁面出現 X 軸卷軸。修復方式：於 `src/assets/main.scss` 的 `a.card-hover` 區塊加入 `.card { overflow: hidden; }`，將 img-mask 限制在卡片範圍內。同步修復 `BottomFrameActivityCard`、`HorizontalActivityCard` 的潛在相同問題。
+
 ---
 
 ## 歷史提交摘要
