@@ -132,6 +132,71 @@ Store actions 的 Promise 回傳慣例：
 - **驗證時機**：VeeValidate 設定 `validateOnInput: true`（即時驗證）
 - **元件選項式 API**：本專案使用 Options API（非 Composition API）
 
+## 分支命名規範
+
+**格式**：`<type>/<kebab-case-描述>`\
+**有 task 編號**：`<type>/task-<task編號>-<kebab-case-描述>`
+
+| type | 說明 |
+|------|------|
+| `feat` | 新功能開發 |
+| `fix` | 錯誤修正 |
+| `chore` | 雜項（設定、重新命名、非功能性調整） |
+| `refactor` | 重構（不影響功能） |
+| `docs` | 文件變更 |
+| `style` | 樣式調整（CSS/SCSS） |
+| `perf` | 效能優化 |
+
+### 範例
+
+```
+feat/integrate-ai-claude
+feat/task-123-activity-search
+fix/task-456-order-status-bug
+chore/rename-store-files
+```
+
+## Commit 規範
+
+**格式**：`<type>: [scope] <action>: <中文描述>`\
+**有 task 編號**：`<type>: [scope] <action>: <中文描述>[#編號]`
+
+> `[scope]` 選填，填入功能模組名稱（如 `[活動詳情]`、`[Header]`）；無法明確歸類或範圍較大時省略。
+
+### type（類型）
+
+| type | 說明 |
+|------|------|
+| `feat` | 新功能開發 |
+| `fix` | 錯誤修正 |
+| `chore` | 雜項（設定、重新命名、非功能性調整） |
+| `refactor` | 重構（不影響功能） |
+| `docs` | 文件變更 |
+| `style` | 樣式調整（CSS/SCSS） |
+| `perf` | 效能優化 |
+
+### action（動作）
+
+| action | 說明 |
+|--------|------|
+| `add` | 新增檔案或功能 |
+| `edit` | 修改既有內容 |
+| `delete` | 刪除 |
+
+### 範例
+
+```
+feat: [活動詳情] add: 評論列表
+style: [Header] edit: 文字大小
+fix: [OrderModal] edit: 報名狀態顯示邏輯[#456]
+feat: [活動列表] add: 搜尋篩選功能[#123]
+chore: edit: 重新命名 MemberStore.js 檔案
+docs: add: 建立 CLAUDE.md 初始文件
+style: edit: 調整活動卡片 RWD 樣式
+perf: edit: 優化活動列表分頁效能[#789]
+chore: delete: 移除未使用的 AdminIndexView
+```
+
 ## SweetAlert2 使用規範
 
 統一使用 `src/data/sweetalert2.js` 的 `setSwalFire` 函式，禁止直接呼叫 `Swal.fire`：

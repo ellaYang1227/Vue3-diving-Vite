@@ -54,6 +54,67 @@ npm run format    # Prettier 格式化 src/**/*.{js,vue,scss}
 ### VeeValidate 自訂規則
 `src/data/customDefineRule.js` 定義四個跨欄位日期驗證規則：`start_date`、`end_date`、`order_expiry_date`、`search_start_date`。zh_TW 語系從 `public/jsons/vee_validate_zh_TW.json` 非同步載入。
 
+### 分支命名規範
+
+**格式**：`<type>/<kebab-case-描述>`\
+**有 task 編號**：`<type>/task-<task編號>-<kebab-case-描述>`
+
+| type | 說明 |
+|------|------|
+| `feat` | 新功能開發 |
+| `fix` | 錯誤修正 |
+| `chore` | 雜項（設定、重新命名、非功能性調整） |
+| `refactor` | 重構（不影響功能） |
+| `docs` | 文件變更 |
+| `style` | 樣式調整（CSS/SCSS） |
+| `perf` | 效能優化 |
+
+### 範例
+
+```
+feat/integrate-ai-claude
+feat/task-123-activity-search
+fix/task-456-order-status-bug
+chore/rename-store-files
+```
+
+### Commit 格式
+
+**格式**：`<type>: [scope] <action>: <中文描述>`\
+**有 task 編號**：`<type>: [scope] <action>: <中文描述>[#編號]`
+
+> `[scope]` 選填，填入功能模組名稱（如 `[活動詳情]`、`[Header]`）；無法明確歸類或範圍較大時省略。
+
+### type（類型）
+
+| type | 說明 |
+|------|------|
+| `feat` | 新功能開發 |
+| `fix` | 錯誤修正 |
+| `chore` | 雜項（設定、重新命名、非功能性調整） |
+| `refactor` | 重構（不影響功能） |
+| `docs` | 文件變更 |
+| `style` | 樣式調整（CSS/SCSS） |
+| `perf` | 效能優化 |
+
+### action（動作）
+
+| action | 說明 |
+|--------|------|
+| `add` | 新增檔案或功能 |
+| `edit` | 修改既有內容 |
+| `delete` | 刪除 |
+
+### 範例
+
+```
+feat: [活動詳情] add: 評論列表
+style: [Header] edit: 文字大小
+fix: [OrderModal] edit: 報名狀態顯示邏輯[#456]
+chore: edit: 重新命名 MemberStore.js 檔案
+docs: add: 建立 CLAUDE.md 初始文件
+```
+
 ### 路由使用 Hash History
 `createWebHashHistory()` — 部署在 GitHub Pages 無需 server 設定。所有未知路徑重導向至 `/index`。Admin 路由目前被完全註解（程式碼保留，但未啟用）。
 
