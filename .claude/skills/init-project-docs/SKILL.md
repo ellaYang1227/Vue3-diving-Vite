@@ -242,7 +242,7 @@ paths:
 | 3   | 自動產生 API 文件 | `PostToolUse`           | `Edit\|Write` | 建立 `.claude/hooks/auto-api-docs.sh`，編輯路由檔後自動產生 API 文件           |
 | 4   | Compact 提醒      | `SessionStart`          | `compact`     | context 壓縮後重新注入專案關鍵規則（內容從 CLAUDE.md 摘錄）                    |
 | 5   | 自動跑測試        | `PostToolUse`           | `Edit\|Write` | 編輯原始碼後自動執行對應測試                                                   |
-| 6   | 通知提醒          | `Notification` + `Stop` | `""`          | 等待確認時 macOS 通知 + 任務完成時通知加音效（afplay Glass.aiff）              |
+| 6   | 通知提醒          | `Notification` + `Stop` | `""`          | 等待確認時系統通知 + 任務完成時通知；依作業系統自動選擇通知方式（見下方說明） |
 
 ### hooks 建立規則
 
@@ -250,6 +250,16 @@ paths:
 - hook 設定寫入 `.claude/settings.json` 的 `hooks` 區塊
 - 如果 `settings.json` 已存在 hooks，**合併**而非覆蓋
 - 通知 hook（#6）建議放在 `~/.claude/settings.json`（全域），skill 會詢問使用者偏好
+
+### 通知 Hook（#6）各平台通知方式
+
+建立通知 hook 前，自動偵測作業系統（檢查 `/proc/version` 是否含 `microsoft` 判斷 WSL2、`uname` 判斷 macOS/Linux），選擇對應的通知方式：
+
+| 平台 | 方式 | 需求 | 說明 |
+| ---- | ---- | ---- | ---- |
+| **macOS** | `afplay` + `osascript` | 內建 | 任務完成播放 `Glass.aiff`；等待確認時顯示 macOS 系統通知 |
+| **WSL2 + Windows** | PowerShell `NotifyIcon` | 內建（powershell.exe） | 呼叫 `powershell.exe` 發送 Windows 氣球通知，無需額外安裝 |
+| **Linux（桌面）** | `notify-send` | `libnotify-bin` | 標準 Linux 桌面通知，需確認是否已安裝 |
 
 ---
 
