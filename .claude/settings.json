@@ -19,10 +19,70 @@
       "allowedDomains": [
         "registry.npmjs.org",
         "*.npmjs.org",
+        "registry.yarnpkg.com",
         "*.github.com",
         "github.com",
-        "*.githubusercontent.com"
+        "*.githubusercontent.com",
+        "vue3-diving-vite.onrender.com",
+        "localhost:*"
       ]
     }
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/protect-files.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/auto-format.sh"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/compact-reminder.sh"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/notify.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/notify.sh stop"
+          }
+        ]
+      }
+    ]
   }
 }
